@@ -9,7 +9,7 @@
 // globe, and the IANA timezone the snapshot uses to derive each day's UTC
 // offset.
 
-import data from '../data/cities.json'
+import data from '../data/cities.json' with { type: 'json' }
 
 export interface City {
   /** Display name. */

@@ -1,22 +1,7 @@
 {
-  "Istanbul": {
-    "ilceID": "9541",
-    "districtName": "ISTANBUL",
-    "provinceName": "ISTANBUL"
-  },
-  "Makkah": {
-    "ilceID": "16309",
-    "districtName": "MECCA",
-    "provinceName": "S. ARABISTAN"
-  },
-  "Kuala Lumpur": {
-    "ilceID": "15344",
-    "districtName": "KUALA LUMPUR",
-    "provinceName": "MALAYSIA"
-  },
   "London": {
     "ilceID": "14096",
     "districtName": "LONDON",
-    "provinceName": "UNITED KINGDOM"
+    "provinceName": "INGILTERE"
   }
 }
