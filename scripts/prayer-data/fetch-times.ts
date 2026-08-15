@@ -3,13 +3,21 @@
 //   npm run prayer:fetch                  # every selected city
 //   npm run prayer:fetch -- --only London # just these
 //   npm run prayer:fetch -- --prune       # also drop days older than 2 days
+//   npm run prayer:fetch -- --fresh       # ignore/clear resume state, refetch everything
 //
 // A run yields the rolling ~31-day window plus all 365 days of the published
 // next year. Writes MERGE: each run contributes a different 30 days, and
 // Diyanet serves no archive, so overwriting would permanently narrow the
 // snapshot to whatever the last run happened to see.
+//
+// Progress is checkpointed to data/fetch-state.json as each city finishes, so
+// a crashed or interrupted run resumes from where it left off on the next
+// invocation. That file is deleted once a run completes successfully, so the
+// following run starts fresh without needing --fresh. Pass --fresh to discard
+// an existing checkpoint instead of resuming from it (e.g. after the selected
+// cities changed).
 
-import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs'
+import { mkdirSync, writeFileSync, renameSync, readFileSync, existsSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { getText, mapPool, BlockedError } from './http.ts'
 import { parseCityPage } from './parse-page.ts'
@@ -34,21 +42,29 @@ const KEEP_DAYS_BACK = 2
 const args = process.argv.slice(2)
 const prune = args.includes('--prune')
 const indexOnly = args.includes('--index-only')
+const freshStart = args.includes('--fresh')
 const onlyIdx = args.indexOf('--only')
 const only = onlyIdx > -1 ? args.slice(onlyIdx + 1).filter((a) => !a.startsWith('--')) : []
 
-/** A stable id for this run, so resume never spans two different runs. */
-const RUN_ID = new Date().toISOString().slice(0, 13)
-
 interface RunState {
-  runId: string
   done: string[]
 }
 
+/** Write to a sibling .tmp file then rename over the target, so a crash
+ * mid-write can never leave a truncated, unparseable file in its place. */
+function atomicWrite(path: string, data: string) {
+  const tmp = `${path}.tmp`
+  writeFileSync(tmp, data)
+  renameSync(tmp, path)
+}
+
 function loadState(): RunState {
-  if (!existsSync(STATE)) return { runId: RUN_ID, done: [] }
-  const prev = JSON.parse(readFileSync(STATE, 'utf8')) as RunState
-  return prev.runId === RUN_ID ? prev : { runId: RUN_ID, done: [] }
+  if (freshStart) {
+    if (existsSync(STATE)) rmSync(STATE)
+    return { done: [] }
+  }
+  if (!existsSync(STATE)) return { done: [] }
+  return JSON.parse(readFileSync(STATE, 'utf8')) as RunState
 }
 
 function isoDaysAgo(n: number): string {
@@ -61,11 +77,16 @@ function merge(city: City, fresh: SnapshotFile['days']): SnapshotFile {
   const path = join(OUT, `${city.ilceID}.json`)
   let days: SnapshotFile['days'] = {}
   if (existsSync(path)) {
+    let existing: SnapshotFile
     try {
-      days = (JSON.parse(readFileSync(path, 'utf8')) as SnapshotFile).days ?? {}
-    } catch {
-      days = {}
+      existing = JSON.parse(readFileSync(path, 'utf8')) as SnapshotFile
+    } catch (err) {
+      // Diyanet serves no archive: silently resetting to {} here would
+      // permanently discard every earlier day this snapshot ever captured.
+      // Fail loudly instead so a crashed write is fixed, not compounded.
+      throw new Error(`${path} exists but is not valid JSON — refusing to merge over it: ${err}`)
     }
+    days = existing.days ?? {}
   }
 
   // Fresh wins, so a Diyanet correction propagates.
@@ -122,7 +143,7 @@ function writeIndex(): number {
         `re-run prayer:select, which disambiguates them`,
     )
   }
-  writeFileSync(join(OUT, 'index.json'), JSON.stringify(index, null, 2))
+  atomicWrite(join(OUT, 'index.json'), JSON.stringify(index, null, 2))
   return got
 }
 
@@ -140,7 +161,10 @@ async function main() {
   if (only.length && !targets.length && !done.size) {
     throw new Error(`no city matched ${only.join(', ')}`)
   }
-  console.log(`${targets.length} cities to fetch (${done.size} already done this run)`)
+  console.log(
+    `${targets.length} cities to fetch` +
+      (done.size ? ` (${done.size} already done, resumed from ${STATE})` : ''),
+  )
 
   const failures: { city: string; reason: string }[] = []
   let n = 0
@@ -156,7 +180,7 @@ async function main() {
       const file = JSON.parse(readFileSync(path, 'utf8')) as SnapshotFile
       if (file.name !== c.n) {
         file.name = c.n
-        writeFileSync(path, JSON.stringify(file))
+        atomicWrite(path, JSON.stringify(file))
       }
     }
     writeIndex()
@@ -173,13 +197,13 @@ async function main() {
         fresh[day.date] = [...day.times, day.hijri] as SnapshotDay
       }
 
-      writeFileSync(
+      atomicWrite(
         join(OUT, `${city.ilceID}.json`),
         JSON.stringify(merge(city, fresh)),
       )
 
       done.add(city.ilceID)
-      writeFileSync(STATE, JSON.stringify({ runId: RUN_ID, done: [...done] }))
+      atomicWrite(STATE, JSON.stringify({ done: [...done] }))
     } catch (err) {
       if (err instanceof BlockedError) throw err
       failures.push({ city: city.n, reason: String(err) })
@@ -189,6 +213,12 @@ async function main() {
 
   const written = writeIndex()
   console.log(`\n${written} cities in the snapshot`)
+
+  // A completed run — even one with some per-city failures logged below —
+  // means the next invocation should start fresh rather than resume, since
+  // every city was already attempted this pass.
+  if (existsSync(STATE)) rmSync(STATE)
+
   if (failures.length) {
     console.log(`${failures.length} failures:`)
     for (const f of failures.slice(0, 20)) console.log(`  ${f.city}: ${f.reason}`)

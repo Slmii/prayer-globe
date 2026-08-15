@@ -24,6 +24,26 @@ function shift(iso: string, days: number): string {
   return d.toISOString().slice(0, 10)
 }
 
+const TIME_RE = /^\d{1,2}:\d{2}$/
+
+/**
+ * A date key alone is not a usable row: a file whose dates all map to `null`,
+ * a truncated array, or an invalid time string passes a key-only check, then
+ * produces missing prayer instants in the app. Returns null when the row is
+ * usable, otherwise a human-readable reason.
+ */
+function invalidDay(value: unknown): string | null {
+  if (!Array.isArray(value) || value.length !== 7) {
+    return `not a 7-element array (got ${JSON.stringify(value)})`
+  }
+  for (let i = 0; i < 6; i++) {
+    if (typeof value[i] !== 'string' || !TIME_RE.test(value[i])) {
+      return `invalid time at index ${i} (got ${JSON.stringify(value[i])})`
+    }
+  }
+  return null
+}
+
 export function checkCoverage(
   files: Coverable[],
   today: string,
@@ -46,13 +66,23 @@ export function checkCoverage(
     // date. Diyanet serves no archive, so on a first run it was never
     // obtainable — grandfather it against the earliest date ever captured.
     const yesterday = shift(today, -1)
-    if (yesterday >= earliest && !have.has(yesterday)) {
-      reason = `missing ${yesterday} (yesterday)`
+    if (yesterday >= earliest) {
+      if (!have.has(yesterday)) {
+        reason = `missing ${yesterday} (yesterday)`
+      } else {
+        const bad = invalidDay(file.days[yesterday])
+        if (bad) reason = `invalid ${yesterday} (yesterday): ${bad}`
+      }
     }
 
     for (let i = 0; !reason && i <= forwardDays; i++) {
       const date = shift(today, i)
-      if (!have.has(date)) reason = `missing ${date} (today+${i})`
+      if (!have.has(date)) {
+        reason = `missing ${date} (today+${i})`
+      } else {
+        const bad = invalidDay(file.days[date])
+        if (bad) reason = `invalid ${date} (today+${i}): ${bad}`
+      }
     }
 
     if (reason) problems.push({ ilceID: file.ilceID, name: file.name, reason })

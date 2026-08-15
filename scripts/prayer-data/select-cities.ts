@@ -103,10 +103,17 @@ async function main() {
 
   const selected: SelectedCity[] = []
   const unmatchedCities: { name: string; iso2: string; pop: number }[] = []
+  // GeoNames ISO2 codes with no Diyanet country mapping. unresolvedCountries
+  // records the opposite direction (Diyanet names that would not resolve), so
+  // without this these vanish from every report.
+  const countriesWithoutDiyanet: { iso2: string; pop: number }[] = []
 
   for (const [iso2, cities] of geoByIso2) {
     const entry = byIso2.get(iso2)
-    if (!entry) continue
+    if (!entry) {
+      countriesWithoutDiyanet.push({ iso2, pop: Math.max(...cities.map((c) => c.pop)) })
+      continue
+    }
 
     for (const city of pick(cities)) {
       const district = matchDistrict(city, entry.districts)
@@ -132,22 +139,38 @@ async function main() {
   }
 
   // A district serving two selected cities would fetch the same page twice and
-  // draw two dots on one timetable. Keep the larger city.
+  // draw two dots on one timetable. Keep the larger city — but the discarded
+  // one must still be reported, or it vanishes from the globe with no trace.
   const byIlceID = new Map<string, SelectedCity>()
+  const duplicates: { name: string; iso2: string; pop: number; ilceID: string; keptName: string }[] = []
   for (const c of selected.sort((a, b) => b.pop - a.pop)) {
-    if (!byIlceID.has(c.ilceID)) byIlceID.set(c.ilceID, c)
+    const kept = byIlceID.get(c.ilceID)
+    if (!kept) {
+      byIlceID.set(c.ilceID, c)
+    } else {
+      duplicates.push({ name: c.n, iso2: c.iso2, pop: c.pop, ilceID: c.ilceID, keptName: kept.n })
+    }
   }
   const final = disambiguate([...byIlceID.values()]).sort((a, b) => a.n.localeCompare(b.n))
+
+  countriesWithoutDiyanet.sort((a, b) => b.pop - a.pop)
 
   mkdirSync('src/data', { recursive: true })
   writeFileSync('src/data/cities.json', JSON.stringify(final, null, 2))
   writeFileSync(
     'data/unmatched.json',
-    JSON.stringify({ countries: unresolvedCountries, cities: unmatchedCities }, null, 2),
+    JSON.stringify(
+      { countries: unresolvedCountries, cities: unmatchedCities, duplicates, countriesWithoutDiyanet },
+      null,
+      2,
+    ),
   )
 
   console.log(`selected ${final.length} cities across ${byIso2.size} countries`)
-  console.log(`unmatched: ${unresolvedCountries.length} countries, ${unmatchedCities.length} cities`)
+  console.log(
+    `unmatched: ${unresolvedCountries.length} countries, ${unmatchedCities.length} cities, ` +
+      `${duplicates.length} duplicate-district cities, ${countriesWithoutDiyanet.length} countries without Diyanet`,
+  )
   console.log('review data/unmatched.json')
 }
 
