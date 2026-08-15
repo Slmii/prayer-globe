@@ -1,0 +1,1650 @@
+:root {
+  --bg: #0c0e14;
+  --panel-a: #171a2a;
+  --panel-b: #101220;
+  --ink: #e9e9ed;
+  --ink-bright: #f5f4ff;
+  --accent: #b5abfc;
+  --accent-mid: #968ae0;
+  --accent-soft: #d2cefd;
+  --accent-deep: #796cbf;
+  --dim: #cfd3e5;
+  --line: rgba(233, 233, 237, 0.1);
+  --glass: rgba(12, 14, 20, 0.78);
+  --mono: ui-monospace, Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 456px 1fr;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ---------- left rail ---------- */
+
+.panel {
+  position: relative;
+  z-index: 2;
+  padding: 28px 30px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border-right: 1px solid rgba(233, 233, 237, 0.08);
+  background: linear-gradient(180deg, #171a2a, #0f1120);
+  overflow-y: auto;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.mark {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+.mark-sq {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--accent-mid);
+}
+
+.mark-rot {
+  border-color: rgba(150, 138, 224, 0.55);
+  transform: rotate(45deg);
+}
+
+.wordmark {
+  font: 500 12px/1 Inter, sans-serif;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--ink-bright);
+}
+
+.method {
+  margin-left: auto;
+  font: 400 10.5px/1 var(--mono);
+  letter-spacing: 0.06em;
+  color: rgba(233, 233, 237, 0.4);
+}
+
+.rule {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(233, 233, 237, 0.22), transparent);
+}
+
+.ar-title {
+  font: 400 38px/1.35 Amiri, serif;
+  color: var(--accent-soft);
+}
+
+.lede {
+  margin: -12px 0 0;
+  font: 400 12.5px/1.6 Inter, sans-serif;
+  color: rgba(233, 233, 237, 0.5);
+  max-width: 330px;
+  text-wrap: pretty;
+}
+
+.now-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.now-mode {
+  font: 400 10.5px/1 var(--mono);
+  letter-spacing: 0.1em;
+  color: rgba(233, 233, 237, 0.42);
+}
+
+.now-hint {
+  font: 400 10.5px/1 Inter, sans-serif;
+  color: rgba(233, 233, 237, 0.32);
+}
+
+.now-name {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.now-prayer {
+  font: 500 62px/0.86 Inter, sans-serif;
+  letter-spacing: -0.032em;
+  color: var(--ink-bright);
+}
+
+.now-ar {
+  font: 400 36px/1 Amiri, serif;
+  color: var(--accent);
+  padding-bottom: 2px;
+}
+
+.city-chip {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: rgba(233, 233, 237, 0.045);
+  box-shadow: 0 0 0 1px rgba(233, 233, 237, 0.14);
+  transition:
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.city-chip-on {
+  background: rgba(150, 138, 224, 0.18);
+  box-shadow:
+    0 0 0 1px rgba(181, 171, 252, 0.9),
+    0 0 22px 2px rgba(150, 138, 224, 0.35);
+}
+
+.city-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(233, 233, 237, 0.3);
+}
+
+.city-chip-on .city-dot {
+  background: var(--accent);
+}
+
+.city-name {
+  font: 500 20px/1 Inter, sans-serif;
+  color: var(--ink-bright);
+}
+
+.city-coord {
+  font: 400 12px/1 var(--mono);
+  color: rgba(233, 233, 237, 0.5);
+}
+
+.meta {
+  margin-top: 9px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: center;
+}
+
+.meta-clock {
+  font: 400 14.5px/1 var(--mono);
+  color: var(--ink-bright);
+}
+
+.meta-sep {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(233, 233, 237, 0.3);
+}
+
+.meta-next {
+  font: 400 13.5px/1 var(--mono);
+  color: var(--accent-soft);
+}
+
+.meta-qibla {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 400 12.5px/1 var(--mono);
+  color: rgba(233, 233, 237, 0.62);
+}
+
+.compass {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 1px solid rgba(150, 138, 224, 0.5);
+  border-radius: 50%;
+  position: relative;
+}
+
+.compass-needle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.5px;
+  height: 6px;
+  background: var(--accent);
+  transform-origin: bottom center;
+}
+
+/* ---------- date bar ---------- */
+
+.datebar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.datebar-greg {
+  font: 400 12.5px/1 Inter, sans-serif;
+  color: rgba(233, 233, 237, 0.72);
+}
+
+.datebar-hijri {
+  font: 400 13px/1 Amiri, serif;
+  color: var(--accent);
+}
+
+/* ---------- the day as a dome ---------- */
+
+.arc {
+  position: relative;
+  height: 198px;
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.arc-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.arc-track {
+  fill: none;
+  stroke: rgba(233, 233, 237, 0.1);
+  stroke-width: 14;
+  stroke-linecap: round;
+}
+
+.arc-band {
+  fill: none;
+  stroke: url(#pgArc);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+
+/* While the timetable is in flight a highlight travels the arc, so the shape
+   still reads as live without asserting positions we do not yet know. */
+.arc-pending .arc-band {
+  stroke-dasharray: 70 400;
+  animation: pg-arc-sweep 1.3s linear infinite;
+}
+
+@keyframes pg-arc-sweep {
+  from {
+    stroke-dashoffset: 470;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arc-pending .arc-band {
+    animation: none;
+  }
+}
+
+.arc-pending .arc-prayer,
+.arc-pending .arc-ar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.arc-pending .arc-prayer {
+  height: 44px;
+}
+
+.arc-pending .arc-ar {
+  height: 29px;
+}
+
+.arc-horizon {
+  stroke: rgba(233, 233, 237, 0.14);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+
+.arc-mark {
+  stroke-width: 1.5;
+  transition:
+    r 300ms ease,
+    fill 300ms ease;
+}
+
+/* Matched to the panel's tick so the dot glides continuously instead of
+   stepping; linear, because the underlying motion is linear. */
+.arc-now-g {
+  transition:
+    transform 200ms linear,
+    opacity 240ms ease;
+  animation: pg-arc-in 380ms ease;
+}
+
+.arc-now-leaving {
+  opacity: 0;
+}
+
+@keyframes pg-arc-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arc-now-g {
+    transition: none;
+    animation: none;
+  }
+}
+
+.arc-now {
+  fill: var(--accent);
+}
+
+.arc-now-ring {
+  fill: none;
+  stroke: rgba(181, 171, 252, 0.4);
+  stroke-width: 1.5;
+}
+
+.arc-centre {
+  position: relative;
+  text-align: center;
+  padding-bottom: 2px;
+}
+
+.arc-prayer {
+  font: 500 44px/1 Inter, sans-serif;
+  letter-spacing: -0.03em;
+  color: var(--ink-bright);
+}
+
+.arc-ar {
+  font: 400 24px/1.2 Amiri, serif;
+  color: var(--accent);
+}
+
+.arc-foot {
+  position: absolute;
+  bottom: -2px;
+  font: 400 9.5px/1 var(--mono);
+  letter-spacing: 0.1em;
+  color: rgba(233, 233, 237, 0.3);
+}
+
+.arc-foot-l {
+  left: 0;
+}
+
+.arc-foot-r {
+  right: 0;
+}
+
+/* ---------- city card ---------- */
+
+.city-card {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 10px 12px;
+  border-radius: 11px;
+  background: rgba(150, 138, 224, 0.14);
+  box-shadow: 0 0 0 1px rgba(181, 171, 252, 0.5);
+}
+
+.city-card-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.city-card-name {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.city-card-sub {
+  padding-top: 8px;
+  font: 400 11px/1 var(--mono);
+  color: rgba(233, 233, 237, 0.45);
+}
+
+.city-card-time {
+  text-align: right;
+  flex: none;
+}
+
+.city-clock {
+  font: 400 26px/1 var(--mono);
+  color: var(--ink-bright);
+}
+
+.city-next {
+  padding-top: 8px;
+  font: 400 11px/1 Inter, sans-serif;
+  color: #c9c1ff;
+}
+
+/* ---------- prayer cards ---------- */
+
+.times-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  align-content: start;
+}
+
+.time-card {
+  padding: 12px 14px;
+  border-radius: 11px;
+  background: rgba(233, 233, 237, 0.035);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  transition: background 180ms ease;
+}
+
+.time-card:hover {
+  background: rgba(233, 233, 237, 0.085);
+}
+
+.time-card-on {
+  background: rgba(150, 138, 224, 0.17);
+  box-shadow: 0 0 0 1px rgba(181, 171, 252, 0.45);
+}
+
+.time-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-card-dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.time-card-label {
+  font: 500 11px/1 Inter, sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.time-card-ar {
+  margin-left: auto;
+  font: 400 13px/1 Amiri, serif;
+}
+
+.time-card-val {
+  font: 400 17px/1 var(--mono);
+}
+
+.time-card-on .time-card-val {
+  font-size: 21px;
+}
+
+/* ---------- cities by prayer ---------- */
+
+.tally {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tally-bar {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.tally-seg {
+  height: 4px;
+  border-radius: 2px;
+  transition: flex 400ms ease;
+}
+
+.tally-foot {
+  display: flex;
+  justify-content: space-between;
+  font: 400 9.5px/1 var(--mono);
+  letter-spacing: 0.1em;
+  color: rgba(233, 233, 237, 0.32);
+}
+
+/* ---------- data-source badge ---------- */
+
+.src {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+.src-live {
+  border-color: rgba(150, 138, 224, 0.45);
+  background: rgba(150, 138, 224, 0.08);
+}
+
+.src-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px 2px rgba(150, 138, 224, 0.5);
+}
+
+.src-dot-idle {
+  background: rgba(233, 233, 237, 0.35);
+  box-shadow: none;
+}
+
+.src-warn {
+  border-color: rgba(224, 168, 138, 0.45);
+  background: rgba(224, 168, 138, 0.08);
+}
+
+.src-dot-warn {
+  background: #e0a88a;
+  box-shadow: 0 0 8px 2px rgba(224, 168, 138, 0.45);
+}
+
+.src-warn .src-label {
+  color: #e8c0a8;
+}
+
+.src-label {
+  font: 500 10px/1 var(--mono);
+  letter-spacing: 0.1em;
+  color: rgba(233, 233, 237, 0.75);
+}
+
+.src-live .src-label {
+  color: var(--accent-soft);
+}
+
+.src-note {
+  font: 400 10.5px/1 Inter, sans-serif;
+  color: rgba(233, 233, 237, 0.42);
+}
+
+/* Stand-in while a city's timetable is on its way. */
+.skel {
+  display: inline-block;
+  height: 10px;
+  border-radius: 3px;
+  vertical-align: middle;
+  background: linear-gradient(
+    90deg,
+    rgba(233, 233, 237, 0.06),
+    rgba(181, 171, 252, 0.22),
+    rgba(233, 233, 237, 0.06)
+  );
+  background-size: 200% 100%;
+  animation: pg-shimmer 1.2s linear infinite;
+}
+
+@keyframes pg-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skel {
+    animation: none;
+  }
+}
+
+/* ---------- prayer table ---------- */
+
+.times {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.time-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border-left: 2px solid transparent;
+}
+
+.time-ar {
+  font: 400 15px/1 Amiri, serif;
+}
+
+.time-label {
+  font: 500 13px/1 Inter, sans-serif;
+}
+
+.time-val {
+  font: 400 13.5px/1 var(--mono);
+}
+
+/* ---------- sunrise / sunset from coordinates ---------- */
+
+.solar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: linear-gradient(
+    100deg,
+    rgba(255, 198, 92, 0.05),
+    rgba(181, 171, 252, 0.05) 70%,
+    transparent
+  );
+}
+
+.solar-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.solar-title {
+  font: 400 9.5px/1 var(--mono);
+  letter-spacing: 0.11em;
+  color: rgba(233, 233, 237, 0.45);
+}
+
+.solar-note {
+  margin-left: auto;
+  font: 400 9.5px/1 var(--mono);
+  color: rgba(233, 233, 237, 0.3);
+}
+
+.solar-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.solar-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.solar-mark {
+  width: 20px;
+  height: 14px;
+  flex: none;
+  fill: none;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.solar-horizon {
+  stroke: rgba(233, 233, 237, 0.35);
+}
+
+.solar-disc-rise {
+  stroke: #ffc65c;
+}
+
+.solar-arrow-rise {
+  stroke: #ffc65c;
+}
+
+.solar-disc-set {
+  stroke: var(--accent);
+}
+
+.solar-arrow-set {
+  stroke: var(--accent);
+}
+
+.solar-label {
+  font: 500 11.5px/1 Inter, sans-serif;
+  color: rgba(233, 233, 237, 0.7);
+}
+
+.solar-time {
+  margin-left: auto;
+  font: 400 13px/1 var(--mono);
+  color: var(--ink-bright);
+}
+
+/* ---------- panel footer ---------- */
+
+.panel-foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bodies {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.body-card {
+  padding: 11px 12px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  border: 1px solid rgba(233, 233, 237, 0.11);
+  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.body-card-go {
+  background: transparent;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.body-card-go:hover {
+  border-color: var(--accent-deep);
+  background: rgba(150, 138, 224, 0.08);
+}
+
+.body-card-go:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.body-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* Miniatures of the globe's sun and moon glyphs. */
+.body-icon {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.body-icon-disc {
+  position: relative;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.body-icon-sun .body-icon-disc {
+  background: radial-gradient(circle at 38% 34%, #fffdf4 0%, #ffe9a8 46%, #ffc65c 78%, #f0a63a 100%);
+  box-shadow: 0 0 8px 2px rgba(255, 203, 102, 0.5);
+}
+
+.body-icon-rays {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 232, 170, 0.75) 0deg 8deg,
+    transparent 8deg 45deg,
+    rgba(255, 232, 170, 0.75) 45deg 53deg,
+    transparent 53deg 90deg,
+    rgba(255, 232, 170, 0.75) 90deg 98deg,
+    transparent 98deg 135deg,
+    rgba(255, 232, 170, 0.75) 135deg 143deg,
+    transparent 143deg 180deg,
+    rgba(255, 232, 170, 0.75) 180deg 188deg,
+    transparent 188deg 225deg,
+    rgba(255, 232, 170, 0.75) 225deg 233deg,
+    transparent 233deg 270deg,
+    rgba(255, 232, 170, 0.75) 270deg 278deg,
+    transparent 278deg 315deg,
+    rgba(255, 232, 170, 0.75) 315deg 323deg,
+    transparent 323deg 360deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 0 38%, #000 44% 64%, transparent 70%);
+  mask: radial-gradient(circle, transparent 0 38%, #000 44% 64%, transparent 70%);
+}
+
+.body-icon-moon .body-icon-disc {
+  background: radial-gradient(circle at 36% 32%, #fdfdff 0%, #e2e6f4 52%, #b9c0d8 100%);
+  box-shadow: 0 0 7px 1px rgba(214, 220, 240, 0.3);
+  overflow: hidden;
+}
+
+.body-icon-shadow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #161826;
+  transition: transform 0.6s ease;
+}
+
+.body-title {
+  font: 400 10px/1 var(--mono);
+  letter-spacing: 0.1em;
+  color: rgba(233, 233, 237, 0.45);
+}
+
+.body-val {
+  font: 400 12px/1 var(--mono);
+  color: var(--ink);
+}
+
+.counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.count {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(233, 233, 237, 0.13);
+}
+
+.count-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.count-label {
+  font: 400 11.5px/1 Inter, sans-serif;
+  color: rgba(233, 233, 237, 0.7);
+}
+
+.count-n {
+  font: 500 11.5px/1 var(--mono);
+  color: var(--ink);
+}
+
+/* ---------- map stage ---------- */
+
+.stage {
+  position: relative;
+  min-width: 0;
+}
+
+.globe-host {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+}
+
+/* Stars, orbits and planets. Sits over the map so orbits can cross the globe;
+   an invisible depth sphere inside it hides the half that is genuinely behind. */
+.sky-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+
+/* Sun and moon are positioned here in screen space rather than as map markers,
+   so they can orbit outside the globe when they are behind the earth. */
+.bodies-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bodies-layer > div {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: opacity 0.4s ease;
+}
+
+.controls {
+  position: absolute;
+  left: 26px;
+  right: 76px;
+  top: 24px;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+}
+
+/* Glass pill toolbar: toggles carry a live status dot, actions are plain. */
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(24, 26, 40, 0.82), rgba(8, 9, 14, 0.86));
+  border: 1px solid rgba(150, 138, 224, 0.26);
+  box-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(210, 206, 253, 0.12);
+  backdrop-filter: blur(16px) saturate(1.4);
+}
+
+.pill-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font: 500 11px/1 Inter, sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(233, 233, 237, 0.72);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.pill-btn-plain {
+  color: rgba(233, 233, 237, 0.62);
+  padding: 10px 13px;
+}
+
+.pill-btn:hover:not(:disabled) {
+  background: rgba(150, 138, 224, 0.18);
+  color: #efeeff;
+  transform: translateY(-1px);
+}
+
+.pill-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.pill-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.pill-btn:disabled {
+  opacity: 0.36;
+  cursor: not-allowed;
+}
+
+.pill-btn-on {
+  color: #efeeff;
+}
+
+.pill-dot {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: rgba(233, 233, 237, 0.22);
+}
+
+.pill-live {
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  animation: pg-beacon 1.6s ease-in-out infinite;
+}
+
+.pill-live-spin {
+  background: #a99bff;
+  box-shadow: 0 0 10px 2px rgba(169, 155, 255, 0.85);
+}
+
+.pill-live-play {
+  background: #f4c56a;
+  box-shadow: 0 0 10px 2px rgba(244, 197, 106, 0.85);
+}
+
+.pill-live-sky {
+  background: #8fd3ff;
+  box-shadow: 0 0 10px 2px rgba(143, 211, 255, 0.8);
+  animation: none;
+}
+
+.pill-live-path {
+  background: #ffc65c;
+  box-shadow: 0 0 10px 2px rgba(255, 198, 92, 0.8);
+  animation: none;
+}
+
+@keyframes pg-beacon {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.72);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill-live {
+    animation: none;
+  }
+}
+
+.pill-sep {
+  width: 1px;
+  align-self: stretch;
+  margin: 4px 6px;
+  background: linear-gradient(180deg, transparent, rgba(210, 206, 253, 0.3), transparent);
+}
+
+.btn {
+  font: 500 11.5px/1 Inter, sans-serif;
+  letter-spacing: 0.04em;
+  color: rgba(233, 233, 237, 0.7);
+  background: rgba(12, 14, 20, 0.72);
+  border: 1px solid rgba(233, 233, 237, 0.16);
+  border-radius: 8px;
+  padding: 9px 13px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.btn {
+  white-space: nowrap;
+  flex: none;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--accent-deep);
+  color: var(--accent-soft);
+}
+
+.btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  color: var(--accent-soft);
+  border-color: var(--accent-deep);
+}
+
+.btn-primary:hover {
+  background: rgba(150, 138, 224, 0.2);
+}
+
+/* ---------- solar system ---------- */
+
+.orrery {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.orrery-svg {
+  display: block;
+  transition: opacity 0.5s ease;
+}
+
+.orrery-ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 0.6;
+  opacity: 0.16;
+}
+
+.orrery-body {
+  fill: currentColor;
+}
+
+.orrery-name {
+  font: 500 8.5px ui-monospace, Menlo, monospace;
+  letter-spacing: 0.1em;
+  fill: currentColor;
+  opacity: 0.62;
+  text-transform: uppercase;
+}
+
+/* ---------- city search ---------- */
+
+.search {
+  position: relative;
+}
+
+.search-input {
+  width: 190px;
+  font: 500 11.5px/1 Inter, sans-serif;
+  letter-spacing: 0.04em;
+  color: var(--ink-bright);
+  background: rgba(12, 14, 20, 0.72);
+  border: 1px solid rgba(233, 233, 237, 0.16);
+  border-radius: 8px;
+  padding: 9px 12px;
+  transition:
+    border-color 0.15s ease,
+    width 0.2s ease;
+}
+
+.search-input::placeholder {
+  color: rgba(233, 233, 237, 0.42);
+}
+
+.search-input:hover {
+  border-color: var(--accent-deep);
+}
+
+.search-input:focus {
+  outline: none;
+  width: 230px;
+  border-color: var(--accent-mid);
+  box-shadow: 0 0 0 3px rgba(150, 138, 224, 0.16);
+}
+
+.search-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 3;
+  min-width: 230px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border-radius: 9px;
+  background: rgba(12, 14, 20, 0.94);
+  border: 1px solid rgba(233, 233, 237, 0.14);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+}
+
+.search-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 9px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.search-item-on {
+  background: rgba(150, 138, 224, 0.2);
+}
+
+.search-name {
+  font: 500 12.5px/1 Inter, sans-serif;
+  color: var(--ink-bright);
+}
+
+.search-coord {
+  margin-left: auto;
+  font: 400 10px/1 var(--mono);
+  color: rgba(233, 233, 237, 0.42);
+}
+
+/* Sits under the controls row: that row now spans the width, so the old
+   top-right placement collided with the last button. */
+.pointer {
+  position: absolute;
+  left: 26px;
+  top: 88px;
+  text-align: left;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.pointer-title {
+  font: 400 10px/1 var(--mono);
+  letter-spacing: 0.09em;
+  color: rgba(233, 233, 237, 0.36);
+}
+
+.pointer-pos {
+  font: 500 16px/1.4 var(--mono);
+  color: var(--ink);
+}
+
+.pointer-note {
+  margin-top: 4px;
+  font: 400 10.5px/1.6 var(--mono);
+  color: rgba(233, 233, 237, 0.4);
+}
+
+/* ---------- legend ---------- */
+
+.legend {
+  position: absolute;
+  right: 26px;
+  bottom: 132px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 13px 15px;
+  border-radius: 10px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(6px);
+}
+
+.legend-title {
+  font: 400 10px/1 var(--mono);
+  letter-spacing: 0.11em;
+  color: rgba(233, 233, 237, 0.42);
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.legend-label {
+  font: 500 11px/1 Inter, sans-serif;
+  color: rgba(233, 233, 237, 0.8);
+}
+
+.legend-dawn {
+  color: #ffc65c;
+}
+
+.legend-accent {
+  color: var(--accent-soft);
+}
+
+.legend-angle {
+  font: 400 10px/1 var(--mono);
+  color: rgba(233, 233, 237, 0.45);
+}
+
+.legend-swatch-night {
+  width: 30px;
+  height: 9px;
+  border-radius: 2px;
+  background: #05060c;
+  border: 1px solid rgba(233, 233, 237, 0.16);
+}
+
+/* Static twin of the pulse markers on the globe. */
+.legend-swatch-pulse {
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.legend-swatch-pulse > span {
+  position: relative;
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+}
+
+.legend-swatch-pulse > span::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.legend-pulse-sun {
+  color: #ffc65c;
+}
+
+.legend-pulse-moon {
+  color: var(--dim);
+}
+
+.legend-note {
+  margin: 0;
+  max-width: 212px;
+  font: 400 10.5px/1.5 Inter, sans-serif;
+  color: rgba(233, 233, 237, 0.42);
+  text-wrap: pretty;
+}
+
+/* ---------- scrubber ---------- */
+
+.scrubber {
+  position: absolute;
+  left: 26px;
+  right: 26px;
+  bottom: 40px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(6px);
+}
+
+.scrub-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.scrub-title {
+  font: 400 10.5px/1 var(--mono);
+  letter-spacing: 0.1em;
+  color: rgba(233, 233, 237, 0.45);
+}
+
+.scrub-label {
+  font: 500 12px/1 var(--mono);
+  color: var(--ink-bright);
+}
+
+.scrub-note {
+  margin-left: auto;
+  font: 400 11px/1 Inter, sans-serif;
+  color: rgba(233, 233, 237, 0.4);
+  text-align: right;
+}
+
+.scrubber input[type='range'] {
+  width: 100%;
+  accent-color: var(--accent-mid);
+  background: transparent;
+}
+
+/* ---------- maplibre overrides ---------- */
+
+.maplibregl-ctrl-attrib {
+  font: 400 9.5px Inter, sans-serif !important;
+  background: rgba(12, 14, 20, 0.72) !important;
+  color: rgba(233, 233, 237, 0.5) !important;
+}
+
+.maplibregl-ctrl-attrib a {
+  color: rgba(233, 233, 237, 0.68) !important;
+}
+
+.maplibregl-ctrl-group {
+  background: rgba(12, 14, 20, 0.78) !important;
+  border: 1px solid rgba(233, 233, 237, 0.14) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+.maplibregl-ctrl-group button + button {
+  border-top: 1px solid rgba(233, 233, 237, 0.12) !important;
+}
+
+.maplibregl-ctrl-group button span {
+  filter: invert(1) brightness(1.7);
+}
+
+/* Marks the exact point the sun or moon stands over. */
+.pg-pulse {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+}
+
+.pg-pulse-core {
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.pg-pulse-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  animation: pg-pulse 2.6s ease-out infinite;
+}
+
+.pg-pulse-sun {
+  color: #ffc65c;
+}
+
+.pg-pulse-sun .pg-pulse-core {
+  box-shadow: 0 0 10px 3px rgba(255, 198, 92, 0.65);
+}
+
+.pg-pulse-moon {
+  color: #cfd3e5;
+}
+
+.pg-pulse-moon .pg-pulse-core {
+  box-shadow: 0 0 8px 2px rgba(207, 211, 229, 0.5);
+}
+
+@keyframes pg-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  70% {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+@keyframes pg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pg-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.16);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .globe-host [style*='animation'] {
+    animation: none !important;
+  }
+}
+
+/* Planet name tags, positioned by the orrery layer. */
+.pg-planet {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font: 500 8.5px ui-monospace, Menlo, monospace;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0.75;
+  text-shadow: 0 1px 6px rgba(6, 7, 11, 0.95);
+  transition: opacity 0.3s ease;
+  will-change: transform;
+}
+
+/* Name of the city under the pointer, when it is not the selected one. */
+.pg-tip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  font: 500 11px/1 Inter, sans-serif;
+  color: var(--ink-bright);
+  background: rgba(12, 14, 20, 0.92);
+  border: 1px solid rgba(181, 171, 252, 0.45);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+  transition: opacity 0.14s ease;
+  will-change: transform;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1180px) {
+  .app {
+    grid-template-columns: 380px 1fr;
+  }
+
+  .panel {
+    padding: 24px 22px 20px;
+  }
+
+  .now-prayer {
+    font-size: 48px;
+  }
+
+  .ar-title {
+    font-size: 30px;
+  }
+
+  .legend {
+    bottom: 124px;
+    right: 18px;
+  }
+}
+
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    overflow: auto;
+  }
+
+  .panel {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    overflow: visible;
+  }
+
+  .panel-foot {
+    margin-top: 12px;
+  }
+
+  .stage {
+    min-height: 70vh;
+  }
+
+  .legend {
+    display: none;
+  }
+
+  /* The stacked layout puts the map's own zoom controls where the pointer
+     readout used to sit, so move it to the free left edge. */
+  .pointer {
+    left: 14px;
+    right: auto;
+    top: 96px;
+    text-align: left;
+  }
+}
+
+@media (max-width: 560px) {
+  .controls {
+    left: 14px;
+    right: 60px;
+    top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .pointer {
+    top: 130px;
+  }
+
+  .scrubber {
+    left: 14px;
+    right: 14px;
+    bottom: 20px;
+  }
+
+  .scrub-note {
+    display: none;
+  }
+
+  .now-prayer {
+    font-size: 40px;
+  }
+
+  .now-ar {
+    font-size: 26px;
+  }
+}
