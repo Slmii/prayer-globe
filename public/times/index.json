@@ -144,11 +144,6 @@
     "districtName": "AMSTERDAM",
     "provinceName": "HOLLANDA"
   },
-  "Anderlecht": {
-    "ilceID": "11915",
-    "districtName": "BRUXELLES",
-    "provinceName": "BELCIKA"
-  },
   "Andijon": {
     "ilceID": "15758",
     "districtName": "ANDIZHAN",
@@ -240,8 +235,8 @@
     "provinceName": "ERITRE"
   },
   "Astana": {
-    "ilceID": "14883",
-    "districtName": "ALEKSEYEVKA(Astana)",
+    "ilceID": "14880",
+    "districtName": "ASTANA",
     "provinceName": "KAZAKISTAN"
   },
   "Asuncion": {
@@ -570,8 +565,8 @@
     "provinceName": "NEW YORK"
   },
   "Brussels": {
-    "ilceID": "11847",
-    "districtName": "ASSE (Bruksel)",
+    "ilceID": "11915",
+    "districtName": "BRUXELLES",
     "provinceName": "BELCIKA"
   },
   "Buchanan": {
@@ -1285,8 +1280,8 @@
     "provinceName": "KUBA"
   },
   "Helsinki": {
-    "ilceID": "12873",
-    "districtName": "HAMEENKYLA (Helsinki)",
+    "ilceID": "12929",
+    "districtName": "HELSINKI",
     "provinceName": "FINLANDIYA"
   },
   "Herat": {
@@ -1690,8 +1685,8 @@
     "provinceName": "KUVEYT"
   },
   "Kyiv": {
-    "ilceID": "16434",
-    "districtName": "BEREZAN (Kiev)",
+    "ilceID": "16498",
+    "districtName": "KIEV",
     "provinceName": "UKRAYNA"
   },
   "La Ceiba": {
@@ -1955,8 +1950,8 @@
     "provinceName": "MALDIVLER"
   },
   "Malmoe": {
-    "ilceID": "14293",
-    "districtName": "BJARRED (Malmo)",
+    "ilceID": "14350",
+    "districtName": "MALMO",
     "provinceName": "ISVEC"
   },
   "Mamoudzou": {
@@ -2250,8 +2245,8 @@
     "provinceName": "HINDISTAN"
   },
   "Munich": {
-    "ilceID": "10817",
-    "districtName": "DORFEN (Munih)",
+    "ilceID": "11022",
+    "districtName": "MUNCHEN",
     "provinceName": "BAYERN"
   },
   "Muscat": {
@@ -2345,9 +2340,9 @@
     "provinceName": "GUYANA"
   },
   "New York City": {
-    "ilceID": "8785",
-    "districtName": "MANHATTAN",
-    "provinceName": "KANSAS"
+    "ilceID": "8903",
+    "districtName": "NEW YORK",
+    "provinceName": "NEW YORK"
   },
   "Ngozi": {
     "ilceID": "12278",
@@ -2575,8 +2570,8 @@
     "provinceName": "URUGUAY"
   },
   "Perth": {
-    "ilceID": "11341",
-    "districtName": "BAYSWATER (Perth)",
+    "ilceID": "11427",
+    "districtName": "PERTH",
     "provinceName": "AVUSTRALYA"
   },
   "Phnom Penh": {
@@ -2835,8 +2830,8 @@
     "provinceName": "ANTIGUA VE BARBUDA"
   },
   "Saint Petersburg": {
-    "ilceID": "16008",
-    "districtName": "DUBROVKA (St. Petersburg)",
+    "ilceID": "16141",
+    "districtName": "St. PETERSBURG",
     "provinceName": "RUSYA"
   },
   "Salalah": {
@@ -2925,8 +2920,8 @@
     "provinceName": "KUBA"
   },
   "Santa Cruz de la Sierra": {
-    "ilceID": "11956",
-    "districtName": "COTOCA (Santa Cruz)",
+    "ilceID": "11969",
+    "districtName": "SANTA CRUZ",
     "provinceName": "BOLIVYA"
   },
   "Santa Tecla": {
@@ -3220,8 +3215,8 @@
     "provinceName": "FAS"
   },
   "Taraz": {
-    "ilceID": "14920",
-    "districtName": "AKKOL (Taraz)",
+    "ilceID": "14991",
+    "districtName": "TARAZ",
     "provinceName": "KAZAKISTAN"
   },
   "Tartu": {
@@ -3375,8 +3370,8 @@
     "provinceName": "ITALYA"
   },
   "Turku": {
-    "ilceID": "12894",
-    "districtName": "KOSKI (Turku)",
+    "ilceID": "12943",
+    "districtName": "TURKU",
     "provinceName": "FINLANDIYA"
   },
   "Tuzla": {
@@ -3615,8 +3610,8 @@
     "provinceName": "NIJER"
   },
   "Zuerich": {
-    "ilceID": "14474",
-    "districtName": "AU (Zurih)",
+    "ilceID": "14547",
+    "districtName": "ZURIH",
     "provinceName": "ISVICRE"
   }
 }

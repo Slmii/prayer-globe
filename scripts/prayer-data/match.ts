@@ -206,36 +206,99 @@ export function countryIso2(diyanetName: string): string | null {
  * Each of these silently cost us a city, São Paulo (12.4M) among them, so all
  * three forms are generated and any one may match.
  */
-function keys(s: string): string[] {
-  const out = new Set<string>()
-  const add = (v: string) => {
-    const k = normalize(v).trim().replace(/\s+/g, ' ')
-    if (k) out.add(k)
-  }
-  add(s)
-  add(s.replace(/\([^)]*\)/g, ' '))
+const clean = (s: string): string => normalize(s).trim().replace(/\s+/g, ' ')
+
+/** The three readings of a district name, strongest first. */
+function forms(s: string): { full: string; stripped: string; inner: string } {
   const inner = /\(([^)]+)\)/.exec(s)
-  if (inner) add(inner[1])
-  return [...out]
+  return {
+    full: clean(s),
+    stripped: clean(s.replace(/\([^)]*\)/g, ' ')),
+    inner: inner ? clean(inner[1]) : '',
+  }
 }
 
-const districtKeys = (d: DiyanetDistrict): string[] => [...keys(d.nameEn), ...keys(d.name)]
+/**
+ * How good a match is, strongest first. The ranking is the whole point: taking
+ * the first district that matched on ANY reading bound New York City to
+ * MANHATTAN in *Kansas* while NEW YORK sat unused, and Perth to
+ * "BAYSWATER (Perth)" while PERTH sat unused — real Diyanet data, for the wrong
+ * place, which is worse than no data at all.
+ */
+const RANK = {
+  fullPrimary: 6,
+  strippedPrimary: 5,
+  innerPrimary: 4,
+  fullAlt: 3,
+  strippedAlt: 2,
+  innerAlt: 1,
+  none: 0,
+}
 
+function commonPrefix(a: string, b: string): number {
+  let i = 0
+  while (i < a.length && i < b.length && a[i] === b[i]) i++
+  return i
+}
+
+function scoreDistrict(
+  d: DiyanetDistrict,
+  primary: Set<string>,
+  alt: Set<string>,
+): number {
+  let best = RANK.none
+  for (const name of [d.nameEn, d.name]) {
+    if (!name) continue
+    const f = forms(name)
+    if (f.full && primary.has(f.full)) best = Math.max(best, RANK.fullPrimary)
+    if (f.stripped && primary.has(f.stripped)) best = Math.max(best, RANK.strippedPrimary)
+    if (f.inner && primary.has(f.inner)) best = Math.max(best, RANK.innerPrimary)
+    if (f.full && alt.has(f.full)) best = Math.max(best, RANK.fullAlt)
+    if (f.stripped && alt.has(f.stripped)) best = Math.max(best, RANK.strippedAlt)
+    if (f.inner && alt.has(f.inner)) best = Math.max(best, RANK.innerAlt)
+  }
+  return best
+}
+
+/**
+ * Match one GeoNames city to a district from the *same country's* list — a
+ * name-only match sends "Los Angeles" to Los Angeles, Chile.
+ *
+ * Every district is scored and the strongest wins, rather than the first one
+ * that happens to match. Ties are broken by how much of the city's own name the
+ * district name shares, which is what separates NEW YORK from MANHATTAN when
+ * both appear in New York City's (alphabetically sorted, so otherwise
+ * uninformative) alternate names. A tie that survives that is genuinely
+ * ambiguous and returns null, so it lands in the unmatched report instead of
+ * being guessed at.
+ */
 export function matchDistrict(
   city: GeoCity,
   districts: DiyanetDistrict[],
 ): DiyanetDistrict | null {
-  const exact = new Set([...keys(city.name), ...keys(city.ascii)])
+  const primary = new Set([clean(city.name), clean(city.ascii)].filter(Boolean))
+  const alt = new Set(city.alt.map(clean).filter(Boolean))
+  const cityKey = clean(city.ascii) || clean(city.name)
+
+  let winner: DiyanetDistrict | null = null
+  let bestScore = RANK.none
+  let bestPrefix = -1
+  let tied = false
 
   for (const d of districts) {
-    if (districtKeys(d).some((k) => exact.has(k))) return d
+    const score = scoreDistrict(d, primary, alt)
+    if (score === RANK.none) continue
+
+    const prefix = commonPrefix(forms(d.nameEn || d.name).full, cityKey)
+    if (score > bestScore || (score === bestScore && prefix > bestPrefix)) {
+      winner = d
+      bestScore = score
+      bestPrefix = prefix
+      tied = false
+    } else if (score === bestScore && prefix === bestPrefix) {
+      tied = true
+    }
   }
 
-  const alt = new Set(city.alt.flatMap(keys))
-  if (!alt.size) return null
-
-  for (const d of districts) {
-    if (districtKeys(d).some((k) => alt.has(k))) return d
-  }
-  return null
+  return tied ? null : winner
 }

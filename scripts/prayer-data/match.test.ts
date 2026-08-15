@@ -117,3 +117,39 @@ describe('matchDistrict — Diyanet name qualifiers', () => {
     expect(matchDistrict(city({ ascii: 'Rio de Janeiro' }), d)).toBeNull()
   })
 })
+
+describe('matchDistrict — strongest match wins, not the first', () => {
+  // Each of these bound to the WRONG district when any matching reading of a
+  // name counted equally and district list order decided the winner.
+  it('prefers PERTH over "BAYSWATER (Perth)"', () => {
+    const d = [district('BAYSWATER (Perth)', 'BAYSWATER (Perth)', 'bays'), district('PERTH', 'PERTH', 'perth')]
+    expect(matchDistrict(city({ ascii: 'Perth', alt: ['Perth', 'Pert'] }), d)?.ilceID).toBe('perth')
+  })
+
+  it('prefers ASTANA over "ALEKSEYEVKA(Astana)"', () => {
+    const d = [district('ALEKSEYEVKA(Astana)', 'ALEKSEYEVKA(Astana)', 'alek'), district('ASTANA', 'ASTANA', 'ast')]
+    expect(matchDistrict(city({ ascii: 'Astana', alt: ['Akmola', 'Astana'] }), d)?.ilceID).toBe('ast')
+  })
+
+  it('prefers a full-name alt match over a parenthetical alt match', () => {
+    const d = [district('DORFEN (Munih)', 'DORFEN (Munih)', 'dorfen'), district('MUNCHEN', 'MUNCHEN', 'muc')]
+    expect(matchDistrict(city({ ascii: 'Munich', alt: ['Munih', 'Munchen'] }), d)?.ilceID).toBe('muc')
+  })
+
+  it('breaks an alt-name tie toward the name sharing the city prefix', () => {
+    // Both appear in New York City's alternate names; only one is in New York.
+    const d = [district('MANHATTAN', 'MANHATTAN', 'kansas'), district('NEW YORK', 'NEW YORK', 'ny')]
+    const c = city({ ascii: 'New York City', alt: ['Manhattan', 'New York'] })
+    expect(matchDistrict(c, d)?.ilceID).toBe('ny')
+  })
+
+  it('still prefers the parenthetical reading when nothing stronger exists', () => {
+    const d = [district('BUKRES(bucharest)', 'BUKRES(bucharest)', 'buc')]
+    expect(matchDistrict(city({ ascii: 'Bucharest' }), d)?.ilceID).toBe('buc')
+  })
+
+  it('returns null on a genuine tie rather than guessing', () => {
+    const d = [district('SPRINGFIELD', 'SPRINGFIELD', 'a'), district('SPRINGFIELD', 'SPRINGFIELD', 'b')]
+    expect(matchDistrict(city({ ascii: 'Springfield' }), d)).toBeNull()
+  })
+})

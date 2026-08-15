@@ -464,22 +464,6 @@
     ]
   },
   {
-    "n": "Anderlecht",
-    "la": 50.8362,
-    "lo": 4.3145,
-    "tz": "Europe/Brussels",
-    "iso2": "BE",
-    "country": "BELGIUM",
-    "pop": 160553,
-    "ilceID": "11915",
-    "ilceUrl": "/en-US/11915/prayer-time-for-bruksel",
-    "u": 11,
-    "p": "BELCIKA",
-    "d": [
-      "BRUXELLES"
-    ]
-  },
-  {
     "n": "Andijon",
     "la": 40.7834,
     "lo": 72.3507,
@@ -775,12 +759,12 @@
     "iso2": "KZ",
     "country": "KAZAKHSTAN",
     "pop": 1544142,
-    "ilceID": "14883",
-    "ilceUrl": "/en-US/14883/prayer-time-for-alekseyevkaastana",
+    "ilceID": "14880",
+    "ilceUrl": "/en-US/14880/prayer-time-for-astana",
     "u": 92,
     "p": "KAZAKISTAN",
     "d": [
-      "ALEKSEYEVKA(Astana)"
+      "ASTANA"
     ]
   },
   {
@@ -1831,12 +1815,12 @@
     "iso2": "BE",
     "country": "BELGIUM",
     "pop": 1019022,
-    "ilceID": "11847",
-    "ilceUrl": "/en-US/11847/prayer-time-for-asse-bruksel",
+    "ilceID": "11915",
+    "ilceUrl": "/en-US/11915/prayer-time-for-bruksel",
     "u": 11,
     "p": "BELCIKA",
     "d": [
-      "ASSE (Bruksel)"
+      "BRUXELLES"
     ]
   },
   {
@@ -4119,12 +4103,12 @@
     "iso2": "FI",
     "country": "FINLAND",
     "pop": 658864,
-    "ilceID": "12873",
-    "ilceUrl": "/en-US/12873/prayer-time-for-hameenkyla-helsinki",
+    "ilceID": "12929",
+    "ilceUrl": "/en-US/12929/prayer-time-for-helsinki",
     "u": 41,
     "p": "FINLANDIYA",
     "d": [
-      "HAMEENKYLA (Helsinki)"
+      "HELSINKI"
     ]
   },
   {
@@ -5415,12 +5399,12 @@
     "iso2": "UA",
     "country": "UKRAINE",
     "pop": 2952301,
-    "ilceID": "16434",
-    "ilceUrl": "/en-US/16434/prayer-time-for-berezan-kiev",
+    "ilceID": "16498",
+    "ilceUrl": "/en-US/16498/prayer-time-for-kiev",
     "u": 40,
     "p": "UKRAYNA",
     "d": [
-      "BEREZAN (Kiev)"
+      "KIEV"
     ]
   },
   {
@@ -6263,12 +6247,12 @@
     "iso2": "SE",
     "country": "SWEDEN",
     "pop": 362133,
-    "ilceID": "14293",
-    "ilceUrl": "/en-US/14293/prayer-time-for-bjarred-malmo",
+    "ilceID": "14350",
+    "ilceUrl": "/en-US/14350/prayer-time-for-malmo",
     "u": 12,
     "p": "ISVEC",
     "d": [
-      "BJARRED (Malmo)"
+      "MALMO"
     ]
   },
   {
@@ -7207,12 +7191,12 @@
     "iso2": "DE",
     "country": "GERMANY",
     "pop": 1505005,
-    "ilceID": "10817",
-    "ilceUrl": "/en-US/10817/prayer-time-for-dorfen-munih",
+    "ilceID": "11022",
+    "ilceUrl": "/en-US/11022/prayer-time-for-munchen",
     "u": 13,
     "p": "BAYERN",
     "d": [
-      "DORFEN (Munih)"
+      "MUNCHEN"
     ]
   },
   {
@@ -7511,12 +7495,12 @@
     "iso2": "US",
     "country": "USA",
     "pop": 8804190,
-    "ilceID": "8785",
-    "ilceUrl": "/en-US/8785/prayer-time-for-manhattan",
+    "ilceID": "8903",
+    "ilceUrl": "/en-US/8903/prayer-time-for-new-york",
     "u": 33,
-    "p": "KANSAS",
+    "p": "NEW YORK",
     "d": [
-      "MANHATTAN"
+      "NEW YORK"
     ]
   },
   {
@@ -8247,12 +8231,12 @@
     "iso2": "AU",
     "country": "AUSTRALIA",
     "pop": 2384371,
-    "ilceID": "11341",
-    "ilceUrl": "/en-US/11341/prayer-time-for-bayswater-perth",
+    "ilceID": "11427",
+    "ilceUrl": "/en-US/11427/prayer-time-for-perth",
     "u": 59,
     "p": "AVUSTRALYA",
     "d": [
-      "BAYSWATER (Perth)"
+      "PERTH"
     ]
   },
   {
@@ -9079,12 +9063,12 @@
     "iso2": "RU",
     "country": "RUSSIA",
     "pop": 5351935,
-    "ilceID": "16008",
-    "ilceUrl": "/en-US/16008/prayer-time-for-dubrovka-st-petersburg",
+    "ilceID": "16141",
+    "ilceUrl": "/en-US/16141/prayer-time-for-st-petersburg",
     "u": 207,
     "p": "RUSYA",
     "d": [
-      "DUBROVKA (St. Petersburg)"
+      "St. PETERSBURG"
     ]
   },
   {
@@ -9367,12 +9351,12 @@
     "iso2": "BO",
     "country": "BOLIVYA",
     "pop": 1831434,
-    "ilceID": "11956",
-    "ilceUrl": "/en-US/11956/prayer-time-for-cotoca-santa-cruz",
+    "ilceID": "11969",
+    "ilceUrl": "/en-US/11969/prayer-time-for-santa-cruz",
     "u": 83,
     "p": "BOLIVYA",
     "d": [
-      "COTOCA (Santa Cruz)"
+      "SANTA CRUZ"
     ]
   },
   {
@@ -10311,12 +10295,12 @@
     "iso2": "KZ",
     "country": "KAZAKHSTAN",
     "pop": 358153,
-    "ilceID": "14920",
-    "ilceUrl": "/en-US/14920/prayer-time-for-akkol-taraz",
+    "ilceID": "14991",
+    "ilceUrl": "/en-US/14991/prayer-time-for-taraz",
     "u": 92,
     "p": "KAZAKISTAN",
     "d": [
-      "AKKOL (Taraz)"
+      "TARAZ"
     ]
   },
   {
@@ -10807,12 +10791,12 @@
     "iso2": "FI",
     "country": "FINLAND",
     "pop": 206655,
-    "ilceID": "12894",
-    "ilceUrl": "/en-US/12894/prayer-time-for-koski-turku",
+    "ilceID": "12943",
+    "ilceUrl": "/en-US/12943/prayer-time-for-turku",
     "u": 41,
     "p": "FINLANDIYA",
     "d": [
-      "KOSKI (Turku)"
+      "TURKU"
     ]
   },
   {
@@ -11575,12 +11559,12 @@
     "iso2": "CH",
     "country": "SWITZERLAND",
     "pop": 415367,
-    "ilceID": "14474",
-    "ilceUrl": "/en-US/14474/prayer-time-for-au-zurih",
+    "ilceID": "14547",
+    "ilceUrl": "/en-US/14547/prayer-time-for-zurih",
     "u": 49,
     "p": "ISVICRE",
     "d": [
-      "AU (Zurih)"
+      "ZURIH"
     ]
   }
 ]
