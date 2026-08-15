@@ -65,6 +65,15 @@ async function main() {
         stateOf.set(d.ilceID, state.name)
       }
     }
+    // Two Diyanet countries resolving to one ISO2 would silently drop whichever
+    // lost the race, with no entry in the unmatched report to show for it.
+    const claimed = byIso2.get(iso2)
+    if (claimed) {
+      throw new Error(
+        `${iso2} claimed by both "${claimed.country.name}" and "${country.name}" — ` +
+          `remove one from COUNTRY_OVERRIDES in match.ts`,
+      )
+    }
     byIso2.set(iso2, { country, districts, stateOf })
   }
 
