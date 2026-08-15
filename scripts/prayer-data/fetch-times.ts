@@ -81,9 +81,28 @@ function merge(city: City, fresh: SnapshotFile['days']): SnapshotFile {
   return { ilceID: city.ilceID, name: city.n, tz: city.tz, days: sorted }
 }
 
+/**
+ * Diyanet serves Turkey time (UTC+3), so between 21:00 and 24:00 UTC the site's
+ * rolling window already starts on tomorrow's UTC date. A snapshot built in that
+ * window has no row for today-in-UTC, and cities at negative offsets — which are
+ * genuinely still on that date — fall through to the solar model. The scheduled
+ * refresh runs at 03:00 UTC precisely to stay clear of this.
+ */
+function warnIfNearUtcMidnight() {
+  const utcHour = new Date().getUTCHours()
+  if (utcHour >= 21) {
+    console.warn(
+      `\n  ⚠ ${utcHour}:00 UTC — Diyanet (UTC+3) has already rolled to tomorrow.\n` +
+        `    This snapshot will not contain today's UTC date, and prayer:check\n` +
+        `    will fail until UTC midnight. Re-run after 00:00 UTC to be clean.\n`,
+    )
+  }
+}
+
 async function main() {
   mkdirSync(OUT, { recursive: true })
   mkdirSync('data', { recursive: true })
+  warnIfNearUtcMidnight()
 
   const state = loadState()
   const done = new Set(state.done)
