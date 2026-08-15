@@ -1,7 +1,7 @@
 # Ever-Standing — Prayer Globe
 
 A MapLibre globe showing where on earth each prayer is currently being observed.
-Hover any of 724 cities across 205 countries, zoom to its streets, and scrub the
+Hover any of 723 cities across 203 countries, zoom to its streets, and scrub the
 sun, moon and night side forward ten days.
 
 React 19 · Vite · TypeScript · TanStack Query · MapLibre GL 5
