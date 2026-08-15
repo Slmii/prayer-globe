@@ -45,12 +45,28 @@ interface RegList {
 /** Any city page carries the full country dropdown. */
 const SEED = '/en-US/9206/prayer-time-for-ankara'
 
+/**
+ * The dropdown HTML-escapes non-ASCII letters: Türkiye arrives as
+ * `T&#220;RKİYE` and Curaçao as `CURA&#199;AO`. Left undecoded, Türkiye
+ * normalises to `T220RKIYE`, matches no ISO country, and drops out of the city
+ * list along with all 869 of its districts — the one country this app can
+ * least afford to lose.
+ */
+export function decodeEntities(s: string): string {
+  return s
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(Number(dec)))
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+}
+
 function parseCountries(html: string): { countryId: string; name: string }[] {
   const select = /<select[^>]*name="country"[\s\S]*?<\/select>/.exec(html)
   if (!select) throw new Error('country dropdown not found on the seed page')
   return [...select[0].matchAll(/<option value="(\d+)"[^>]*>([^<]+)<\/option>/g)].map((m) => ({
     countryId: m[1],
-    name: m[2].trim(),
+    name: decodeEntities(m[2].trim()),
   }))
 }
 
@@ -102,7 +118,11 @@ async function main() {
   console.log(`\nwrote data/diyanet-tree.json — ${tree.length} countries, ${districts} districts`)
 }
 
-main().catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+// Only crawl when run as a script. Without this guard, importing the module for
+// its exported types or helpers kicks off a 28-minute crawl as a side effect.
+if (process.argv[1] && import.meta.filename === process.argv[1]) {
+  main().catch((err) => {
+    console.error(err)
+    process.exit(1)
+  })
+}
