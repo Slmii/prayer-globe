@@ -25,20 +25,32 @@ export class BlockedError extends Error {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
+/** What a given path is expected to return, which decides how a block is spotted. */
+export type Expect = 'html' | 'json'
+
 /**
- * Real pages run to hundreds of kilobytes, so any response body under 2000
- * bytes from this host is not a real page — length alone is the primary
- * signal. `Response.text()` always decodes as UTF-8 regardless of declared
- * charset, so the title phrase, "İsteğiniz güvenlik kurallarına takılmıştır",
- * is only used to confirm a WAF block for the log message; a differently
- * encoded block page would fail the phrase match but must still be caught by
- * length.
+ * The WAF answers with a ~490-byte HTML page and HTTP 200, so a block has to be
+ * recognised by content. `Response.text()` always decodes as UTF-8 regardless
+ * of declared charset, so the title phrase alone is not enough — a differently
+ * encoded block page would slip past it. Hence a second, shape-based signal,
+ * which necessarily differs by endpoint:
+ *
+ *   html — city pages run to hundreds of kilobytes, so anything under 2000
+ *          bytes is not a real page.
+ *   json — GetRegList legitimately returns payloads as small as 90 bytes, so
+ *          length says nothing. What gives a block away is HTML where JSON was
+ *          expected.
+ *
+ * Applying the html rule to json is what silently broke the first discovery
+ * run: every small-but-valid district list was read as a block and earned a
+ * five-minute stand-down.
  */
-export function isBlockPage(body: string): boolean {
-  return body.length < 2000
+export function isBlockPage(body: string, expect: Expect = 'html'): boolean {
+  if (body.includes('güvenlik kurallarına takılmıştır')) return true
+  return expect === 'html' ? body.length < 2000 : /^\s*</.test(body)
 }
 
-async function request(path: string, attempt = 0): Promise<string> {
+async function request(path: string, expect: Expect = 'html', attempt = 0): Promise<string> {
   let res: Response
   let body: string
   try {
@@ -50,31 +62,31 @@ async function request(path: string, attempt = 0): Promise<string> {
   } catch (err) {
     if (attempt >= 2) throw err
     await sleep(2000 * (attempt + 1))
-    return request(path, attempt + 1)
+    return request(path, expect, attempt + 1)
   }
 
-  if (isBlockPage(body) || res.status === 429 || res.status === 403) {
+  if (isBlockPage(body, expect) || res.status === 429 || res.status === 403) {
     if (attempt >= 2) throw new BlockedError(path)
     const confirmed = body.includes('güvenlik kurallarına takılmıştır')
     console.warn(`  blocked on ${path} (${confirmed ? 'confirmed WAF' : 'short body'}), standing down 5 min`)
     await sleep(BACKOFF_MS)
-    return request(path, attempt + 1)
+    return request(path, expect, attempt + 1)
   }
 
   if (!res.ok) {
     if (attempt >= 2) throw new Error(`${path} → HTTP ${res.status}`)
     await sleep(2000 * (attempt + 1))
-    return request(path, attempt + 1)
+    return request(path, expect, attempt + 1)
   }
 
   await sleep(GAP_MS)
   return body
 }
 
-export const getText = (path: string): Promise<string> => request(path)
+export const getText = (path: string): Promise<string> => request(path, 'html')
 
 export async function getJson<T>(path: string): Promise<T> {
-  return JSON.parse(await getText(path)) as T
+  return JSON.parse(await request(path, 'json')) as T
 }
 
 /**

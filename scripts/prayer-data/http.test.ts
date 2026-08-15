@@ -24,11 +24,38 @@ describe('isBlockPage', () => {
     expect(isBlockPage(shortBody)).toBe(true)
   })
 
-  it('does not flag a large body containing the WAF phrase', () => {
+  it('flags the WAF phrase whatever the body size', () => {
     const padding = 'x'.repeat(2000)
     const large = `<html>${padding}güvenlik kurallarına takılmıştır${padding}</html>`
     expect(large.length).toBeGreaterThanOrEqual(2000)
-    expect(isBlockPage(large)).toBe(false)
+    expect(isBlockPage(large)).toBe(true)
+  })
+
+  // GetRegList answers legitimately with payloads as small as 90 bytes, so the
+  // html length rule must not be applied to them. Treating these as blocks is
+  // what stalled the first discovery run, five minutes at a time.
+  describe('json endpoints', () => {
+    it('accepts a small but valid district list', () => {
+      const small = '{"Result":null,"StateRegionList":[],"HasStateList":true}'
+      expect(small.length).toBeLessThan(2000)
+      expect(isBlockPage(small, 'json')).toBe(false)
+    })
+
+    it('accepts the real 1258-byte Alabama district payload shape', () => {
+      const body =
+        '{"Result":null,"CountryList":null,"StateList":null,"StateRegionList":[' +
+        '{"IlceUrl":"/en-US/8573/prayer-time-for-auburn","IlceAdi":"AUBURN",' +
+        '"IlceAdiEn":"AUBURN","IlceID":"8573"}]}'
+      expect(isBlockPage(body, 'json')).toBe(false)
+    })
+
+    it('flags HTML served where JSON was expected', () => {
+      expect(isBlockPage('<html><head><title>nope</title></head></html>', 'json')).toBe(true)
+    })
+
+    it('flags a real block page on a json endpoint', () => {
+      expect(isBlockPage(wafBlockPage, 'json')).toBe(true)
+    })
   })
 })
 
