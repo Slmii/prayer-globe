@@ -2022,3 +2022,16 @@ git commit -m "docs: describe the website crawler and the coverage guarantee"
 **Type consistency.** `SnapshotFile`/`SnapshotDay` are defined identically in `scripts/prayer-data/fetch-times.ts` and `src/lib/snapshot.ts` — deliberately duplicated rather than shared, since the crawler must not import from the browser bundle and the shape is seven fields. `ilceID` is a string throughout. `City.u` is a number, matching `resolveDistrict`'s existing use. `checkCoverage` takes a structural `Coverable`, so it accepts both shapes without a shared import.
 
 **Known deliberate loss:** `KibleSaati` has no column in the website's tables, so `TimetableDay.qiblaHour` becomes null. It is unused — `SidePanel.tsx:225` renders the qibla *bearing*, computed from coordinates in `readout.ts:256`, not the qibla hour.
+
+---
+
+## Amendments applied during execution
+
+Review of Tasks 2–3 found defects in this plan's own code, fixed in commit `db2a6e6`. The code blocks above are superseded by the repo where they differ:
+
+- `mapPool` latches on first failure so no worker starts new work after an error — without it, a `BlockedError` left the remaining workers hammering a WAF that was actively refusing us, invisibly, because `Promise.all` had already rejected. `limit` is clamped to `>= 1`.
+- `request()` wraps `fetch` in try/catch feeding the same attempt counter, and passes `AbortSignal.timeout(30_000)`; transport errors previously bypassed all retry logic.
+- `isBlockPage` uses body length as the primary signal. `Response.text()` decodes as UTF-8 regardless of declared charset, so a phrase-only test could miss a real block and misreport it as a parse error, with no backoff.
+- `GAP_MS` 500 → 1500, so concurrency 3 actually yields the ~2 req/s the constraints require rather than 2–6.
+- `parseCityPage` now requires BOTH tables and throws if a caption is present but yields zero rows. The monthly table is the sole source of near-term dates; losing it silently produced a snapshot with no current prayer times and a green test run.
+- Added `scripts/prayer-data/http.test.ts`, and a real captured WAF block page at `__fixtures__/waf-block-page.html` (490 bytes, UTF-8) so block detection is tested against the genuine artefact.
