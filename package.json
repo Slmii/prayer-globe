@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "fetch-times": "node --experimental-strip-types scripts/fetch-times.ts",
     "prayer:discover": "node --experimental-strip-types scripts/prayer-data/discover.ts",
+    "prayer:select": "node --experimental-strip-types scripts/prayer-data/select-cities.ts",
     "prayer:check": "node --experimental-strip-types scripts/prayer-data/check-coverage.ts",
     "test": "vitest run",
     "test:watch": "vitest"
