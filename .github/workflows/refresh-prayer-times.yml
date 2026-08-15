@@ -1,0 +1,52 @@
+# Refreshes the prayer-times snapshot and pushes it, which triggers the Vercel
+# redeploy.
+#
+# Monthly is a bridge, not a steady state: the first run banked all 365 days of
+# the published next year, so most runs will find nothing new and commit
+# nothing. The cadence exists so the rolling window keeps advancing until the
+# banked year takes over.
+
+name: Refresh prayer times
+
+on:
+  schedule:
+    - cron: '0 3 5 * *' # 03:00 UTC, day 5 of each month
+  workflow_dispatch:
+
+# Never `push` — the job's own commit would retrigger it.
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Crawl
+        run: npm run prayer:fetch -- --prune
+
+      # Runs after the crawl and before the commit, so a partial crawl fails the
+      # job rather than pushing a snapshot that would show computed times.
+      - name: Verify coverage
+        run: npm run prayer:check
+
+      - name: Commit if anything changed
+        run: |
+          if git diff --quiet -- public/times; then
+            echo "no changes"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/times
+          git commit -m "data: refresh prayer times"
+          git push
