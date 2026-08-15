@@ -12,7 +12,7 @@ const UA =
   '(KHTML, like Gecko) Chrome/120.0 Safari/537.36'
 
 /** Politeness gap between requests, per worker. */
-const GAP_MS = 500
+const GAP_MS = 1500
 /** How long to stand down once the WAF has objected. */
 const BACKOFF_MS = 5 * 60 * 1000
 
@@ -26,22 +26,37 @@ export class BlockedError extends Error {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 /**
- * The block page is short and titled "İsteğiniz güvenlik kurallarına
- * takılmıştır". Real pages are hundreds of kilobytes, so length alone is a
- * strong signal, but match the title too so a truncated response is not
- * mistaken for a block.
+ * Real pages run to hundreds of kilobytes, so any response body under 2000
+ * bytes from this host is not a real page — length alone is the primary
+ * signal. `Response.text()` always decodes as UTF-8 regardless of declared
+ * charset, so the title phrase, "İsteğiniz güvenlik kurallarına takılmıştır",
+ * is only used to confirm a WAF block for the log message; a differently
+ * encoded block page would fail the phrase match but must still be caught by
+ * length.
  */
 export function isBlockPage(body: string): boolean {
-  return body.length < 2000 && body.includes('güvenlik kurallarına takılmıştır')
+  return body.length < 2000
 }
 
 async function request(path: string, attempt = 0): Promise<string> {
-  const res = await fetch(SITE + path, { headers: { 'User-Agent': UA } })
-  const body = await res.text()
+  let res: Response
+  let body: string
+  try {
+    res = await fetch(SITE + path, {
+      headers: { 'User-Agent': UA },
+      signal: AbortSignal.timeout(30_000),
+    })
+    body = await res.text()
+  } catch (err) {
+    if (attempt >= 2) throw err
+    await sleep(2000 * (attempt + 1))
+    return request(path, attempt + 1)
+  }
 
   if (isBlockPage(body) || res.status === 429 || res.status === 403) {
     if (attempt >= 2) throw new BlockedError(path)
-    console.warn(`  blocked on ${path}, standing down 5 min`)
+    const confirmed = body.includes('güvenlik kurallarına takılmıştır')
+    console.warn(`  blocked on ${path} (${confirmed ? 'confirmed WAF' : 'short body'}), standing down 5 min`)
     await sleep(BACKOFF_MS)
     return request(path, attempt + 1)
   }
@@ -62,7 +77,12 @@ export async function getJson<T>(path: string): Promise<T> {
   return JSON.parse(await getText(path)) as T
 }
 
-/** Run `fn` over `items` with at most `limit` in flight, preserving order. */
+/**
+ * Run `fn` over `items` with at most `limit` in flight, preserving order.
+ * Once any `fn` call throws, no worker starts new work — the original error
+ * still propagates, but the host does not keep receiving requests from
+ * workers that haven't noticed the failure yet.
+ */
 export async function mapPool<T, R>(
   items: T[],
   limit: number,
@@ -70,11 +90,18 @@ export async function mapPool<T, R>(
 ): Promise<R[]> {
   const out = new Array<R>(items.length)
   let next = 0
-  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+  let failed = false
+  const workers = Array.from({ length: Math.max(1, Math.min(limit, items.length)) }, async () => {
     for (;;) {
+      if (failed) return
       const i = next++
       if (i >= items.length) return
-      out[i] = await fn(items[i], i)
+      try {
+        out[i] = await fn(items[i], i)
+      } catch (err) {
+        failed = true
+        throw err
+      }
     }
   })
   await Promise.all(workers)

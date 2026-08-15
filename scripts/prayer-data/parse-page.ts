@@ -62,24 +62,22 @@ function toDays(rows: string[][], captionId: string): ParsedDay[] {
  * Monthly and yearly merged. They overlap once the calendar reaches the
  * published year; the yearly table is applied second and wins, since both come
  * from the same source and disagreement would mean a mid-page correction.
+ *
+ * The monthly table is the sole source of near-term dates, so both tables are
+ * required: this throws if either caption is missing from the page, and
+ * throws if a caption is present but contributes zero parseable day rows.
+ * A silently missing monthly table must never produce a snapshot with no
+ * current prayer times.
  */
 export function parseCityPage(html: string): ParsedDay[] {
   const byDate = new Map<string, ParsedDay>()
-  let found = 0
 
   for (const caption of ['table-caption-monthly', 'table-caption-yearly']) {
-    let rows: string[][]
-    try {
-      rows = extractRows(html, caption)
-    } catch {
-      continue
-    }
-    found++
-    for (const day of toDays(rows, caption)) byDate.set(day.date, day)
+    const rows = extractRows(html, caption)
+    const days = toDays(rows, caption)
+    if (!days.length) throw new Error(`table ${caption} contributed zero day rows`)
+    for (const day of days) byDate.set(day.date, day)
   }
-
-  if (!found) throw new Error('page contained neither a monthly nor a yearly table')
-  if (!byDate.size) throw new Error('tables present but no parseable day rows')
 
   return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date))
 }
