@@ -43,6 +43,24 @@ function pick(cities: GeoCity[]): GeoCity[] {
   return chosen
 }
 
+/**
+ * Make display names unique.
+ *
+ * `public/times/index.json` is keyed by display name, and the app looks a city
+ * up by `city.n`. Five names are genuinely shared by two countries — Barcelona
+ * (ES/VE), Valencia (VE/ES), Tripoli (LY/LB), Victoria (HK/SC), Hamilton
+ * (NZ/BM) — so an unqualified key silently resolved both dots to one ilceID and
+ * showed one city the other's prayer times. Wrong data, not missing data.
+ *
+ * Both members of a collision are suffixed, not just the smaller one: leaving
+ * one bare would make the naming flip if the populations ever reordered.
+ */
+export function disambiguate<T extends { n: string; iso2: string }>(cities: T[]): T[] {
+  const counts = new Map<string, number>()
+  for (const c of cities) counts.set(c.n, (counts.get(c.n) ?? 0) + 1)
+  return cities.map((c) => (counts.get(c.n)! > 1 ? { ...c, n: `${c.n} (${c.iso2})` } : c))
+}
+
 async function main() {
   const tree = JSON.parse(readFileSync('data/diyanet-tree.json', 'utf8')) as DiyanetTree
   const geo = await loadGeoNames()
@@ -119,7 +137,7 @@ async function main() {
   for (const c of selected.sort((a, b) => b.pop - a.pop)) {
     if (!byIlceID.has(c.ilceID)) byIlceID.set(c.ilceID, c)
   }
-  const final = [...byIlceID.values()].sort((a, b) => a.n.localeCompare(b.n))
+  const final = disambiguate([...byIlceID.values()]).sort((a, b) => a.n.localeCompare(b.n))
 
   mkdirSync('src/data', { recursive: true })
   writeFileSync('src/data/cities.json', JSON.stringify(final, null, 2))
@@ -133,7 +151,10 @@ async function main() {
   console.log('review data/unmatched.json')
 }
 
-main().catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+// Only select when run as a script, so tests can import the helpers above.
+if (process.argv[1] && import.meta.filename === process.argv[1]) {
+  main().catch((err) => {
+    console.error(err)
+    process.exit(1)
+  })
+}

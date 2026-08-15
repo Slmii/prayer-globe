@@ -33,6 +33,7 @@ const KEEP_DAYS_BACK = 2
 
 const args = process.argv.slice(2)
 const prune = args.includes('--prune')
+const indexOnly = args.includes('--index-only')
 const onlyIdx = args.indexOf('--only')
 const only = onlyIdx > -1 ? args.slice(onlyIdx + 1).filter((a) => !a.startsWith('--')) : []
 
@@ -99,6 +100,32 @@ function warnIfNearUtcMidnight() {
   }
 }
 
+/**
+ * The index the app uses to go from city name to snapshot file.
+ *
+ * Keyed by display name, which is why prayer:select guarantees those names are
+ * unique — five were shared across countries, and the collision silently gave
+ * one city another's prayer times. Throws rather than writing a lossy index.
+ */
+function writeIndex(): number {
+  const index: Record<string, { ilceID: string; districtName: string; provinceName: string }> = {}
+  let expected = 0
+  for (const c of CITIES) {
+    if (!existsSync(join(OUT, `${c.ilceID}.json`))) continue
+    expected++
+    index[c.n] = { ilceID: c.ilceID, districtName: c.d[0], provinceName: c.p ?? '' }
+  }
+  const got = Object.keys(index).length
+  if (got !== expected) {
+    throw new Error(
+      `index would lose ${expected - got} cities to duplicate display names — ` +
+        `re-run prayer:select, which disambiguates them`,
+    )
+  }
+  writeFileSync(join(OUT, 'index.json'), JSON.stringify(index, null, 2))
+  return got
+}
+
 async function main() {
   mkdirSync(OUT, { recursive: true })
   mkdirSync('data', { recursive: true })
@@ -117,6 +144,24 @@ async function main() {
 
   const failures: { city: string; reason: string }[] = []
   let n = 0
+
+  // Rebuild index.json (and the display names inside existing snapshots) from
+  // the current cities.json without re-fetching. Needed after prayer:select
+  // changes a name, since the snapshot files themselves are keyed by ilceID and
+  // do not otherwise need touching.
+  if (indexOnly) {
+    for (const c of CITIES) {
+      const path = join(OUT, `${c.ilceID}.json`)
+      if (!existsSync(path)) continue
+      const file = JSON.parse(readFileSync(path, 'utf8')) as SnapshotFile
+      if (file.name !== c.n) {
+        file.name = c.n
+        writeFileSync(path, JSON.stringify(file))
+      }
+    }
+    writeIndex()
+    return
+  }
 
   await mapPool(targets, 3, async (city) => {
     try {
@@ -142,23 +187,19 @@ async function main() {
     if (++n % 50 === 0) console.log(`  ${n}/${targets.length}`)
   })
 
-  // The index the app uses to go from city name to snapshot file.
-  const index: Record<string, { ilceID: string; districtName: string; provinceName: string }> = {}
-  for (const c of CITIES) {
-    if (existsSync(join(OUT, `${c.ilceID}.json`))) {
-      index[c.n] = { ilceID: c.ilceID, districtName: c.d[0], provinceName: c.p ?? '' }
-    }
-  }
-  writeFileSync(join(OUT, 'index.json'), JSON.stringify(index, null, 2))
-
-  console.log(`\n${Object.keys(index).length} cities in the snapshot`)
+  const written = writeIndex()
+  console.log(`\n${written} cities in the snapshot`)
   if (failures.length) {
     console.log(`${failures.length} failures:`)
     for (const f of failures.slice(0, 20)) console.log(`  ${f.city}: ${f.reason}`)
   }
 }
 
-main().catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+// Only crawl when run as a script; importing the module must not fire ~724
+// requests as a side effect.
+if (process.argv[1] && import.meta.filename === process.argv[1]) {
+  main().catch((err) => {
+    console.error(err)
+    process.exit(1)
+  })
+}

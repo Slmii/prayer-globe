@@ -1088,7 +1088,7 @@
     ]
   },
   {
-    "n": "Barcelona",
+    "n": "Barcelona (ES)",
     "la": 41.3888,
     "lo": 2.159,
     "tz": "Europe/Madrid",
@@ -1104,7 +1104,7 @@
     ]
   },
   {
-    "n": "Barcelona",
+    "n": "Barcelona (VE)",
     "la": 10.1384,
     "lo": -64.6877,
     "tz": "America/Caracas",
@@ -4032,23 +4032,7 @@
     ]
   },
   {
-    "n": "Hamilton",
-    "la": -37.7833,
-    "lo": 175.2833,
-    "tz": "Pacific/Auckland",
-    "iso2": "NZ",
-    "country": "NEW ZEALAND",
-    "pop": 192100,
-    "ilceID": "16624",
-    "ilceUrl": "/en-US/16624/prayer-time-for-hamilton",
-    "u": 193,
-    "p": "YENI ZELANDA",
-    "d": [
-      "HAMILTON"
-    ]
-  },
-  {
-    "n": "Hamilton",
+    "n": "Hamilton (BM)",
     "la": 32.2949,
     "lo": -64.783,
     "tz": "Atlantic/Bermuda",
@@ -4059,6 +4043,22 @@
     "ilceUrl": "/en-US/11939/prayer-time-for-hamilton",
     "u": 51,
     "p": "BERMUDA",
+    "d": [
+      "HAMILTON"
+    ]
+  },
+  {
+    "n": "Hamilton (NZ)",
+    "la": -37.7833,
+    "lo": 175.2833,
+    "tz": "Pacific/Auckland",
+    "iso2": "NZ",
+    "country": "NEW ZEALAND",
+    "pop": 192100,
+    "ilceID": "16624",
+    "ilceUrl": "/en-US/16624/prayer-time-for-hamilton",
+    "u": 193,
+    "p": "YENI ZELANDA",
     "d": [
       "HAMILTON"
     ]
@@ -10672,23 +10672,7 @@
     ]
   },
   {
-    "n": "Tripoli",
-    "la": 32.8874,
-    "lo": 13.1873,
-    "tz": "Africa/Tripoli",
-    "iso2": "LY",
-    "country": "LIBYA",
-    "pop": 1302947,
-    "ilceID": "15191",
-    "ilceUrl": "/en-US/15191/prayer-time-for-tripoli",
-    "u": 203,
-    "p": "LIBYA",
-    "d": [
-      "TRIPOLI"
-    ]
-  },
-  {
-    "n": "Tripoli",
+    "n": "Tripoli (LB)",
     "la": 34.4335,
     "lo": 35.8441,
     "tz": "Asia/Beirut",
@@ -10699,6 +10683,22 @@
     "ilceUrl": "/en-US/15217/prayer-time-for-trablussam",
     "u": 42,
     "p": "LUBNAN",
+    "d": [
+      "TRIPOLI"
+    ]
+  },
+  {
+    "n": "Tripoli (LY)",
+    "la": 32.8874,
+    "lo": 13.1873,
+    "tz": "Africa/Tripoli",
+    "iso2": "LY",
+    "country": "LIBYA",
+    "pop": 1302947,
+    "ilceID": "15191",
+    "ilceUrl": "/en-US/15191/prayer-time-for-tripoli",
+    "u": 203,
+    "p": "LIBYA",
     "d": [
       "TRIPOLI"
     ]
@@ -10928,23 +10928,7 @@
     ]
   },
   {
-    "n": "Valencia",
-    "la": 10.1615,
-    "lo": -68.0004,
-    "tz": "America/Caracas",
-    "iso2": "VE",
-    "country": "VENEZUELA",
-    "pop": 1619470,
-    "ilceID": "16582",
-    "ilceUrl": "/en-US/16582/prayer-time-for-valencia",
-    "u": 186,
-    "p": "VENEZUELA",
-    "d": [
-      "VALENCIA"
-    ]
-  },
-  {
-    "n": "Valencia",
+    "n": "Valencia (ES)",
     "la": 39.4739,
     "lo": -0.3797,
     "tz": "Europe/Madrid",
@@ -10955,6 +10939,22 @@
     "ilceUrl": "/en-US/14228/prayer-time-for-valencia",
     "u": 23,
     "p": "ISPANYA",
+    "d": [
+      "VALENCIA"
+    ]
+  },
+  {
+    "n": "Valencia (VE)",
+    "la": 10.1615,
+    "lo": -68.0004,
+    "tz": "America/Caracas",
+    "iso2": "VE",
+    "country": "VENEZUELA",
+    "pop": 1619470,
+    "ilceID": "16582",
+    "ilceUrl": "/en-US/16582/prayer-time-for-valencia",
+    "u": 186,
+    "p": "VENEZUELA",
     "d": [
       "VALENCIA"
     ]
@@ -11056,7 +11056,7 @@
     ]
   },
   {
-    "n": "Victoria",
+    "n": "Victoria (HK)",
     "la": 22.2875,
     "lo": 114.1442,
     "tz": "Asia/Hong_Kong",
@@ -11072,7 +11072,7 @@
     ]
   },
   {
-    "n": "Victoria",
+    "n": "Victoria (SC)",
     "la": -4.62,
     "lo": 55.455,
     "tz": "Indian/Mahe",
