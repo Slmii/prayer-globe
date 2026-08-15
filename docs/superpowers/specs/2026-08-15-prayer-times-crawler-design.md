@@ -253,8 +253,9 @@ reason.
 
 Vercel, static build, data committed to the repo.
 
-**Prerequisite: the project is not yet a git repository.** It needs `git init`,
-a GitHub remote and a Vercel project connected to it before any of this runs.
+The repository is `github.com/Slmii/prayer-globe`, default branch `main`, with
+`public/times/*.json` already tracked. The one remaining prerequisite is
+connecting a Vercel project to that repo.
 
 `public/times/*.json` is committed and served as a static asset, so production
 makes no upstream calls. A scheduled GitHub Action refreshes it:
@@ -270,6 +271,10 @@ The job runs stage 3, verifies coverage, and commits **only if files actually
 changed** — during 2027 the diffs will be empty and no commit is made. Pushing
 to `main` triggers the Vercel redeploy; nothing host-specific lives in the
 crawler, so moving off Vercel later touches only this workflow file.
+
+It needs `permissions: contents: write` to push to `main`. The trigger is
+`schedule` plus `workflow_dispatch` only, never `push`, so the workflow's own
+commit cannot retrigger it.
 
 `workflow_dispatch` allows a manual re-run, which matters because a failed
 scheduled run must be noticed and repeated inside the remaining window.
