@@ -4,9 +4,15 @@ import type { Map as MLMap, Marker, LngLat } from 'maplibre-gl'
 import type { FeatureCollection } from 'geojson'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { CITIES } from '../lib/cities'
-import { createMosqueLayer } from './mosqueLayer'
-import { createCosmos } from './cosmos'
-import { createOrb } from './orb'
+// three.js and everything drawn with it — the mosque models, the starfield, the
+// sun and moon bodies — is loaded on demand. It is 141 KB gzipped, a quarter of
+// the bundle, and none of it is needed to draw the globe.
+//
+// The orbs and the cosmos are null-checked in the frame loop, so they simply
+// start drawing when they arrive. The mosque layer is not in that loop and
+// needs more care: a city with a mosque has its dot hidden, so it stays visible
+// until the layer is actually added (see `mosquesReadyRef`).
+import type { createCosmos } from './cosmos'
 import type { Orb } from './orb'
 import type { PlanetLabel } from './cosmos'
 import { blendOf } from '../lib/phases'
@@ -176,6 +182,17 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MLMap | null>(null)
   const readyRef = useRef(false)
+  /**
+   * Whether the 3D mosque layer is actually drawing yet.
+   *
+   * A city flagged `m` has its dot painted at zero opacity, because a mosque
+   * model stands there instead. That flag used to be set from the city list
+   * alone, but the layer is now loaded asynchronously — so between first paint
+   * and the chunk arriving, Makkah, Madinah, Istanbul, Cairo, Delhi and Jakarta
+   * had no marker at all, and if the chunk ever failed to load they never got
+   * one. The dot stays until its model can replace it.
+   */
+  const mosquesReadyRef = useRef(false)
   const bodiesRef = useRef<Record<GlyphKind, HTMLDivElement> | null>(null)
   const orbsRef = useRef<Record<GlyphKind, Orb> | null>(null)
   const pulsesRef = useRef<Record<GlyphKind, Marker> | null>(null)
@@ -423,7 +440,7 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
             n: c.n,
             c: mixPhase(blend.phase, blend.next, blend.t),
             p: blend.phase,
-            m: MOSQUE_CITIES.has(c.n) ? 1 : 0,
+            m: mosquesReadyRef.current && MOSQUE_CITIES.has(c.n) ? 1 : 0,
           },
           geometry: { type: 'Point', coordinates: [c.lo, c.la] },
         }
@@ -438,6 +455,14 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
   useEffect(() => {
     const host = hostRef.current
     if (!host) return
+
+    // three.js arrives asynchronously now, and this effect can be torn down
+    // before it lands — StrictMode double-invokes it on mount, and cleanup then
+    // runs while the import is still in flight, so there is nothing assigned yet
+    // for it to dispose. Without this flag both the discarded and the live
+    // effect would construct a renderer and the first one's WebGL context would
+    // leak; browsers only allow a handful of those.
+    let torn = false
 
     const map = new maplibregl.Map({
       container: host,
@@ -649,11 +674,25 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 
         const sunCv = orbCanvas(sun)
         const moonCv = orbCanvas(moon)
+        const pair = bodiesRef.current
         if (sunCv && moonCv) {
-          orbsRef.current = {
-            sun: createOrb(sunCv, 'sun', ORB_PX.sun),
-            moon: createOrb(moonCv, 'moon', ORB_PX.moon),
-          }
+          void import('./orb')
+            .then(({ createOrb }) => {
+              // Identity, not truthiness. Unmounting to #/solar and back before
+              // the chunk lands leaves two `.then`s pending on the same import;
+              // a `bodiesRef.current` truthiness check passes in both, so the
+              // first would build two renderers on the now-detached canvases
+              // and the second would overwrite them without disposing —
+              // leaking two WebGL contexts per cycle, against a browser limit
+              // of about sixteen.
+              if (torn || bodiesRef.current !== pair) return
+              // Until this lands the glyphs are just a soft halo and a label.
+              orbsRef.current = {
+                sun: createOrb(sunCv, 'sun', ORB_PX.sun),
+                moon: createOrb(moonCv, 'moon', ORB_PX.moon),
+              }
+            })
+            .catch((err) => console.error('[orbs]', err))
         }
       }
       // Pulses stay map markers: they belong to a real point on the surface and
@@ -671,11 +710,16 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
       }
 
       // The mosque sites are drawn as buildings instead of dots.
-      try {
-        map.addLayer(createMosqueLayer())
-      } catch (err) {
-        console.error('[mosques]', err)
-      }
+      void import('./mosqueLayer')
+        .then(({ createMosqueLayer }) => {
+          // The map can be torn down while this is in flight.
+          if (torn || !map.getStyle()) return
+          map.addLayer(createMosqueLayer())
+          // Only now is it safe to hide those cities' dots.
+          mosquesReadyRef.current = true
+          pushCities()
+        })
+        .catch((err) => console.error('[mosques]', err))
 
       readyRef.current = true
       propsRef.current.onNote('Natural Earth outlines · globe')
@@ -763,7 +807,25 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
     }
     map.on('move', emitView)
 
-    if (skyRef.current) cosmosRef.current = createCosmos(skyRef.current)
+    const skyCanvas = skyRef.current
+    if (skyCanvas) {
+      void import('./cosmos')
+        .then(({ createCosmos }) => {
+          if (torn || skyRef.current !== skyCanvas) return
+          cosmosRef.current = createCosmos(skyCanvas)
+          // Size it here, not only in the ResizeObserver. The observer delivers
+          // its first callback before the next paint, long before a 140 KB
+          // chunk can arrive, and it bails when cosmosRef is still null — so
+          // this used to be the one sizing call and it never happened. The
+          // canvas stayed at the HTML default 300×150 with camera.aspect 1
+          // while CSS stretched it across the stage, which threw the orbit
+          // rings off-centre from the globe on every single load.
+          skyCanvas.width = host.clientWidth
+          skyCanvas.height = host.clientHeight
+          cosmosRef.current.resize(host.clientWidth, host.clientHeight)
+        })
+        .catch((err) => console.error('[cosmos]', err))
+    }
 
     const ro = new ResizeObserver(() => {
       map.resize()
@@ -797,15 +859,20 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 
       // The sky shares the globe's frame but not its canvas, so it needs the
       // measured silhouette radius to line its camera up.
+      // One silhouette measurement per frame. Both blocks below want it and it
+      // is an 18-step project/unproject search, so measuring twice was 72
+      // projection calls a frame for a number that cannot differ between them.
+      const frameBox = map.getContainer()
+      const frameRim = globeRadius(frameBox.clientWidth, frameBox.clientHeight)
+
       const cosmos = cosmosRef.current
       if (cosmos) {
-        const box = map.getContainer()
         placePlanetLabels(
           cosmos.render({
             map,
             nowMs: propsRef.current.getNowMs(),
             show: propsRef.current.showOrrery,
-            rimPx: globeRadius(box.clientWidth, box.clientHeight),
+            rimPx: frameRim,
           }),
         )
       }
@@ -813,9 +880,8 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
       const bodies = bodiesRef.current
       if (bodies && readyRef.current) {
         const cen = map.getCenter()
-        const box = map.getContainer()
         const sky = skyState(new Date(propsRef.current.getNowMs()))
-        const rim = globeRadius(box.clientWidth, box.clientHeight)
+        const rim = frameRim
         positionBody(bodies.sun, sky.sun.lat, sky.sun.lon, cen, rim)
         positionBody(bodies.moon, sky.moon.lat, sky.moon.lon, cen, rim)
 
@@ -885,6 +951,7 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
     raf = requestAnimationFrame(frame)
 
     return () => {
+      torn = true
       cancelAnimationFrame(raf)
       ro.disconnect()
       readyRef.current = false

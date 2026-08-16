@@ -304,7 +304,12 @@ export function createMosqueLayer(opts: MosqueLayerOptions = {}): CustomLayerInt
       // Our depths are on a different scale from the globe's, so start clean.
       renderer.clearDepth()
       renderer.render(scene, camera)
-      map.triggerRepaint()
+
+      // No triggerRepaint here. These models are static geometry with no
+      // self-animation, and asking for another frame from inside the render
+      // meant the map never stopped drawing — a permanent 60 Hz GPU load on
+      // battery even with the globe motionless. MapLibre already repaints on
+      // any camera change, which is the only thing that moves them.
     },
   }
 }

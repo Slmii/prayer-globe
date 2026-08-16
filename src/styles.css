@@ -2068,3 +2068,25 @@ body {
   font: 400 11.5px/1.2 ui-monospace, Menlo, monospace;
   color: #e9e9ed;
 }
+
+/* Lazy-route states: a chunk still arriving, or one that failed to. */
+.pg-route-loading,
+.pg-route-error {
+  display: grid;
+  place-content: center;
+  gap: 12px;
+  min-height: 100vh;
+  color: rgba(233, 233, 237, 0.72);
+  font: 500 12px ui-monospace, Menlo, monospace;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+.pg-route-error button {
+  padding: 8px 16px;
+  border: 1px solid rgba(233, 233, 237, 0.28);
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}

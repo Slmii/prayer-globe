@@ -9,6 +9,25 @@ import type { SnapshotFile } from './fetch-times.ts'
 
 const OUT = 'public/times'
 
+/**
+ * How far ahead the data must reach, in days.
+ *
+ * Two different questions wear the same gate. After a refresh, CI asks "is
+ * there enough slack that a failed run gets noticed before it matters?" — 25
+ * days, well past the next fortnightly run. A deploy asks something much
+ * narrower: "can the UI show a date it has no Diyanet data for?" The scrubber
+ * reaches +10 days, plus one for a +14h timezone landing on tomorrow's local
+ * date, so 11 is the real correctness bound.
+ *
+ * Holding deploys to the CI number is what made `npm run build` unshippable:
+ * phases.json carries 31 contiguous days, so a 25-day horizon leaves only the
+ * six days after each refresh in which the app can be deployed at all. A
+ * hotfix in the other three weeks would have been blocked by a gate that was
+ * telling the truth about slack and nonsense about correctness.
+ */
+const HORIZON_ARG = process.argv.indexOf('--horizon')
+const HORIZON = HORIZON_ARG > -1 ? Number(process.argv[HORIZON_ARG + 1]) : 25
+
 // Compare against the selected-cities list, not the files that happen to
 // exist — a deleted snapshot must fail the gate, not simply be skipped.
 const missingSnapshots: string[] = []
@@ -49,7 +68,7 @@ if (!files.length) {
 }
 
 const today = new Date().toISOString().slice(0, 10)
-const problems = checkCoverage(files, today)
+const problems = checkCoverage(files, today, HORIZON)
 
 /**
  * public/phases.json carries every city's prayer boundaries so the globe can
@@ -79,12 +98,12 @@ function checkPhases(): string | null {
 
   // Same horizon the snapshots are held to, so one gate covers both.
   const need = new Date(`${today}T00:00:00Z`)
-  need.setUTCDate(need.getUTCDate() + 25)
+  need.setUTCDate(need.getUTCDate() + HORIZON)
   const required = need.toISOString().slice(0, 10)
 
   if (file.from > today) return `${path} starts ${file.from}, after today (${today})`
   if (last < required) {
-    return `${path} covers ${file.from}..${last}, short of ${required} (today+25) — regenerate it`
+    return `${path} covers ${file.from}..${last}, short of ${required} (today+${HORIZON}) — regenerate it`
   }
 
   const missing = CITIES.filter((c) => !(c.ilceID in file.cities!)).length
@@ -95,7 +114,7 @@ function checkPhases(): string | null {
 
 const phasesProblem = checkPhases()
 
-console.log(`checked ${files.length}/${CITIES.length} selected cities for ${today}`)
+console.log(`checked ${files.length}/${CITIES.length} selected cities for ${today} (horizon +${HORIZON}d)`)
 
 if (missingSnapshots.length) {
   console.error(`\n${missingSnapshots.length} selected cities have no snapshot file:`)

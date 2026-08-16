@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "npm run prayer:check -- --horizon 11 && tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "prayer:discover": "node --experimental-strip-types scripts/prayer-data/discover.ts",
@@ -14,7 +14,8 @@
     "prayer:check": "node --experimental-strip-types scripts/prayer-data/check-coverage.ts",
     "prayer:phases": "node --experimental-strip-types scripts/build-phases.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "build:world": "node --experimental-strip-types scripts/build-world.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.7",
@@ -33,5 +34,8 @@
     "typescript": "^5.7.2",
     "vite": "^6.0.5",
     "vitest": "^2.1.9"
+  },
+  "engines": {
+    "node": ">=22.6"
   }
 }

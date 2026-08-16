@@ -3,7 +3,7 @@ import type { FeatureCollection } from 'geojson'
 import { resolveDistrict, getTimetable, buildTimetable, HttpError } from '../lib/diyanet'
 import type { ResolvedDistrict, TimetableDay } from '../lib/diyanet'
 import type { City } from '../lib/cities'
-import { loadIndex, loadTimetable } from '../lib/snapshot'
+import { loadTimetable } from '../lib/snapshot'
 import { loadPhases } from '../lib/phases'
 
 /**
@@ -15,8 +15,12 @@ const retryUnlessRateLimited = (failureCount: number, error: Error) =>
 
 const isRateLimited = (error: unknown) => error instanceof HttpError && error.status === 429
 
-const WORLD_GEOJSON =
-  'https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@master/geojson/ne_110m_admin_0_countries.geojson'
+// Built by `npm run build:world` from Natural Earth, pinned to a release tag,
+// stripped of all 168 properties per feature and rounded to ~1 km. It used to
+// be fetched live from jsDelivr at `@master`: 194 KB over the wire, the single
+// largest thing the page loaded, from a moving ref on a third-party CDN sitting
+// on the critical render path. Self-hosted it is 35 KB brotli.
+const WORLD_GEOJSON = `${import.meta.env.BASE_URL}world.json`
 
 /** Country outlines for the globe. Static data — fetch once, keep forever. */
 export function useWorldGeo() {
@@ -49,34 +53,25 @@ export function usePhases() {
 }
 
 /**
- * The pre-fetched dataset, if `npm run fetch-times` has been run. Absent on a
- * fresh clone, in which case everything falls through to the live API.
- */
-export function useSnapshotIndex() {
-  return useQuery({
-    queryKey: ['snapshot-index'],
-    queryFn: loadIndex,
-    staleTime: Infinity,
-    gcTime: Infinity,
-    retry: false,
-  })
-}
-
-/**
- * Step 1 of the chain: city -> IlceID. Served from the snapshot when we have
- * one; otherwise resolved live. Province and district lists are immutable
- * reference data, so this never needs refetching either way.
+ * Step 1 of the chain: city -> IlceID.
+ *
+ * This used to fetch public/times/index.json — 94 KB — purely to map a city
+ * name to its ilceID, and every timetable fetch waited on it. But cities.json
+ * already carries `ilceID` on every city, so the file was a second copy of data
+ * the bundle had at module scope, bought with a serial round trip. Resolving
+ * from the City itself is synchronous and always available.
+ *
+ * `resolveDistrict` stays as the live fallback for a city with no snapshot,
+ * which the coverage gate is meant to make impossible.
  */
 export function useDistrict(city: City | null) {
-  const snapshot = useSnapshotIndex()
-  const fromSnapshot = city ? snapshot.data?.[city.n] : undefined
-
   return useQuery<ResolvedDistrict | null>({
-    queryKey: ['district', city?.n, fromSnapshot ? 'snapshot' : 'live'],
-    queryFn: () => fromSnapshot ?? resolveDistrict(city as City),
-    // Wait for the snapshot probe so we don't hit the API for a city we already
-    // have on disk.
-    enabled: !!city && !snapshot.isPending,
+    queryKey: ['district', city?.n, city?.ilceID ? 'snapshot' : 'live'],
+    queryFn: () =>
+      city?.ilceID
+        ? { ilceID: city.ilceID, districtName: city.d[0] ?? city.n, provinceName: city.p ?? '' }
+        : resolveDistrict(city as City),
+    enabled: !!city,
     staleTime: Infinity,
     gcTime: Infinity,
     retry: retryUnlessRateLimited,

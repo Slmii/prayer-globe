@@ -8,9 +8,7 @@
 // that is the field buildTimetable already reads each day's UTC offset from.
 // Nothing downstream needs to know the format changed.
 
-import type { ResolvedDistrict, VakitRow } from './diyanet'
-
-export type SnapshotIndex = Record<string, ResolvedDistrict>
+import type { VakitRow } from './diyanet'
 
 /** [fajr, sunrise, dhuhr, asr, maghrib, isha, hijri] */
 export type SnapshotDay = [string, string, string, string, string, string, string]
@@ -64,18 +62,6 @@ export function toVakitRows(file: SnapshotFile): VakitRow[] {
     })
   }
   return rows
-}
-
-/** The city -> district map, or null when no snapshot has been built. */
-export async function loadIndex(): Promise<SnapshotIndex | null> {
-  try {
-    const res = await fetch(`${base}times/index.json`)
-    if (!res.ok) return null
-    const data = (await res.json()) as SnapshotIndex
-    return data && typeof data === 'object' ? data : null
-  } catch {
-    return null
-  }
 }
 
 /** One district's timetable from the snapshot, or null to fall back to live. */
