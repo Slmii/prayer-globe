@@ -24,8 +24,6 @@ export interface SelectedCity {
   pop: number
   ilceID: string
   ilceUrl: string
-  /** Diyanet CountryId — kept so the live-API fallback still resolves. */
-  u: number
   p: string
   d: string[]
 }
@@ -205,8 +203,7 @@ async function main() {
         pop: city.pop,
         ilceID: district.ilceID,
         ilceUrl: district.url,
-        u: Number(entry.country.countryId),
-        p: entry.stateOf.get(district.ilceID) ?? '',
+          p: entry.stateOf.get(district.ilceID) ?? '',
         d: [district.nameEn || district.name],
       })
     }
@@ -245,7 +242,6 @@ async function main() {
       pop: city.pop,
       ilceID: district.ilceID,
       ilceUrl: district.url,
-      u: Number(entry.country.countryId),
       p: entry.stateOf.get(district.ilceID) ?? '',
       d: [district.nameEn || district.name],
     })

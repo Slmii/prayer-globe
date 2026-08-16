@@ -26,8 +26,6 @@ export interface City {
   /** Diyanet district id — the snapshot filename. */
   ilceID: string
   ilceUrl: string
-  /** Diyanet UlkeID, retained for the live-API fallback. */
-  u: number
   /** Province/SehirAdi, retained for the live-API fallback. */
   p?: string
   /** Candidate district names, retained for the live-API fallback. */
