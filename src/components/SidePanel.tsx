@@ -334,7 +334,8 @@ export default function SidePanel(props: SidePanelProps) {
             type="button"
             className="body-card body-card-go"
             onClick={() => props.onGoTo(a.sunAt.lat, a.sunAt.lon)}
-            title="Go to the point the sun is overhead"
+            data-tip="Go to the point the sun is overhead"
+            data-tip-above=""
           >
             <div className="body-head">
               <span className="body-icon body-icon-sun" aria-hidden="true">
@@ -349,7 +350,8 @@ export default function SidePanel(props: SidePanelProps) {
             type="button"
             className="body-card body-card-go"
             onClick={() => props.onGoTo(a.moonAt.lat, a.moonAt.lon)}
-            title="Go to the point the moon is overhead"
+            data-tip="Go to the point the moon is overhead"
+            data-tip-above=""
           >
             <div className="body-head">
               <span className="body-icon body-icon-moon" aria-hidden="true">
@@ -375,7 +377,7 @@ export default function SidePanel(props: SidePanelProps) {
                 type="button"
                 className={'tally-cell' + (segment === i ? ' tally-cell-on' : '')}
                 style={{ flex: c.flex }}
-                title={`Show the ${c.n} cities in ${c.label}`}
+                aria-label={`Show the ${c.n} cities in ${c.label}`}
                 onMouseEnter={() => setSegment(i)}
                 onMouseLeave={() => setSegment(null)}
                 onFocus={() => setSegment(i)}

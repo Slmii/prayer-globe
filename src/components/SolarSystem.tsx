@@ -203,7 +203,6 @@ export default function SolarSystem() {
               key={id}
               type="button"
               aria-pressed={id === body}
-              title={INFO[id].name}
               onClick={() => setBody(id)}
             >
               <span className="ss-swatch" style={{ background: INFO[id].swatch }} />

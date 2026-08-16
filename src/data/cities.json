@@ -32,6 +32,22 @@
     ]
   },
   {
+    "n": "Aberdeen",
+    "la": 22.248,
+    "lo": 114.1529,
+    "tz": "Asia/Hong_Kong",
+    "iso2": "HK",
+    "country": "HONG KONG",
+    "pop": 157400,
+    "ilceID": "13999",
+    "ilceUrl": "/en-US/13999/prayer-time-for-aberdeen",
+    "u": 113,
+    "p": "HONG KONG",
+    "d": [
+      "ABERDEEN"
+    ]
+  },
+  {
     "n": "Abidjan",
     "la": 5.3544,
     "lo": -4.0017,
@@ -288,6 +304,54 @@
     ]
   },
   {
+    "n": "Al Mahallah al Kubra",
+    "la": 30.9706,
+    "lo": 31.1669,
+    "tz": "Africa/Cairo",
+    "iso2": "EG",
+    "country": "EGYPT",
+    "pop": 592573,
+    "ilceID": "15471",
+    "ilceUrl": "/en-US/15471/prayer-time-for-al-mahallah-al-kubra",
+    "u": 189,
+    "p": "MISIR",
+    "d": [
+      "AL MAHALLAH AL KUBRA"
+    ]
+  },
+  {
+    "n": "Al Mansurah",
+    "la": 31.0364,
+    "lo": 31.3807,
+    "tz": "Africa/Cairo",
+    "iso2": "EG",
+    "country": "EGYPT",
+    "pop": 621953,
+    "ilceID": "15453",
+    "ilceUrl": "/en-US/15453/prayer-time-for-al-mansurah",
+    "u": 189,
+    "p": "MISIR",
+    "d": [
+      "AL MANSURAH"
+    ]
+  },
+  {
+    "n": "Al Qadarif",
+    "la": 14.0349,
+    "lo": 35.3834,
+    "tz": "Africa/Khartoum",
+    "iso2": "SD",
+    "country": "SUDAN",
+    "pop": 363945,
+    "ilceID": "16294",
+    "ilceUrl": "/en-US/16294/prayer-time-for-al-qadarif",
+    "u": 129,
+    "p": "SUDAN",
+    "d": [
+      "AL QADARIF"
+    ]
+  },
+  {
     "n": "Alajuela",
     "la": 10.0172,
     "lo": -84.2127,
@@ -397,6 +461,22 @@
     "p": "NIUE",
     "d": [
       "ALOFI"
+    ]
+  },
+  {
+    "n": "Alytus",
+    "la": 54.3957,
+    "lo": 24.0389,
+    "tz": "Europe/Vilnius",
+    "iso2": "LT",
+    "country": "LITHUANIA",
+    "pop": 49195,
+    "ilceID": "15204",
+    "ilceUrl": "/en-US/15204/prayer-time-for-alytaus",
+    "u": 47,
+    "p": "LITVANYA",
+    "d": [
+      "ALYTAUS"
     ]
   },
   {
@@ -608,6 +688,22 @@
     ]
   },
   {
+    "n": "Aqaba",
+    "la": 29.5267,
+    "lo": 35.0078,
+    "tz": "Asia/Amman",
+    "iso2": "JO",
+    "country": "JORDAN",
+    "pop": 95048,
+    "ilceID": "16536",
+    "ilceUrl": "/en-US/16536/prayer-time-for-al-aqabah",
+    "u": 192,
+    "p": "URDUN",
+    "d": [
+      "AL-AQABAH"
+    ]
+  },
+  {
     "n": "Ar Raqqah",
     "la": 35.9528,
     "lo": 39.0079,
@@ -672,6 +768,22 @@
     ]
   },
   {
+    "n": "Arica",
+    "la": -18.4755,
+    "lo": -70.3006,
+    "tz": "America/Santiago",
+    "iso2": "CL",
+    "country": "CHILE",
+    "pop": 241653,
+    "ilceID": "16192",
+    "ilceUrl": "/en-US/16192/prayer-time-for-arica",
+    "u": 200,
+    "p": "SILI",
+    "d": [
+      "ARICA"
+    ]
+  },
+  {
     "n": "Arima",
     "la": 10.6374,
     "lo": -61.2823,
@@ -685,6 +797,22 @@
     "p": "TRINIDAT VE TOBAGO",
     "d": [
       "ARIMA"
+    ]
+  },
+  {
+    "n": "Arua",
+    "la": 3.0201,
+    "lo": 30.911,
+    "tz": "Africa/Kampala",
+    "iso2": "UG",
+    "country": "UGANDA",
+    "pop": 72400,
+    "ilceID": "16418",
+    "ilceUrl": "/en-US/16418/prayer-time-for-arua",
+    "u": 75,
+    "p": "UGANDA",
+    "d": [
+      "ARUA"
     ]
   },
   {
@@ -848,6 +976,38 @@
     ]
   },
   {
+    "n": "Bago",
+    "la": 17.3352,
+    "lo": 96.4814,
+    "tz": "Asia/Yangon",
+    "iso2": "MM",
+    "country": "MYANMAR",
+    "pop": 244376,
+    "ilceID": "12267",
+    "ilceUrl": "/en-US/12267/prayer-time-for-pegu",
+    "u": 154,
+    "p": "MYANMAR",
+    "d": [
+      "PEGU"
+    ]
+  },
+  {
+    "n": "Bahir Dar",
+    "la": 11.5936,
+    "lo": 37.3908,
+    "tz": "Africa/Addis_Ababa",
+    "iso2": "ET",
+    "country": "ETHIOPIA",
+    "pop": 350000,
+    "ilceID": "12798",
+    "ilceUrl": "/en-US/12798/prayer-time-for-bahir-dar",
+    "u": 95,
+    "p": "ETYOPYA",
+    "d": [
+      "BAHIR DAR"
+    ]
+  },
+  {
     "n": "Baku",
     "la": 40.3777,
     "lo": 49.892,
@@ -976,6 +1136,22 @@
     ]
   },
   {
+    "n": "Banfora",
+    "la": 10.6406,
+    "lo": -4.7528,
+    "tz": "Africa/Ouagadougou",
+    "iso2": "BF",
+    "country": "BURKINA FASO",
+    "pop": 117452,
+    "ilceID": "12260",
+    "ilceUrl": "/en-US/12260/prayer-time-for-banfora",
+    "u": 91,
+    "p": "BURKINA FASO",
+    "d": [
+      "BANFORA"
+    ]
+  },
+  {
     "n": "Bangkok",
     "la": 13.754,
     "lo": 100.5014,
@@ -1056,6 +1232,22 @@
     ]
   },
   {
+    "n": "Banska Bystrica",
+    "la": 48.7395,
+    "lo": 19.1493,
+    "tz": "Europe/Bratislava",
+    "iso2": "SK",
+    "country": "SLOVAKIA",
+    "pop": 74590,
+    "ilceID": "20035",
+    "ilceUrl": "/en-US/20035/prayer-time-for-banska-bystrica",
+    "u": 14,
+    "p": "SLOVAKYA",
+    "d": [
+      "BANSKA BYSTRICA"
+    ]
+  },
+  {
     "n": "Bar",
     "la": 42.0937,
     "lo": 19.0984,
@@ -1101,6 +1293,22 @@
     "p": "VENEZUELA",
     "d": [
       "BARCELONA"
+    ]
+  },
+  {
+    "n": "Barentu",
+    "la": 15.1058,
+    "lo": 37.5907,
+    "tz": "Africa/Asmara",
+    "iso2": "ER",
+    "country": "ERITRE",
+    "pop": 15891,
+    "ilceID": "12779",
+    "ilceUrl": "/en-US/12779/prayer-time-for-barentu",
+    "u": 175,
+    "p": "ERITRE",
+    "d": [
+      "BARENTU"
     ]
   },
   {
@@ -1245,6 +1453,38 @@
     "p": "PORTO RIKO",
     "d": [
       "BAYAMON"
+    ]
+  },
+  {
+    "n": "Bayanhongor",
+    "la": 46.1944,
+    "lo": 100.7181,
+    "tz": "Asia/Ulaanbaatar",
+    "iso2": "MN",
+    "country": "MONGOLIA",
+    "pop": 30931,
+    "ilceID": "15522",
+    "ilceUrl": "/en-US/15522/prayer-time-for-bayanhongor",
+    "u": 60,
+    "p": "MOGOLISTAN",
+    "d": [
+      "BAYANHONGOR"
+    ]
+  },
+  {
+    "n": "Bayramaly",
+    "la": 37.6185,
+    "lo": 62.1671,
+    "tz": "Asia/Ashgabat",
+    "iso2": "TM",
+    "country": "TURKMENISTAN",
+    "pop": 70376,
+    "ilceID": "16402",
+    "ilceUrl": "/en-US/16402/prayer-time-for-bayramaly",
+    "u": 159,
+    "p": "TURKMENISTAN",
+    "d": [
+      "BAYRAMALY "
     ]
   },
   {
@@ -1440,6 +1680,22 @@
     ]
   },
   {
+    "n": "Benguela",
+    "la": -12.5767,
+    "lo": 13.4027,
+    "tz": "Africa/Luanda",
+    "iso2": "AO",
+    "country": "ANGOLA",
+    "pop": 555124,
+    "ilceID": "11132",
+    "ilceUrl": "/en-US/11132/prayer-time-for-benguela",
+    "u": 140,
+    "p": "ANGOLA",
+    "d": [
+      "BENGUELA"
+    ]
+  },
+  {
     "n": "Bergen",
     "la": 60.393,
     "lo": 5.3242,
@@ -1501,6 +1757,22 @@
     "p": "BOSNA HERSEK",
     "d": [
       "BIHAC"
+    ]
+  },
+  {
+    "n": "Bijelo Polje",
+    "la": 43.0383,
+    "lo": 19.7476,
+    "tz": "Europe/Podgorica",
+    "iso2": "ME",
+    "country": "KARADAG",
+    "pop": 15400,
+    "ilceID": "14874",
+    "ilceUrl": "/en-US/14874/prayer-time-for-bijelo-polje",
+    "u": 34,
+    "p": "KARADAG",
+    "d": [
+      "BIJELO POLJE"
     ]
   },
   {
@@ -1664,6 +1936,22 @@
     ]
   },
   {
+    "n": "Bokhtar",
+    "la": 37.8365,
+    "lo": 68.7776,
+    "tz": "Asia/Dushanbe",
+    "iso2": "TJ",
+    "country": "TAJIKISTAN",
+    "pop": 110800,
+    "ilceID": "16328",
+    "ilceUrl": "/en-US/16328/prayer-time-for-qurghonteppa",
+    "u": 101,
+    "p": "TACIKISTAN",
+    "d": [
+      "QURGHONTEPPA "
+    ]
+  },
+  {
     "n": "Bouake",
     "la": 7.6939,
     "lo": -5.0303,
@@ -1677,6 +1965,22 @@
     "p": "FILDISI SAHILI",
     "d": [
       "BOUAKE"
+    ]
+  },
+  {
+    "n": "Bouar",
+    "la": 5.934,
+    "lo": 15.596,
+    "tz": "Africa/Bangui",
+    "iso2": "CF",
+    "country": "ORTA AFRIKA CUMHURIYETI",
+    "pop": 71680,
+    "ilceID": "15711",
+    "ilceUrl": "/en-US/15711/prayer-time-for-bouar",
+    "u": 80,
+    "p": "ORTA AFRIKA CUMHURIYETI",
+    "d": [
+      "BOUAR"
     ]
   },
   {
@@ -1709,6 +2013,22 @@
     "p": "PORTEKIZ",
     "d": [
       "BRAGA"
+    ]
+  },
+  {
+    "n": "Brasov",
+    "la": 45.6486,
+    "lo": 25.6061,
+    "tz": "Europe/Bucharest",
+    "iso2": "RO",
+    "country": "ROMANIA",
+    "pop": 253200,
+    "ilceID": "15957",
+    "ilceUrl": "/en-US/15957/prayer-time-for-brasov",
+    "u": 37,
+    "p": "ROMANYA",
+    "d": [
+      "BRASOV"
     ]
   },
   {
@@ -1805,6 +2125,22 @@
     "p": "NEW YORK",
     "d": [
       "BROOKLYN"
+    ]
+  },
+  {
+    "n": "Brugge",
+    "la": 51.2089,
+    "lo": 3.2242,
+    "tz": "Europe/Brussels",
+    "iso2": "BE",
+    "country": "BELGIUM",
+    "pop": 118509,
+    "ilceID": "11891",
+    "ilceUrl": "/en-US/11891/prayer-time-for-brugge",
+    "u": 11,
+    "p": "BELCIKA",
+    "d": [
+      "BRUGGE"
     ]
   },
   {
@@ -1936,6 +2272,22 @@
     ]
   },
   {
+    "n": "Bukhara",
+    "la": 39.7703,
+    "lo": 64.4307,
+    "tz": "Asia/Samarkand",
+    "iso2": "UZ",
+    "country": "UZBEKISTAN",
+    "pop": 280187,
+    "ilceID": "15757",
+    "ilceUrl": "/en-US/15757/prayer-time-for-buhara",
+    "u": 131,
+    "p": "OZBEKISTAN",
+    "d": [
+      "BUKHARA"
+    ]
+  },
+  {
     "n": "Bulawayo",
     "la": -20.15,
     "lo": 28.5833,
@@ -1949,6 +2301,22 @@
     "p": "ZIMBABVE",
     "d": [
       "BULAWAYO"
+    ]
+  },
+  {
+    "n": "Buraydah",
+    "la": 26.326,
+    "lo": 43.975,
+    "tz": "Asia/Riyadh",
+    "iso2": "SA",
+    "country": "SAUDI ARABIA",
+    "pop": 745353,
+    "ilceID": "16315",
+    "ilceUrl": "/en-US/16315/prayer-time-for-buraydah",
+    "u": 64,
+    "p": "S. ARABISTAN",
+    "d": [
+      "BURAYDAH"
     ]
   },
   {
@@ -1997,6 +2365,70 @@
     "p": "GUNEY KORE",
     "d": [
       "PUSAN"
+    ]
+  },
+  {
+    "n": "Butare",
+    "la": -2.5967,
+    "lo": 29.7394,
+    "tz": "Africa/Kigali",
+    "iso2": "RW",
+    "country": "RUANDA",
+    "pop": 62823,
+    "ilceID": "15959",
+    "ilceUrl": "/en-US/15959/prayer-time-for-butare",
+    "u": 81,
+    "p": "RUANDA",
+    "d": [
+      "BUTARE"
+    ]
+  },
+  {
+    "n": "Butwal",
+    "la": 27.6912,
+    "lo": 83.4525,
+    "tz": "Asia/Kathmandu",
+    "iso2": "NP",
+    "country": "NEPAL",
+    "pop": 195054,
+    "ilceID": "15564",
+    "ilceUrl": "/en-US/15564/prayer-time-for-butwai",
+    "u": 76,
+    "p": "NEPAL",
+    "d": [
+      "BUTWAI"
+    ]
+  },
+  {
+    "n": "Buulobarde",
+    "la": 3.8537,
+    "lo": 45.5674,
+    "tz": "Africa/Mogadishu",
+    "iso2": "SO",
+    "country": "SOMALIA",
+    "pop": 16928,
+    "ilceID": "16275",
+    "ilceUrl": "/en-US/16275/prayer-time-for-bulo-burti",
+    "u": 150,
+    "p": "SOMALI",
+    "d": [
+      "BULO BURTI"
+    ]
+  },
+  {
+    "n": "Cagayan de Oro",
+    "la": 8.4822,
+    "lo": 124.6472,
+    "tz": "Asia/Manila",
+    "iso2": "PH",
+    "country": "PHILIPPINES",
+    "pop": 741617,
+    "ilceID": "12836",
+    "ilceUrl": "/en-US/12836/prayer-time-for-cagayan-de-oro",
+    "u": 126,
+    "p": "FILIPINLER",
+    "d": [
+      "CAGAYAN DE ORO"
     ]
   },
   {
@@ -2144,6 +2576,22 @@
     ]
   },
   {
+    "n": "Carlow",
+    "la": 52.8408,
+    "lo": -6.9261,
+    "tz": "Europe/Dublin",
+    "iso2": "IE",
+    "country": "IRELAND",
+    "pop": 27351,
+    "ilceID": "14205",
+    "ilceUrl": "/en-US/14205/prayer-time-for-carlow",
+    "u": 32,
+    "p": "IRLANDA",
+    "d": [
+      "CARLOW"
+    ]
+  },
+  {
     "n": "Carnot",
     "la": 4.9427,
     "lo": 15.8773,
@@ -2208,6 +2656,22 @@
     ]
   },
   {
+    "n": "Cartago",
+    "la": 9.8637,
+    "lo": -83.9195,
+    "tz": "America/Costa_Rica",
+    "iso2": "CR",
+    "country": "KOSTARIKA",
+    "pop": 26594,
+    "ilceID": "15129",
+    "ilceUrl": "/en-US/15129/prayer-time-for-cartago",
+    "u": 162,
+    "p": "KOSTARIKA",
+    "d": [
+      "CARTAGO"
+    ]
+  },
+  {
     "n": "Casablanca",
     "la": 33.5883,
     "lo": -7.6114,
@@ -2240,6 +2704,38 @@
     ]
   },
   {
+    "n": "Ceadir-Lunga",
+    "la": 46.0617,
+    "lo": 28.8308,
+    "tz": "Europe/Chisinau",
+    "iso2": "MD",
+    "country": "MOLDAVYA",
+    "pop": 22700,
+    "ilceID": "15537",
+    "ilceUrl": "/en-US/15537/prayer-time-for-chadyr-lunga",
+    "u": 46,
+    "p": "MOLDAVYA",
+    "d": [
+      "CHADYR-LUNGA"
+    ]
+  },
+  {
+    "n": "Cebu City",
+    "la": 10.3167,
+    "lo": 123.8907,
+    "tz": "Asia/Manila",
+    "iso2": "PH",
+    "country": "PHILIPPINES",
+    "pop": 965332,
+    "ilceID": "12829",
+    "ilceUrl": "/en-US/12829/prayer-time-for-cebu",
+    "u": 126,
+    "p": "FILIPINLER",
+    "d": [
+      "CEBU"
+    ]
+  },
+  {
     "n": "Celje",
     "la": 46.2309,
     "lo": 15.2604,
@@ -2253,6 +2749,22 @@
     "p": "SLOVENYA",
     "d": [
       "CELJE"
+    ]
+  },
+  {
+    "n": "Changuinola",
+    "la": 9.43,
+    "lo": -82.52,
+    "tz": "America/Panama",
+    "iso2": "PA",
+    "country": "PANAMA",
+    "pop": 17997,
+    "ilceID": "15798",
+    "ilceUrl": "/en-US/15798/prayer-time-for-changuinola",
+    "u": 89,
+    "p": "PANAMA",
+    "d": [
+      "CHANGUINOLA"
     ]
   },
   {
@@ -2272,6 +2784,22 @@
     ]
   },
   {
+    "n": "Chelyabinsk",
+    "la": 55.1611,
+    "lo": 61.4288,
+    "tz": "Asia/Yekaterinburg",
+    "iso2": "RU",
+    "country": "RUSSIA",
+    "pop": 1202371,
+    "ilceID": "16161",
+    "ilceUrl": "/en-US/16161/prayer-time-for-chelyabinsk",
+    "u": 207,
+    "p": "RUSYA",
+    "d": [
+      "CHELYABINSK"
+    ]
+  },
+  {
     "n": "Chengdu",
     "la": 30.6667,
     "lo": 104.0667,
@@ -2285,6 +2813,22 @@
     "p": "CIN",
     "d": [
       "CHENGDU"
+    ]
+  },
+  {
+    "n": "Chiang Mai",
+    "la": 18.7904,
+    "lo": 98.9847,
+    "tz": "Asia/Bangkok",
+    "iso2": "TH",
+    "country": "THAILAND",
+    "pop": 127240,
+    "ilceID": "16349",
+    "ilceUrl": "/en-US/16349/prayer-time-for-chiang-mai",
+    "u": 137,
+    "p": "TAYLAND",
+    "d": [
+      "CHIANG MAI"
     ]
   },
   {
@@ -2352,6 +2896,22 @@
     ]
   },
   {
+    "n": "Chingola",
+    "la": -12.529,
+    "lo": 27.8838,
+    "tz": "Africa/Lusaka",
+    "iso2": "ZM",
+    "country": "ZAMBIYA",
+    "pop": 256560,
+    "ilceID": "16691",
+    "ilceUrl": "/en-US/16691/prayer-time-for-chingola",
+    "u": 158,
+    "p": "ZAMBIYA",
+    "d": [
+      "CHINGOLA"
+    ]
+  },
+  {
     "n": "Chisinau",
     "la": 47.009,
     "lo": 28.8594,
@@ -2365,6 +2925,22 @@
     "p": "MOLDAVYA",
     "d": [
       "KISHINEV"
+    ]
+  },
+  {
+    "n": "Chitipa",
+    "la": -9.7024,
+    "lo": 33.2697,
+    "tz": "Africa/Blantyre",
+    "iso2": "MW",
+    "country": "MALAVI",
+    "pop": 20011,
+    "ilceID": "15312",
+    "ilceUrl": "/en-US/15312/prayer-time-for-chitipa",
+    "u": 55,
+    "p": "MALAVI",
+    "d": [
+      "CHITIPA"
     ]
   },
   {
@@ -2448,6 +3024,38 @@
     ]
   },
   {
+    "n": "Ciudad Juarez",
+    "la": 31.7202,
+    "lo": -106.4608,
+    "tz": "America/Ciudad_Juarez",
+    "iso2": "MX",
+    "country": "MEXICO",
+    "pop": 1512450,
+    "ilceID": "15377",
+    "ilceUrl": "/en-US/15377/prayer-time-for-ciudad-juarez",
+    "u": 53,
+    "p": "MEKSIKA",
+    "d": [
+      "CIUDAD JUAREZ"
+    ]
+  },
+  {
+    "n": "Cluj-Napoca",
+    "la": 46.7667,
+    "lo": 23.6,
+    "tz": "Europe/Bucharest",
+    "iso2": "RO",
+    "country": "ROMANIA",
+    "pop": 286598,
+    "ilceID": "15929",
+    "ilceUrl": "/en-US/15929/prayer-time-for-cluj-napoca",
+    "u": 37,
+    "p": "ROMANYA",
+    "d": [
+      "CLUJ-NAPOCA"
+    ]
+  },
+  {
     "n": "Coban",
     "la": 15.4703,
     "lo": -90.3745,
@@ -2528,6 +3136,38 @@
     ]
   },
   {
+    "n": "Comilla",
+    "la": 23.4619,
+    "lo": 91.185,
+    "tz": "Asia/Dhaka",
+    "iso2": "BD",
+    "country": "BANGLADESH",
+    "pop": 634654,
+    "ilceID": "11669",
+    "ilceUrl": "/en-US/11669/prayer-time-for-comilla",
+    "u": 177,
+    "p": "BANGLADES",
+    "d": [
+      "COMILLA"
+    ]
+  },
+  {
+    "n": "Comrat",
+    "la": 46.2949,
+    "lo": 28.6571,
+    "tz": "Europe/Chisinau",
+    "iso2": "MD",
+    "country": "MOLDAVYA",
+    "pop": 22911,
+    "ilceID": "15539",
+    "ilceUrl": "/en-US/15539/prayer-time-for-komrat",
+    "u": 46,
+    "p": "MOLDAVYA",
+    "d": [
+      "KOMRAT"
+    ]
+  },
+  {
     "n": "Conakry",
     "la": 9.538,
     "lo": -13.6773,
@@ -2541,6 +3181,22 @@
     "p": "GINE",
     "d": [
       "CONAKRY"
+    ]
+  },
+  {
+    "n": "Concepcion",
+    "la": -23.3999,
+    "lo": -57.4324,
+    "tz": "America/Asuncion",
+    "iso2": "PY",
+    "country": "PARAGUAY",
+    "pop": 48123,
+    "ilceID": "15817",
+    "ilceUrl": "/en-US/15817/prayer-time-for-concepcion",
+    "u": 194,
+    "p": "PARAGUAY",
+    "d": [
+      "CONCEPCION"
     ]
   },
   {
@@ -2624,6 +3280,22 @@
     ]
   },
   {
+    "n": "Coronel Oviedo",
+    "la": -25.4461,
+    "lo": -56.4393,
+    "tz": "America/Asuncion",
+    "iso2": "PY",
+    "country": "PARAGUAY",
+    "pop": 51286,
+    "ilceID": "15818",
+    "ilceUrl": "/en-US/15818/prayer-time-for-coronel-oviedo",
+    "u": 194,
+    "p": "PARAGUAY",
+    "d": [
+      "CORONEL OVIEDO"
+    ]
+  },
+  {
     "n": "Cotonou",
     "la": 6.3654,
     "lo": 2.4183,
@@ -2637,6 +3309,22 @@
     "p": "BENIN",
     "d": [
       "COTONOU"
+    ]
+  },
+  {
+    "n": "Cucuta",
+    "la": 7.9074,
+    "lo": -72.5049,
+    "tz": "America/Bogota",
+    "iso2": "CO",
+    "country": "KOLOMBIYA",
+    "pop": 777106,
+    "ilceID": "15083",
+    "ilceUrl": "/en-US/15083/prayer-time-for-cucuta",
+    "u": 57,
+    "p": "KOLOMBIYA",
+    "d": [
+      "CUCUTA"
     ]
   },
   {
@@ -2816,6 +3504,22 @@
     ]
   },
   {
+    "n": "Daru",
+    "la": -9.0779,
+    "lo": 143.2089,
+    "tz": "Pacific/Port_Moresby",
+    "iso2": "PG",
+    "country": "PAPUA YENI GINE",
+    "pop": 15214,
+    "ilceID": "15815",
+    "ilceUrl": "/en-US/15815/prayer-time-for-daru",
+    "u": 185,
+    "p": "PAPUA YENI GINE",
+    "d": [
+      "DARU"
+    ]
+  },
+  {
     "n": "Daugavpils",
     "la": 55.8833,
     "lo": 26.5333,
@@ -2928,6 +3632,22 @@
     ]
   },
   {
+    "n": "Dessie",
+    "la": 11.1333,
+    "lo": 39.6333,
+    "tz": "Africa/Addis_Ababa",
+    "iso2": "ET",
+    "country": "ETHIOPIA",
+    "pop": 270400,
+    "ilceID": "12799",
+    "ilceUrl": "/en-US/12799/prayer-time-for-dese",
+    "u": 95,
+    "p": "ETYOPYA",
+    "d": [
+      "DESE"
+    ]
+  },
+  {
     "n": "Dhaka",
     "la": 23.7104,
     "lo": 90.4074,
@@ -2941,6 +3661,22 @@
     "p": "BANGLADES",
     "d": [
       "DHAKA"
+    ]
+  },
+  {
+    "n": "Dharan",
+    "la": 26.8144,
+    "lo": 87.2797,
+    "tz": "Asia/Kathmandu",
+    "iso2": "NP",
+    "country": "NEPAL",
+    "pop": 173096,
+    "ilceID": "15562",
+    "ilceUrl": "/en-US/15562/prayer-time-for-dharan-bazar",
+    "u": 76,
+    "p": "NEPAL",
+    "d": [
+      "DHARAN BAZAR"
     ]
   },
   {
@@ -2976,6 +3712,22 @@
     ]
   },
   {
+    "n": "Dire Dawa",
+    "la": 9.5931,
+    "lo": 41.8661,
+    "tz": "Africa/Addis_Ababa",
+    "iso2": "ET",
+    "country": "ETHIOPIA",
+    "pop": 343000,
+    "ilceID": "12800",
+    "ilceUrl": "/en-US/12800/prayer-time-for-dire-dawa",
+    "u": 95,
+    "p": "ETYOPYA",
+    "d": [
+      "DIRE DAWA"
+    ]
+  },
+  {
     "n": "Diyarbakir",
     "la": 37.9136,
     "lo": 40.2172,
@@ -3005,6 +3757,22 @@
     "p": "CIBUTI",
     "d": [
       "CIBUTI"
+    ]
+  },
+  {
+    "n": "Djougou",
+    "la": 9.7085,
+    "lo": 1.666,
+    "tz": "Africa/Porto-Novo",
+    "iso2": "BJ",
+    "country": "BENIN",
+    "pop": 94773,
+    "ilceID": "11927",
+    "ilceUrl": "/en-US/11927/prayer-time-for-djougou",
+    "u": 181,
+    "p": "BENIN",
+    "d": [
+      "DJOUGOU"
     ]
   },
   {
@@ -3069,6 +3837,22 @@
     "p": "UKRAYNA",
     "d": [
       "DONETSK"
+    ]
+  },
+  {
+    "n": "Dosso",
+    "la": 13.049,
+    "lo": 3.1937,
+    "tz": "Africa/Niamey",
+    "iso2": "NE",
+    "country": "NIJER",
+    "pop": 79406,
+    "ilceID": "17823",
+    "ilceUrl": "/en-US/17823/prayer-time-for-dosso",
+    "u": 84,
+    "p": "NIJER",
+    "d": [
+      "DOSSO"
     ]
   },
   {
@@ -3184,6 +3968,22 @@
     ]
   },
   {
+    "n": "Dundalk",
+    "la": 54,
+    "lo": -6.4167,
+    "tz": "Europe/Dublin",
+    "iso2": "IE",
+    "country": "IRELAND",
+    "pop": 43112,
+    "ilceID": "14206",
+    "ilceUrl": "/en-US/14206/prayer-time-for-dundalk",
+    "u": 32,
+    "p": "IRLANDA",
+    "d": [
+      "DUNDALK"
+    ]
+  },
+  {
     "n": "Durban",
     "la": -29.8579,
     "lo": 31.0292,
@@ -3245,6 +4045,22 @@
     "p": "HOLLANDA",
     "d": [
       "EINDHOVEN"
+    ]
+  },
+  {
+    "n": "El Obeid",
+    "la": 13.1842,
+    "lo": 30.2167,
+    "tz": "Africa/Khartoum",
+    "iso2": "SD",
+    "country": "SUDAN",
+    "pop": 393311,
+    "ilceID": "16292",
+    "ilceUrl": "/en-US/16292/prayer-time-for-al-ubayyid",
+    "u": 129,
+    "p": "SUDAN",
+    "d": [
+      "AL UBAYYID"
     ]
   },
   {
@@ -3376,6 +4192,22 @@
     ]
   },
   {
+    "n": "Eyl",
+    "la": 7.9803,
+    "lo": 49.8164,
+    "tz": "Africa/Mogadishu",
+    "iso2": "SO",
+    "country": "SOMALIA",
+    "pop": 18904,
+    "ilceID": "16270",
+    "ilceUrl": "/en-US/16270/prayer-time-for-eyl",
+    "u": 150,
+    "p": "SOMALI",
+    "d": [
+      "EYL"
+    ]
+  },
+  {
     "n": "Faisalabad",
     "la": 31.4155,
     "lo": 73.0897,
@@ -3405,6 +4237,22 @@
     "p": "KUZEY KIBRIS",
     "d": [
       "GAZI MAGOSA"
+    ]
+  },
+  {
+    "n": "Fergana",
+    "la": 40.3842,
+    "lo": 71.7843,
+    "tz": "Asia/Tashkent",
+    "iso2": "UZ",
+    "country": "UZBEKISTAN",
+    "pop": 299200,
+    "ilceID": "15754",
+    "ilceUrl": "/en-US/15754/prayer-time-for-fergana",
+    "u": 131,
+    "p": "OZBEKISTAN",
+    "d": [
+      "FERGANA"
     ]
   },
   {
@@ -3552,6 +4400,22 @@
     ]
   },
   {
+    "n": "Gabes",
+    "la": 33.8815,
+    "lo": 10.0982,
+    "tz": "Africa/Tunis",
+    "iso2": "TN",
+    "country": "TUNUSIA",
+    "pop": 110075,
+    "ilceID": "16383",
+    "ilceUrl": "/en-US/16383/prayer-time-for-gabes",
+    "u": 118,
+    "p": "TUNUS",
+    "d": [
+      "GABES"
+    ]
+  },
+  {
     "n": "Gaborone",
     "la": -24.6545,
     "lo": 25.9086,
@@ -3600,6 +4464,22 @@
     ]
   },
   {
+    "n": "Gao",
+    "la": 16.2717,
+    "lo": -0.0447,
+    "tz": "Africa/Bamako",
+    "iso2": "ML",
+    "country": "MALI",
+    "pop": 133110,
+    "ilceID": "15346",
+    "ilceUrl": "/en-US/15346/prayer-time-for-gao",
+    "u": 152,
+    "p": "MALI",
+    "d": [
+      "GAO"
+    ]
+  },
+  {
     "n": "Gaza",
     "la": 31.5016,
     "lo": 34.4667,
@@ -3645,6 +4525,22 @@
     "p": "POLONYA",
     "d": [
       "GDANSK"
+    ]
+  },
+  {
+    "n": "General Santos",
+    "la": 6.1128,
+    "lo": 125.1717,
+    "tz": "Asia/Manila",
+    "iso2": "PH",
+    "country": "PHILIPPINES",
+    "pop": 722059,
+    "ilceID": "12857",
+    "ilceUrl": "/en-US/12857/prayer-time-for-general-santos",
+    "u": 126,
+    "p": "FILIPINLER",
+    "d": [
+      "GENERAL SANTOS"
     ]
   },
   {
@@ -3712,6 +4608,38 @@
     ]
   },
   {
+    "n": "Ghanzi",
+    "la": -21.6978,
+    "lo": 21.6458,
+    "tz": "Africa/Gaborone",
+    "iso2": "BW",
+    "country": "BOTSWANA",
+    "pop": 19012,
+    "ilceID": "12035",
+    "ilceUrl": "/en-US/12035/prayer-time-for-ghanzi",
+    "u": 167,
+    "p": "BOTSVANA",
+    "d": [
+      "GHANZI"
+    ]
+  },
+  {
+    "n": "Ghazni",
+    "la": 33.5539,
+    "lo": 68.421,
+    "tz": "Asia/Kabul",
+    "iso2": "AF",
+    "country": "AFGHANISTAN",
+    "pop": 141000,
+    "ilceID": "9960",
+    "ilceUrl": "/en-US/9960/prayer-time-for-ghazni",
+    "u": 166,
+    "p": "AFGANISTAN",
+    "d": [
+      "GHAZNI"
+    ]
+  },
+  {
     "n": "Gitega",
     "la": -3.4271,
     "lo": 29.9246,
@@ -3728,6 +4656,22 @@
     ]
   },
   {
+    "n": "Gjilan",
+    "la": 42.4605,
+    "lo": 21.4699,
+    "tz": "Europe/Belgrade",
+    "iso2": "XK",
+    "country": "KOSOVA",
+    "pop": 51912,
+    "ilceID": "16728",
+    "ilceUrl": "/en-US/16728/prayer-time-for-gilan",
+    "u": 18,
+    "p": "KOSOVA",
+    "d": [
+      "GİLAN"
+    ]
+  },
+  {
     "n": "Glasgow",
     "la": 55.8651,
     "lo": -4.2576,
@@ -3741,6 +4685,22 @@
     "p": "INGILTERE",
     "d": [
       "GLASGOW"
+    ]
+  },
+  {
+    "n": "Gonaives",
+    "la": 19.4475,
+    "lo": -72.6893,
+    "tz": "America/Port-au-Prince",
+    "iso2": "HT",
+    "country": "HAITI",
+    "pop": 84961,
+    "ilceID": "13565",
+    "ilceUrl": "/en-US/13565/prayer-time-for-gonaives",
+    "u": 70,
+    "p": "HAITI",
+    "d": [
+      "GONAIVES"
     ]
   },
   {
@@ -3805,6 +4765,22 @@
     "p": "GUNEY AFRIKA",
     "d": [
       "PORT ELIZABETH"
+    ]
+  },
+  {
+    "n": "Granada",
+    "la": 11.9306,
+    "lo": -85.9537,
+    "tz": "America/Managua",
+    "iso2": "NI",
+    "country": "NIKARAGUA",
+    "pop": 89409,
+    "ilceID": "15604",
+    "ilceUrl": "/en-US/15604/prayer-time-for-granada",
+    "u": 141,
+    "p": "NIKARAGUA",
+    "d": [
+      "GRANADA"
     ]
   },
   {
@@ -3904,6 +4880,38 @@
     ]
   },
   {
+    "n": "Gujranwala",
+    "la": 32.1557,
+    "lo": 74.187,
+    "tz": "Asia/Karachi",
+    "iso2": "PK",
+    "country": "PAKISTAN",
+    "pop": 2511118,
+    "ilceID": "15774",
+    "ilceUrl": "/en-US/15774/prayer-time-for-gujranwala",
+    "u": 77,
+    "p": "PAKISTAN",
+    "d": [
+      "GUJRANWALA"
+    ]
+  },
+  {
+    "n": "Gulu",
+    "la": 2.7746,
+    "lo": 32.299,
+    "tz": "Africa/Kampala",
+    "iso2": "UG",
+    "country": "UGANDA",
+    "pop": 177400,
+    "ilceID": "16419",
+    "ilceUrl": "/en-US/16419/prayer-time-for-gulu",
+    "u": 75,
+    "p": "UGANDA",
+    "d": [
+      "GULU"
+    ]
+  },
+  {
     "n": "Gwangju",
     "la": 35.1547,
     "lo": 126.9156,
@@ -3936,6 +4944,38 @@
     ]
   },
   {
+    "n": "Gyor",
+    "la": 47.6833,
+    "lo": 17.6351,
+    "tz": "Europe/Budapest",
+    "iso2": "HU",
+    "country": "HUNGARY",
+    "pop": 129301,
+    "ilceID": "15236",
+    "ilceUrl": "/en-US/15236/prayer-time-for-gyor",
+    "u": 7,
+    "p": "MACARISTAN",
+    "d": [
+      "GYOR"
+    ]
+  },
+  {
+    "n": "Gyumri",
+    "la": 40.7931,
+    "lo": 43.8464,
+    "tz": "Asia/Yerevan",
+    "iso2": "AM",
+    "country": "ARMENIA",
+    "pop": 114667,
+    "ilceID": "12782",
+    "ilceUrl": "/en-US/12782/prayer-time-for-gyumri",
+    "u": 104,
+    "p": "ERMENISTAN",
+    "d": [
+      "GYUMRI"
+    ]
+  },
+  {
     "n": "Hagatna",
     "la": 13.4757,
     "lo": 144.7489,
@@ -3949,22 +4989,6 @@
     "p": "GUAM ADASI",
     "d": [
       "AGANA"
-    ]
-  },
-  {
-    "n": "Haifa",
-    "la": 32.813,
-    "lo": 34.9993,
-    "tz": "Asia/Jerusalem",
-    "iso2": "IL",
-    "country": "ISRAEL",
-    "pop": 285316,
-    "ilceID": "14271",
-    "ilceUrl": "/en-US/14271/prayer-time-for-haifa",
-    "u": 205,
-    "p": "ISRAIL",
-    "d": [
-      "HAIFA"
     ]
   },
   {
@@ -4224,6 +5248,22 @@
     ]
   },
   {
+    "n": "Houston",
+    "la": 29.7633,
+    "lo": -95.3633,
+    "tz": "America/Chicago",
+    "iso2": "US",
+    "country": "USA",
+    "pop": 2314157,
+    "ilceID": "8986",
+    "ilceUrl": "/en-US/8986/prayer-time-for-houston",
+    "u": 33,
+    "p": "TEXAS",
+    "d": [
+      "HOUSTON"
+    ]
+  },
+  {
     "n": "Hrodna",
     "la": 53.6758,
     "lo": 23.8289,
@@ -4237,6 +5277,54 @@
     "p": "BELARUS",
     "d": [
       "GRODNO"
+    ]
+  },
+  {
+    "n": "Hsinchu",
+    "la": 24.8036,
+    "lo": 120.9686,
+    "tz": "Asia/Taipei",
+    "iso2": "TW",
+    "country": "TAIWAN",
+    "pop": 453536,
+    "ilceID": "16362",
+    "ilceUrl": "/en-US/16362/prayer-time-for-hsin-chu",
+    "u": 108,
+    "p": "TAYVAN",
+    "d": [
+      "HSIN-CHU"
+    ]
+  },
+  {
+    "n": "Huambo",
+    "la": -12.7761,
+    "lo": 15.7392,
+    "tz": "Africa/Luanda",
+    "iso2": "AO",
+    "country": "ANGOLA",
+    "pop": 595304,
+    "ilceID": "11134",
+    "ilceUrl": "/en-US/11134/prayer-time-for-huambo",
+    "u": 140,
+    "p": "ANGOLA",
+    "d": [
+      "HUAMBO"
+    ]
+  },
+  {
+    "n": "Huancayo",
+    "la": -12.0687,
+    "lo": -75.2103,
+    "tz": "America/Lima",
+    "iso2": "PE",
+    "country": "PERU",
+    "pop": 456250,
+    "ilceID": "15832",
+    "ilceUrl": "/en-US/15832/prayer-time-for-huancayo",
+    "u": 69,
+    "p": "PERU",
+    "d": [
+      "HUANCAYO"
     ]
   },
   {
@@ -4320,6 +5408,22 @@
     ]
   },
   {
+    "n": "Innsbruck",
+    "la": 47.2627,
+    "lo": 11.3945,
+    "tz": "Europe/Vienna",
+    "iso2": "AT",
+    "country": "AUSTRIA",
+    "pop": 132493,
+    "ilceID": "11596",
+    "ilceUrl": "/en-US/11596/prayer-time-for-innsbruck",
+    "u": 35,
+    "p": "AVUSTURYA",
+    "d": [
+      "INNSBRUCK"
+    ]
+  },
+  {
     "n": "Ipoh",
     "la": 4.5841,
     "lo": 101.0829,
@@ -4333,6 +5437,22 @@
     "p": "MALEZYA",
     "d": [
       "IPOH"
+    ]
+  },
+  {
+    "n": "Irakleion",
+    "la": 35.3279,
+    "lo": 25.1434,
+    "tz": "Europe/Athens",
+    "iso2": "GR",
+    "country": "GREECE",
+    "pop": 137154,
+    "ilceID": "16660",
+    "ilceUrl": "/en-US/16660/prayer-time-for-iraklion",
+    "u": 22,
+    "p": "YUNANISTAN",
+    "d": [
+      "IRAKLION"
     ]
   },
   {
@@ -4496,6 +5616,22 @@
     ]
   },
   {
+    "n": "Jericho",
+    "la": 31.8667,
+    "lo": 35.45,
+    "tz": "Asia/Hebron",
+    "iso2": "PS",
+    "country": "FILISTIN",
+    "pop": 19783,
+    "ilceID": "12865",
+    "ilceUrl": "/en-US/12865/prayer-time-for-eriha",
+    "u": 204,
+    "p": "FILISTIN",
+    "d": [
+      "ERIHA"
+    ]
+  },
+  {
     "n": "Johannesburg",
     "la": -26.2023,
     "lo": 28.0436,
@@ -4528,6 +5664,22 @@
     ]
   },
   {
+    "n": "Jounieh",
+    "la": 33.9808,
+    "lo": 35.6178,
+    "tz": "Asia/Beirut",
+    "iso2": "LB",
+    "country": "LEBANON",
+    "pop": 96315,
+    "ilceID": "15213",
+    "ilceUrl": "/en-US/15213/prayer-time-for-juniyah",
+    "u": 42,
+    "p": "LUBNAN",
+    "d": [
+      "JUNIYAH"
+    ]
+  },
+  {
     "n": "Juba",
     "la": 4.8517,
     "lo": 31.5825,
@@ -4541,6 +5693,22 @@
     "p": "GUNEY SUDAN",
     "d": [
       "JUBA"
+    ]
+  },
+  {
+    "n": "Kabale",
+    "la": -1.2486,
+    "lo": 29.9899,
+    "tz": "Africa/Kampala",
+    "iso2": "UG",
+    "country": "UGANDA",
+    "pop": 53200,
+    "ilceID": "16421",
+    "ilceUrl": "/en-US/16421/prayer-time-for-kabale",
+    "u": 75,
+    "p": "UGANDA",
+    "d": [
+      "KABALE"
     ]
   },
   {
@@ -4592,6 +5760,22 @@
     ]
   },
   {
+    "n": "Kaedi",
+    "la": 16.1507,
+    "lo": -13.5058,
+    "tz": "Africa/Nouakchott",
+    "iso2": "MR",
+    "country": "MORITANYA",
+    "pop": 56283,
+    "ilceID": "16723",
+    "ilceUrl": "/en-US/16723/prayer-time-for-kaedi",
+    "u": 106,
+    "p": "MORITANYA",
+    "d": [
+      "ZOUERATE"
+    ]
+  },
+  {
     "n": "Kairouan",
     "la": 35.6781,
     "lo": 10.0963,
@@ -4608,6 +5792,22 @@
     ]
   },
   {
+    "n": "Kalamaria",
+    "la": 40.5825,
+    "lo": 22.9503,
+    "tz": "Europe/Athens",
+    "iso2": "GR",
+    "country": "GREECE",
+    "pop": 91518,
+    "ilceID": "16661",
+    "ilceUrl": "/en-US/16661/prayer-time-for-kalamaria",
+    "u": 22,
+    "p": "YUNANISTAN",
+    "d": [
+      "KALAMARIA"
+    ]
+  },
+  {
     "n": "Kampala",
     "la": 0.3163,
     "lo": 32.5822,
@@ -4621,6 +5821,22 @@
     "p": "UGANDA",
     "d": [
       "KAMPALA"
+    ]
+  },
+  {
+    "n": "Kampong Cham",
+    "la": 11.9934,
+    "lo": 105.4635,
+    "tz": "Asia/Phnom_Penh",
+    "iso2": "KH",
+    "country": "KAMBOCYA",
+    "pop": 61750,
+    "ilceID": "14844",
+    "ilceUrl": "/en-US/14844/prayer-time-for-kampong-cham",
+    "u": 161,
+    "p": "KAMBOCYA",
+    "d": [
+      "KAMPONG CHAM"
     ]
   },
   {
@@ -4653,6 +5869,38 @@
     "p": "AFGANISTAN",
     "d": [
       "KANDAHAR"
+    ]
+  },
+  {
+    "n": "Kandi",
+    "la": 11.1342,
+    "lo": 2.9386,
+    "tz": "Africa/Porto-Novo",
+    "iso2": "BJ",
+    "country": "BENIN",
+    "pop": 56043,
+    "ilceID": "11929",
+    "ilceUrl": "/en-US/11929/prayer-time-for-kandi",
+    "u": 181,
+    "p": "BENIN",
+    "d": [
+      "KANDI"
+    ]
+  },
+  {
+    "n": "Kandy",
+    "la": 7.2906,
+    "lo": 80.6336,
+    "tz": "Asia/Colombo",
+    "iso2": "LK",
+    "country": "SRI LANKA",
+    "pop": 111701,
+    "ilceID": "16280",
+    "ilceUrl": "/en-US/16280/prayer-time-for-kandy",
+    "u": 74,
+    "p": "SRI LANKA",
+    "d": [
+      "KANDY"
     ]
   },
   {
@@ -4848,6 +6096,22 @@
     ]
   },
   {
+    "n": "Kawasaki",
+    "la": 35.5206,
+    "lo": 139.7172,
+    "tz": "Asia/Tokyo",
+    "iso2": "JP",
+    "country": "JAPAN",
+    "pop": 1538262,
+    "ilceID": "14714",
+    "ilceUrl": "/en-US/14714/prayer-time-for-kawasaki",
+    "u": 116,
+    "p": "JAPONYA",
+    "d": [
+      "KAWASAKI"
+    ]
+  },
+  {
     "n": "Kazan",
     "la": 55.7887,
     "lo": 49.1221,
@@ -4928,6 +6192,22 @@
     ]
   },
   {
+    "n": "Khorugh",
+    "la": 37.4904,
+    "lo": 71.5534,
+    "tz": "Asia/Dushanbe",
+    "iso2": "TJ",
+    "country": "TAJIKISTAN",
+    "pop": 30500,
+    "ilceID": "16333",
+    "ilceUrl": "/en-US/16333/prayer-time-for-khorugh",
+    "u": 101,
+    "p": "TACIKISTAN",
+    "d": [
+      "KHORUGH"
+    ]
+  },
+  {
     "n": "Khujand",
     "la": 40.2826,
     "lo": 69.6222,
@@ -4992,6 +6272,22 @@
     ]
   },
   {
+    "n": "Kindia",
+    "la": 10.0569,
+    "lo": -12.8658,
+    "tz": "Africa/Conakry",
+    "iso2": "GN",
+    "country": "GUINEA",
+    "pop": 161024,
+    "ilceID": "13447",
+    "ilceUrl": "/en-US/13447/prayer-time-for-kindia",
+    "u": 111,
+    "p": "GINE",
+    "d": [
+      "KINDIA"
+    ]
+  },
+  {
     "n": "Kingston",
     "la": 17.997,
     "lo": -76.7936,
@@ -5021,6 +6317,22 @@
     "p": "DEMOKRATIK KONGO CUMHURIYETI",
     "d": [
       "KINSHASA"
+    ]
+  },
+  {
+    "n": "Kirkuk",
+    "la": 35.4681,
+    "lo": 44.3922,
+    "tz": "Asia/Baghdad",
+    "iso2": "IQ",
+    "country": "IRAQ",
+    "pop": 1031000,
+    "ilceID": "14168",
+    "ilceUrl": "/en-US/14168/prayer-time-for-kerkuk",
+    "u": 124,
+    "p": "IRAK",
+    "d": [
+      "KIRKUK"
     ]
   },
   {
@@ -5056,6 +6368,38 @@
     ]
   },
   {
+    "n": "Kisumu",
+    "la": -0.1022,
+    "lo": 34.7617,
+    "tz": "Africa/Nairobi",
+    "iso2": "KE",
+    "country": "KENYA",
+    "pop": 397957,
+    "ilceID": "15012",
+    "ilceUrl": "/en-US/15012/prayer-time-for-kisumu",
+    "u": 114,
+    "p": "KENYA",
+    "d": [
+      "KISUMU"
+    ]
+  },
+  {
+    "n": "Kitgum",
+    "la": 3.2783,
+    "lo": 32.8867,
+    "tz": "Africa/Kampala",
+    "iso2": "UG",
+    "country": "UGANDA",
+    "pop": 56891,
+    "ilceID": "16417",
+    "ilceUrl": "/en-US/16417/prayer-time-for-kitgum",
+    "u": 75,
+    "p": "UGANDA",
+    "d": [
+      "KITGUM"
+    ]
+  },
+  {
     "n": "Kitwe",
     "la": -12.8024,
     "lo": 28.2132,
@@ -5069,6 +6413,22 @@
     "p": "ZAMBIYA",
     "d": [
       "KITWE"
+    ]
+  },
+  {
+    "n": "Klagenfurt am Woerthersee",
+    "la": 46.6247,
+    "lo": 14.3053,
+    "tz": "Europe/Vienna",
+    "iso2": "AT",
+    "country": "AUSTRIA",
+    "pop": 100316,
+    "ilceID": "11602",
+    "ilceUrl": "/en-US/11602/prayer-time-for-klagenfurt",
+    "u": 35,
+    "p": "AVUSTURYA",
+    "d": [
+      "KLAGENFURT"
     ]
   },
   {
@@ -5165,6 +6525,22 @@
     "p": "SLOVAKYA",
     "d": [
       "KOSICE"
+    ]
+  },
+  {
+    "n": "Kota Bharu",
+    "la": 6.1236,
+    "lo": 102.2433,
+    "tz": "Asia/Kuala_Lumpur",
+    "iso2": "MY",
+    "country": "MALAYSIA",
+    "pop": 568900,
+    "ilceID": "15323",
+    "ilceUrl": "/en-US/15323/prayer-time-for-kota-baharu",
+    "u": 107,
+    "p": "MALEZYA",
+    "d": [
+      "KOTA BAHARU"
     ]
   },
   {
@@ -5296,6 +6672,22 @@
     ]
   },
   {
+    "n": "Kuantan",
+    "la": 3.8077,
+    "lo": 103.326,
+    "tz": "Asia/Kuala_Lumpur",
+    "iso2": "MY",
+    "country": "MALAYSIA",
+    "pop": 548014,
+    "ilceID": "15327",
+    "ilceUrl": "/en-US/15327/prayer-time-for-kuantan",
+    "u": 107,
+    "p": "MALEZYA",
+    "d": [
+      "KUANTAN"
+    ]
+  },
+  {
     "n": "Kulob",
     "la": 37.9146,
     "lo": 69.7845,
@@ -5408,6 +6800,22 @@
     ]
   },
   {
+    "n": "Kyrenia",
+    "la": 35.3363,
+    "lo": 33.3173,
+    "tz": "Asia/Famagusta",
+    "iso2": "CY",
+    "country": "NORTH CYPRUS",
+    "pop": 26701,
+    "ilceID": "15159",
+    "ilceUrl": "/en-US/15159/prayer-time-for-girne",
+    "u": 1,
+    "p": "KUZEY KIBRIS",
+    "d": [
+      "GIRNE"
+    ]
+  },
+  {
     "n": "La Ceiba",
     "la": 15.7597,
     "lo": -86.7822,
@@ -5453,6 +6861,22 @@
     "p": "DOMINIK CUMHURIYETI",
     "d": [
       "LA ROMANA"
+    ]
+  },
+  {
+    "n": "Labe",
+    "la": 11.3182,
+    "lo": -12.2833,
+    "tz": "Africa/Conakry",
+    "iso2": "GN",
+    "country": "GUINEA",
+    "pop": 107571,
+    "ilceID": "13448",
+    "ilceUrl": "/en-US/13448/prayer-time-for-labe",
+    "u": 111,
+    "p": "GINE",
+    "d": [
+      "LABE"
     ]
   },
   {
@@ -5632,6 +7056,38 @@
     ]
   },
   {
+    "n": "Leon de los Aldama",
+    "la": 21.1218,
+    "lo": -101.6825,
+    "tz": "America/Mexico_City",
+    "iso2": "MX",
+    "country": "MEXICO",
+    "pop": 1579803,
+    "ilceID": "15401",
+    "ilceUrl": "/en-US/15401/prayer-time-for-leon",
+    "u": 53,
+    "p": "MEKSIKA",
+    "d": [
+      "LEON"
+    ]
+  },
+  {
+    "n": "Les Cayes",
+    "la": 18.192,
+    "lo": -73.7495,
+    "tz": "America/Port-au-Prince",
+    "iso2": "HT",
+    "country": "HAITI",
+    "pop": 125799,
+    "ilceID": "13566",
+    "ilceUrl": "/en-US/13566/prayer-time-for-les-cayes",
+    "u": 70,
+    "p": "HAITI",
+    "d": [
+      "LES CAYES"
+    ]
+  },
+  {
     "n": "Liberec",
     "la": 50.7671,
     "lo": 15.0562,
@@ -5792,6 +7248,22 @@
     ]
   },
   {
+    "n": "Linguere",
+    "la": 15.3953,
+    "lo": -15.1193,
+    "tz": "Africa/Dakar",
+    "iso2": "SN",
+    "country": "SENEGAL",
+    "pop": 19191,
+    "ilceID": "16185",
+    "ilceUrl": "/en-US/16185/prayer-time-for-linguere",
+    "u": 102,
+    "p": "SENEGAL",
+    "d": [
+      "LINGUERE"
+    ]
+  },
+  {
     "n": "Linkoeping",
     "la": 58.4109,
     "lo": 15.6216,
@@ -5853,6 +7325,22 @@
     "p": "SLOVENYA",
     "d": [
       "LJUBLJANA"
+    ]
+  },
+  {
+    "n": "Lobatse",
+    "la": -25.2244,
+    "lo": 25.6773,
+    "tz": "Africa/Gaborone",
+    "iso2": "BW",
+    "country": "BOTSWANA",
+    "pop": 29772,
+    "ilceID": "12037",
+    "ilceUrl": "/en-US/12037/prayer-time-for-lobatse",
+    "u": 167,
+    "p": "BOTSVANA",
+    "d": [
+      "LOBATSE"
     ]
   },
   {
@@ -5952,6 +7440,38 @@
     ]
   },
   {
+    "n": "Luanshya",
+    "la": -13.1367,
+    "lo": 28.4166,
+    "tz": "Africa/Lusaka",
+    "iso2": "ZM",
+    "country": "ZAMBIYA",
+    "pop": 193293,
+    "ilceID": "16694",
+    "ilceUrl": "/en-US/16694/prayer-time-for-luanshya",
+    "u": 158,
+    "p": "ZAMBIYA",
+    "d": [
+      "LUANSHYA"
+    ]
+  },
+  {
+    "n": "Lubango",
+    "la": -14.9172,
+    "lo": 13.4925,
+    "tz": "Africa/Luanda",
+    "iso2": "AO",
+    "country": "ANGOLA",
+    "pop": 600751,
+    "ilceID": "11133",
+    "ilceUrl": "/en-US/11133/prayer-time-for-lubango",
+    "u": 140,
+    "p": "ANGOLA",
+    "d": [
+      "LUBANGO"
+    ]
+  },
+  {
     "n": "Lubumbashi",
     "la": -11.6609,
     "lo": 27.4794,
@@ -5965,6 +7485,22 @@
     "p": "DEMOKRATIK KONGO CUMHURIYETI",
     "d": [
       "LUBUMBASHI"
+    ]
+  },
+  {
+    "n": "Luderitz",
+    "la": -26.6481,
+    "lo": 15.1538,
+    "tz": "Africa/Windhoek",
+    "iso2": "NA",
+    "country": "NAMIBYA",
+    "pop": 15137,
+    "ilceID": "15558",
+    "ilceUrl": "/en-US/15558/prayer-time-for-luderitz",
+    "u": 196,
+    "p": "NAMIBYA",
+    "d": [
+      "LUDERITZ"
     ]
   },
   {
@@ -6061,6 +7597,22 @@
     "p": "MAKAO",
     "d": [
       "MAKAO"
+    ]
+  },
+  {
+    "n": "Machakos",
+    "la": -1.5223,
+    "lo": 37.2652,
+    "tz": "Africa/Nairobi",
+    "iso2": "KE",
+    "country": "KENYA",
+    "pop": 63767,
+    "ilceID": "15013",
+    "ilceUrl": "/en-US/15013/prayer-time-for-machakos",
+    "u": 114,
+    "p": "KENYA",
+    "d": [
+      "MACHAKOS"
     ]
   },
   {
@@ -6176,6 +7728,22 @@
     ]
   },
   {
+    "n": "Makokou",
+    "la": 0.5738,
+    "lo": 12.8642,
+    "tz": "Africa/Libreville",
+    "iso2": "GA",
+    "country": "GABON",
+    "pop": 24823,
+    "ilceID": "13433",
+    "ilceUrl": "/en-US/13433/prayer-time-for-makokou",
+    "u": 79,
+    "p": "GABON",
+    "d": [
+      "MAKOKOU"
+    ]
+  },
+  {
     "n": "Malabo",
     "la": 3.7558,
     "lo": 8.7817,
@@ -6192,6 +7760,22 @@
     ]
   },
   {
+    "n": "Malacca",
+    "la": 2.196,
+    "lo": 102.2405,
+    "tz": "Asia/Kuala_Lumpur",
+    "iso2": "MY",
+    "country": "MALAYSIA",
+    "pop": 579000,
+    "ilceID": "15342",
+    "ilceUrl": "/en-US/15342/prayer-time-for-melaka",
+    "u": 107,
+    "p": "MALEZYA",
+    "d": [
+      "MELAKA"
+    ]
+  },
+  {
     "n": "Malaga",
     "la": 36.7202,
     "lo": -4.4203,
@@ -6205,6 +7789,22 @@
     "p": "ISPANYA",
     "d": [
       "MALAGA"
+    ]
+  },
+  {
+    "n": "Malanje",
+    "la": -9.5402,
+    "lo": 16.341,
+    "tz": "Africa/Luanda",
+    "iso2": "AO",
+    "country": "ANGOLA",
+    "pop": 455000,
+    "ilceID": "11138",
+    "ilceUrl": "/en-US/11138/prayer-time-for-malanje",
+    "u": 140,
+    "p": "ANGOLA",
+    "d": [
+      "MALANJE"
     ]
   },
   {
@@ -6317,6 +7917,22 @@
     "p": "KIRGIZISTAN",
     "d": [
       "JALAL ABAD"
+    ]
+  },
+  {
+    "n": "Manaus",
+    "la": -3.1019,
+    "lo": -60.025,
+    "tz": "America/Manaus",
+    "iso2": "BR",
+    "country": "BRAZIL",
+    "pop": 2219580,
+    "ilceID": "12079",
+    "ilceUrl": "/en-US/12079/prayer-time-for-manaus",
+    "u": 146,
+    "p": "BREZILYA",
+    "d": [
+      "MANAUS"
     ]
   },
   {
@@ -7152,6 +8768,22 @@
     ]
   },
   {
+    "n": "Muang Sing",
+    "la": 21.1921,
+    "lo": 101.1479,
+    "tz": "Asia/Vientiane",
+    "iso2": "LA",
+    "country": "LAOS",
+    "pop": 23500,
+    "ilceID": "15167",
+    "ilceUrl": "/en-US/15167/prayer-time-for-muang-sing",
+    "u": 134,
+    "p": "LAOS",
+    "d": [
+      "MUANG SING"
+    ]
+  },
+  {
     "n": "Mukalla",
     "la": 14.5425,
     "lo": 49.1242,
@@ -7312,6 +8944,22 @@
     ]
   },
   {
+    "n": "Nakhon Ratchasima",
+    "la": 14.9707,
+    "lo": 102.102,
+    "tz": "Asia/Bangkok",
+    "iso2": "TH",
+    "country": "THAILAND",
+    "pop": 126391,
+    "ilceID": "16351",
+    "ilceUrl": "/en-US/16351/prayer-time-for-nakhon-ratchasima",
+    "u": 137,
+    "p": "TAYLAND",
+    "d": [
+      "NAKHON RATCHASIMA"
+    ]
+  },
+  {
     "n": "Nakuru",
     "la": -0.3072,
     "lo": 36.0722,
@@ -7421,6 +9069,22 @@
     "p": "BAHAMALAR",
     "d": [
       "NASSAU"
+    ]
+  },
+  {
+    "n": "Naxcivan",
+    "la": 39.2089,
+    "lo": 45.4122,
+    "tz": "Asia/Baku",
+    "iso2": "AZ",
+    "country": "AZERBAIJAN",
+    "pop": 97200,
+    "ilceID": "11637",
+    "ilceUrl": "/en-US/11637/prayer-time-for-nahcivan",
+    "u": 5,
+    "p": "AZERBAYCAN",
+    "d": [
+      "NAXÇIVAN"
     ]
   },
   {
@@ -7536,6 +9200,22 @@
     ]
   },
   {
+    "n": "Niamtougou",
+    "la": 9.7681,
+    "lo": 1.1053,
+    "tz": "Africa/Lome",
+    "iso2": "TG",
+    "country": "TOGO",
+    "pop": 23261,
+    "ilceID": "16372",
+    "ilceUrl": "/en-US/16372/prayer-time-for-niamtougou",
+    "u": 71,
+    "p": "TOGO",
+    "d": [
+      "NIAMTOUGOU"
+    ]
+  },
+  {
     "n": "Nice",
     "la": 43.7031,
     "lo": 7.2661,
@@ -7597,6 +9277,54 @@
     "p": "SLOVAKYA",
     "d": [
       "NITRA"
+    ]
+  },
+  {
+    "n": "Nizwa",
+    "la": 22.9333,
+    "lo": 57.5333,
+    "tz": "Asia/Muscat",
+    "iso2": "OM",
+    "country": "UMMAN",
+    "pop": 72076,
+    "ilceID": "16529",
+    "ilceUrl": "/en-US/16529/prayer-time-for-nizwa",
+    "u": 173,
+    "p": "UMMAN",
+    "d": [
+      "NIZWA"
+    ]
+  },
+  {
+    "n": "Nkongsamba",
+    "la": 4.9547,
+    "lo": 9.9404,
+    "tz": "Africa/Douala",
+    "iso2": "CM",
+    "country": "CAMEROON",
+    "pop": 162309,
+    "ilceID": "14855",
+    "ilceUrl": "/en-US/14855/prayer-time-for-nkongsamba",
+    "u": 184,
+    "p": "KAMERUN",
+    "d": [
+      "NKONGSAMBA"
+    ]
+  },
+  {
+    "n": "Nola",
+    "la": 3.5249,
+    "lo": 16.0458,
+    "tz": "Africa/Bangui",
+    "iso2": "CF",
+    "country": "ORTA AFRIKA CUMHURIYETI",
+    "pop": 31923,
+    "ilceID": "15709",
+    "ilceUrl": "/en-US/15709/prayer-time-for-nola",
+    "u": 80,
+    "p": "ORTA AFRIKA CUMHURIYETI",
+    "d": [
+      "NOLA"
     ]
   },
   {
@@ -7792,6 +9520,22 @@
     ]
   },
   {
+    "n": "Obock",
+    "la": 11.9669,
+    "lo": 43.2884,
+    "tz": "Africa/Djibouti",
+    "iso2": "DJ",
+    "country": "CIBUTI",
+    "pop": 15429,
+    "ilceID": "12365",
+    "ilceUrl": "/en-US/12365/prayer-time-for-obock",
+    "u": 160,
+    "p": "CIBUTI",
+    "d": [
+      "OBOCK"
+    ]
+  },
+  {
     "n": "Odense",
     "la": 55.3959,
     "lo": 10.3883,
@@ -7837,6 +9581,22 @@
     "p": "ISVEC",
     "d": [
       "OREBRO"
+    ]
+  },
+  {
+    "n": "Ogre",
+    "la": 56.8162,
+    "lo": 24.614,
+    "tz": "Europe/Riga",
+    "iso2": "LV",
+    "country": "LATVIA",
+    "pop": 22767,
+    "ilceID": "15176",
+    "ilceUrl": "/en-US/15176/prayer-time-for-ogre",
+    "u": 20,
+    "p": "LETONYA",
+    "d": [
+      "OGRE"
     ]
   },
   {
@@ -8016,6 +9776,22 @@
     ]
   },
   {
+    "n": "Otjiwarongo",
+    "la": -20.4637,
+    "lo": 16.6477,
+    "tz": "Africa/Windhoek",
+    "iso2": "NA",
+    "country": "NAMIBYA",
+    "pop": 33481,
+    "ilceID": "15557",
+    "ilceUrl": "/en-US/15557/prayer-time-for-otjiwarongo",
+    "u": 196,
+    "p": "NAMIBYA",
+    "d": [
+      "OTJIWARONGO"
+    ]
+  },
+  {
     "n": "Ottawa",
     "la": 45.4112,
     "lo": -75.6981,
@@ -8096,6 +9872,22 @@
     ]
   },
   {
+    "n": "Paernu",
+    "la": 58.3859,
+    "lo": 24.4971,
+    "tz": "Europe/Tallinn",
+    "iso2": "EE",
+    "country": "ESTONYA",
+    "pop": 40228,
+    "ilceID": "12788",
+    "ilceUrl": "/en-US/12788/prayer-time-for-parnu",
+    "u": 6,
+    "p": "ESTONYA",
+    "d": [
+      "PARNU"
+    ]
+  },
+  {
     "n": "Palermo",
     "la": 38.1166,
     "lo": 13.3636,
@@ -8160,6 +9952,22 @@
     ]
   },
   {
+    "n": "Paphos",
+    "la": 34.7768,
+    "lo": 32.4245,
+    "tz": "Asia/Nicosia",
+    "iso2": "CY",
+    "country": "NORTH CYPRUS",
+    "pop": 35961,
+    "ilceID": "17914",
+    "ilceUrl": "/en-US/17914/prayer-time-for-baf",
+    "u": 1,
+    "p": "KUZEY KIBRIS",
+    "d": [
+      "PAPHOS"
+    ]
+  },
+  {
     "n": "Parakou",
     "la": 9.3372,
     "lo": 2.6303,
@@ -8208,6 +10016,22 @@
     ]
   },
   {
+    "n": "Pathein",
+    "la": 16.7792,
+    "lo": 94.7321,
+    "tz": "Asia/Yangon",
+    "iso2": "MM",
+    "country": "MYANMAR",
+    "pop": 237089,
+    "ilceID": "12268",
+    "ilceUrl": "/en-US/12268/prayer-time-for-bassein",
+    "u": 154,
+    "p": "MYANMAR",
+    "d": [
+      "BASSEIN"
+    ]
+  },
+  {
     "n": "Paysandu",
     "la": -32.3171,
     "lo": -58.0807,
@@ -8221,6 +10045,22 @@
     "p": "URUGUAY",
     "d": [
       "PAYSANDU"
+    ]
+  },
+  {
+    "n": "Pecs",
+    "la": 46.0762,
+    "lo": 18.2281,
+    "tz": "Europe/Budapest",
+    "iso2": "HU",
+    "country": "HUNGARY",
+    "pop": 145347,
+    "ilceID": "15258",
+    "ilceUrl": "/en-US/15258/prayer-time-for-pecs",
+    "u": 7,
+    "p": "MACARISTAN",
+    "d": [
+      "PECS"
     ]
   },
   {
@@ -8381,6 +10221,22 @@
     "p": "NIJERYA",
     "d": [
       "PORT HARCOURT"
+    ]
+  },
+  {
+    "n": "Port Loko",
+    "la": 8.7661,
+    "lo": -12.787,
+    "tz": "Africa/Freetown",
+    "iso2": "SL",
+    "country": "SIERRA LEONE",
+    "pop": 44900,
+    "ilceID": "20049",
+    "ilceUrl": "/en-US/20049/prayer-time-for-port-loko",
+    "u": 210,
+    "p": "SIERRA LEONE",
+    "d": [
+      "PORT LOKO"
     ]
   },
   {
@@ -8640,6 +10496,22 @@
     ]
   },
   {
+    "n": "Prey Veng",
+    "la": 11.4868,
+    "lo": 105.3253,
+    "tz": "Asia/Phnom_Penh",
+    "iso2": "KH",
+    "country": "KAMBOCYA",
+    "pop": 33079,
+    "ilceID": "14848",
+    "ilceUrl": "/en-US/14848/prayer-time-for-prey-veng",
+    "u": 161,
+    "p": "KAMBOCYA",
+    "d": [
+      "PREY VENG"
+    ]
+  },
+  {
     "n": "Prilep",
     "la": 41.3456,
     "lo": 21.5537,
@@ -8720,6 +10592,70 @@
     ]
   },
   {
+    "n": "Puerto Montt",
+    "la": -41.4693,
+    "lo": -72.9424,
+    "tz": "America/Santiago",
+    "iso2": "CL",
+    "country": "CHILE",
+    "pop": 245902,
+    "ilceID": "16204",
+    "ilceUrl": "/en-US/16204/prayer-time-for-puerto-montt",
+    "u": 200,
+    "p": "SILI",
+    "d": [
+      "PUERTO MONTT"
+    ]
+  },
+  {
+    "n": "Puerto Plata",
+    "la": 19.7934,
+    "lo": -70.6884,
+    "tz": "America/Santo_Domingo",
+    "iso2": "DO",
+    "country": "DOMINIK CUMHURIYETI",
+    "pop": 146000,
+    "ilceID": "12682",
+    "ilceUrl": "/en-US/12682/prayer-time-for-puerto-plata",
+    "u": 72,
+    "p": "DOMINIK CUMHURIYETI",
+    "d": [
+      "PUERTO PLATA"
+    ]
+  },
+  {
+    "n": "Pula",
+    "la": 44.8683,
+    "lo": 13.8481,
+    "tz": "Europe/Zagreb",
+    "iso2": "HR",
+    "country": "CROATIA",
+    "pop": 52220,
+    "ilceID": "13699",
+    "ilceUrl": "/en-US/13699/prayer-time-for-pula",
+    "u": 30,
+    "p": "HIRVATISTAN",
+    "d": [
+      "PULA"
+    ]
+  },
+  {
+    "n": "Pursat",
+    "la": 12.5388,
+    "lo": 103.9192,
+    "tz": "Asia/Phnom_Penh",
+    "iso2": "KH",
+    "country": "KAMBOCYA",
+    "pop": 52476,
+    "ilceID": "14849",
+    "ilceUrl": "/en-US/14849/prayer-time-for-pouthisat",
+    "u": 161,
+    "p": "KAMBOCYA",
+    "d": [
+      "POUTHISAT"
+    ]
+  },
+  {
     "n": "Pyongyang",
     "la": 39.0339,
     "lo": 125.7543,
@@ -8797,6 +10733,54 @@
     "p": "BANGLADES",
     "d": [
       "RAJSHAHI"
+    ]
+  },
+  {
+    "n": "Ramallah",
+    "la": 31.8996,
+    "lo": 35.2042,
+    "tz": "Asia/Hebron",
+    "iso2": "PS",
+    "country": "FILISTIN",
+    "pop": 43880,
+    "ilceID": "12863",
+    "ilceUrl": "/en-US/12863/prayer-time-for-ramallah",
+    "u": 204,
+    "p": "FILISTIN",
+    "d": [
+      "RAMALLAH"
+    ]
+  },
+  {
+    "n": "Randers",
+    "la": 56.4607,
+    "lo": 10.0364,
+    "tz": "Europe/Copenhagen",
+    "iso2": "DK",
+    "country": "DENMARK",
+    "pop": 62802,
+    "ilceID": "12643",
+    "ilceUrl": "/en-US/12643/prayer-time-for-randers",
+    "u": 26,
+    "p": "DANIMARKA",
+    "d": [
+      "RANDERS"
+    ]
+  },
+  {
+    "n": "Ras Al Khaimah",
+    "la": 25.7895,
+    "lo": 55.9432,
+    "tz": "Asia/Dubai",
+    "iso2": "AE",
+    "country": "UNITED ARAB EMIRATES",
+    "pop": 351943,
+    "ilceID": "11946",
+    "ilceUrl": "/en-US/11946/prayer-time-for-ras-al-khaymah",
+    "u": 93,
+    "p": "BIRLESIK ARAP EMIRLIGI",
+    "d": [
+      "RAS AL KHAYMAH"
     ]
   },
   {
@@ -9008,6 +10992,22 @@
     ]
   },
   {
+    "n": "Sabha",
+    "la": 27.0377,
+    "lo": 14.4283,
+    "tz": "Africa/Tripoli",
+    "iso2": "LY",
+    "country": "LIBYA",
+    "pop": 149329,
+    "ilceID": "15184",
+    "ilceUrl": "/en-US/15184/prayer-time-for-sabha",
+    "u": 203,
+    "p": "LIBYA",
+    "d": [
+      "SABHA"
+    ]
+  },
+  {
     "n": "Sacaba",
     "la": -17.398,
     "lo": -66.0383,
@@ -9069,6 +11069,22 @@
     "p": "RUSYA",
     "d": [
       "St. PETERSBURG"
+    ]
+  },
+  {
+    "n": "Saint-Louis",
+    "la": 16.0179,
+    "lo": -16.4896,
+    "tz": "Africa/Dakar",
+    "iso2": "SN",
+    "country": "SENEGAL",
+    "pop": 254171,
+    "ilceID": "16186",
+    "ilceUrl": "/en-US/16186/prayer-time-for-saint-louis",
+    "u": 102,
+    "p": "SENEGAL",
+    "d": [
+      "SAINT-LOUIS"
     ]
   },
   {
@@ -9152,6 +11168,38 @@
     ]
   },
   {
+    "n": "Salzburg",
+    "la": 47.7994,
+    "lo": 13.044,
+    "tz": "Europe/Vienna",
+    "iso2": "AT",
+    "country": "AUSTRIA",
+    "pop": 157245,
+    "ilceID": "11617",
+    "ilceUrl": "/en-US/11617/prayer-time-for-salzburg",
+    "u": 35,
+    "p": "AVUSTURYA",
+    "d": [
+      "SALZBURG"
+    ]
+  },
+  {
+    "n": "San Cristobal",
+    "la": 18.4171,
+    "lo": -70.1068,
+    "tz": "America/Santo_Domingo",
+    "iso2": "DO",
+    "country": "DOMINIK CUMHURIYETI",
+    "pop": 154040,
+    "ilceID": "12683",
+    "ilceUrl": "/en-US/12683/prayer-time-for-san-cristobal",
+    "u": 72,
+    "p": "DOMINIK CUMHURIYETI",
+    "d": [
+      "SAN CRISTOBAL"
+    ]
+  },
+  {
     "n": "San Fernando",
     "la": 10.2797,
     "lo": -61.4684,
@@ -9165,6 +11213,22 @@
     "p": "TRINIDAT VE TOBAGO",
     "d": [
       "SAN FERNANDO"
+    ]
+  },
+  {
+    "n": "San Francisco de Macoris",
+    "la": 19.2938,
+    "lo": -70.2528,
+    "tz": "America/Santo_Domingo",
+    "iso2": "DO",
+    "country": "DOMINIK CUMHURIYETI",
+    "pop": 124763,
+    "ilceID": "12684",
+    "ilceUrl": "/en-US/12684/prayer-time-for-san-francisco-de-macoris",
+    "u": 72,
+    "p": "DOMINIK CUMHURIYETI",
+    "d": [
+      "SAN FRANCISCO DE MACORIS"
     ]
   },
   {
@@ -9424,6 +11488,22 @@
     ]
   },
   {
+    "n": "Santiago de Veraguas",
+    "la": 8.1,
+    "lo": -80.9833,
+    "tz": "America/Panama",
+    "iso2": "PA",
+    "country": "PANAMA",
+    "pop": 45355,
+    "ilceID": "15804",
+    "ilceUrl": "/en-US/15804/prayer-time-for-santiago",
+    "u": 89,
+    "p": "PANAMA",
+    "d": [
+      "SANTIAGO"
+    ]
+  },
+  {
     "n": "Santo Domingo",
     "la": 18.4719,
     "lo": -69.8923,
@@ -9520,6 +11600,22 @@
     ]
   },
   {
+    "n": "Saurimo",
+    "la": -9.6608,
+    "lo": 20.3915,
+    "tz": "Africa/Luanda",
+    "iso2": "AO",
+    "country": "ANGOLA",
+    "pop": 393000,
+    "ilceID": "11139",
+    "ilceUrl": "/en-US/11139/prayer-time-for-saurimo",
+    "u": 140,
+    "p": "ANGOLA",
+    "d": [
+      "SAURIMO"
+    ]
+  },
+  {
     "n": "Segou",
     "la": 13.4403,
     "lo": -6.2595,
@@ -9552,6 +11648,22 @@
     ]
   },
   {
+    "n": "Selibaby",
+    "la": 15.1585,
+    "lo": -12.1843,
+    "tz": "Africa/Nouakchott",
+    "iso2": "MR",
+    "country": "MORITANYA",
+    "pop": 32653,
+    "ilceID": "16724",
+    "ilceUrl": "/en-US/16724/prayer-time-for-selibaby",
+    "u": 106,
+    "p": "MORITANYA",
+    "d": [
+      "SELİBABY"
+    ]
+  },
+  {
     "n": "Seoul",
     "la": 37.566,
     "lo": 126.9784,
@@ -9565,6 +11677,22 @@
     "p": "GUNEY KORE",
     "d": [
       "SEUL"
+    ]
+  },
+  {
+    "n": "Setubal",
+    "la": 38.5244,
+    "lo": -8.8882,
+    "tz": "Europe/Lisbon",
+    "iso2": "PT",
+    "country": "PORTUGAL",
+    "pop": 118166,
+    "ilceID": "15888",
+    "ilceUrl": "/en-US/15888/prayer-time-for-setubal",
+    "u": 45,
+    "p": "PORTEKIZ",
+    "d": [
+      "SETUBAL"
     ]
   },
   {
@@ -9824,6 +11952,22 @@
     ]
   },
   {
+    "n": "Sohar",
+    "la": 24.3474,
+    "lo": 56.7094,
+    "tz": "Asia/Muscat",
+    "iso2": "OM",
+    "country": "UMMAN",
+    "pop": 108274,
+    "ilceID": "16530",
+    "ilceUrl": "/en-US/16530/prayer-time-for-suhar",
+    "u": 173,
+    "p": "UMMAN",
+    "d": [
+      "SUHAR"
+    ]
+  },
+  {
     "n": "Sokhumi",
     "la": 43.007,
     "lo": 40.9893,
@@ -9936,6 +12080,22 @@
     ]
   },
   {
+    "n": "Sri Jayewardenepura Kotte",
+    "la": 6.883,
+    "lo": 79.9071,
+    "tz": "Asia/Colombo",
+    "iso2": "LK",
+    "country": "SRI LANKA",
+    "pop": 115826,
+    "ilceID": "16281",
+    "ilceUrl": "/en-US/16281/prayer-time-for-sri-jayawardenepura",
+    "u": 74,
+    "p": "SRI LANKA",
+    "d": [
+      "SRI JAYAWARDENEPURA"
+    ]
+  },
+  {
     "n": "Stara Zagora",
     "la": 42.432,
     "lo": 25.6426,
@@ -10032,6 +12192,22 @@
     ]
   },
   {
+    "n": "Sur",
+    "la": 22.5667,
+    "lo": 59.5289,
+    "tz": "Asia/Muscat",
+    "iso2": "OM",
+    "country": "UMMAN",
+    "pop": 71152,
+    "ilceID": "16528",
+    "ilceUrl": "/en-US/16528/prayer-time-for-sur",
+    "u": 173,
+    "p": "UMMAN",
+    "d": [
+      "SUR"
+    ]
+  },
+  {
     "n": "Surabaya",
     "la": -7.2492,
     "lo": 112.7508,
@@ -10045,6 +12221,22 @@
     "p": "ENDONEZYA",
     "d": [
       "SURABAYA"
+    ]
+  },
+  {
+    "n": "Surat Thani",
+    "la": 9.1401,
+    "lo": 99.3331,
+    "tz": "Asia/Bangkok",
+    "iso2": "TH",
+    "country": "THAILAND",
+    "pop": 132040,
+    "ilceID": "16346",
+    "ilceUrl": "/en-US/16346/prayer-time-for-surat-thani",
+    "u": 137,
+    "p": "TAYLAND",
+    "d": [
+      "SURAT THANI"
     ]
   },
   {
@@ -10125,6 +12317,22 @@
     "p": "IRAN",
     "d": [
       "TABRIZ"
+    ]
+  },
+  {
+    "n": "Tacuarembo",
+    "la": -31.7188,
+    "lo": -55.9793,
+    "tz": "America/Montevideo",
+    "iso2": "UY",
+    "country": "URUGUAY",
+    "pop": 60586,
+    "ilceID": "16550",
+    "ilceUrl": "/en-US/16550/prayer-time-for-tacuarembo",
+    "u": 201,
+    "p": "URUGUAY",
+    "d": [
+      "TACUAREMBO"
     ]
   },
   {
@@ -10336,6 +12544,22 @@
     ]
   },
   {
+    "n": "Tauranga",
+    "la": -37.6861,
+    "lo": 176.1667,
+    "tz": "Pacific/Auckland",
+    "iso2": "NZ",
+    "country": "NEW ZEALAND",
+    "pop": 161000,
+    "ilceID": "16632",
+    "ilceUrl": "/en-US/16632/prayer-time-for-tauranga",
+    "u": 193,
+    "p": "YENI ZELANDA",
+    "d": [
+      "TAURANGA"
+    ]
+  },
+  {
     "n": "Tbilisi",
     "la": 41.6914,
     "lo": 44.8341,
@@ -10349,6 +12573,22 @@
     "p": "GURCISTAN",
     "d": [
       "TBILISI"
+    ]
+  },
+  {
+    "n": "Tchibanga",
+    "la": -2.9332,
+    "lo": 10.9818,
+    "tz": "Africa/Libreville",
+    "iso2": "GA",
+    "country": "GABON",
+    "pop": 36108,
+    "ilceID": "13434",
+    "ilceUrl": "/en-US/13434/prayer-time-for-tchibanga",
+    "u": 79,
+    "p": "GABON",
+    "d": [
+      "TCHIBANGA"
     ]
   },
   {
@@ -10384,19 +12624,19 @@
     ]
   },
   {
-    "n": "Tel Aviv",
-    "la": 32.0809,
-    "lo": 34.7806,
-    "tz": "Asia/Jerusalem",
-    "iso2": "IL",
-    "country": "ISRAEL",
-    "pop": 432892,
-    "ilceID": "14269",
-    "ilceUrl": "/en-US/14269/prayer-time-for-tel-aviv",
-    "u": 205,
-    "p": "ISRAIL",
+    "n": "Tenkodogo",
+    "la": 11.7844,
+    "lo": -0.3718,
+    "tz": "Africa/Ouagadougou",
+    "iso2": "BF",
+    "country": "BURKINA FASO",
+    "pop": 61936,
+    "ilceID": "12261",
+    "ilceUrl": "/en-US/12261/prayer-time-for-tenkodogo",
+    "u": 91,
+    "p": "BURKINA FASO",
     "d": [
-      "TEL AVIV"
+      "TENKODOGO"
     ]
   },
   {
@@ -10544,6 +12784,38 @@
     ]
   },
   {
+    "n": "Timbuktu",
+    "la": 16.7735,
+    "lo": -3.0074,
+    "tz": "Africa/Bamako",
+    "iso2": "ML",
+    "country": "MALI",
+    "pop": 84208,
+    "ilceID": "15347",
+    "ilceUrl": "/en-US/15347/prayer-time-for-tombouctou",
+    "u": 152,
+    "p": "MALI",
+    "d": [
+      "TOMBOUCTOU"
+    ]
+  },
+  {
+    "n": "Timisoara",
+    "la": 45.7537,
+    "lo": 21.2257,
+    "tz": "Europe/Bucharest",
+    "iso2": "RO",
+    "country": "ROMANIA",
+    "pop": 250849,
+    "ilceID": "15949",
+    "ilceUrl": "/en-US/15949/prayer-time-for-temisvar",
+    "u": 37,
+    "p": "ROMANYA",
+    "d": [
+      "TEMISVAR"
+    ]
+  },
+  {
     "n": "Tirana",
     "la": 41.3274,
     "lo": 19.8187,
@@ -10589,6 +12861,22 @@
     "p": "MADAGASKAR",
     "d": [
       "TOAMASINA"
+    ]
+  },
+  {
+    "n": "Tobruk",
+    "la": 32.0896,
+    "lo": 23.9538,
+    "tz": "Africa/Tripoli",
+    "iso2": "LY",
+    "country": "LIBYA",
+    "pop": 141499,
+    "ilceID": "15187",
+    "ilceUrl": "/en-US/15187/prayer-time-for-tobruk",
+    "u": 203,
+    "p": "LIBYA",
+    "d": [
+      "TOBRUK"
     ]
   },
   {
@@ -10640,6 +12928,22 @@
     ]
   },
   {
+    "n": "Tororo",
+    "la": 0.693,
+    "lo": 34.1808,
+    "tz": "Africa/Kampala",
+    "iso2": "UG",
+    "country": "UGANDA",
+    "pop": 48500,
+    "ilceID": "16420",
+    "ilceUrl": "/en-US/16420/prayer-time-for-tororo",
+    "u": 75,
+    "p": "UGANDA",
+    "d": [
+      "TORORO"
+    ]
+  },
+  {
     "n": "Toulouse",
     "la": 43.6043,
     "lo": 1.4437,
@@ -10653,6 +12957,38 @@
     "p": "FRANSA",
     "d": [
       "TOULOUSE"
+    ]
+  },
+  {
+    "n": "Tralee",
+    "la": 52.2704,
+    "lo": -9.7026,
+    "tz": "Europe/Dublin",
+    "iso2": "IE",
+    "country": "IRELAND",
+    "pop": 26079,
+    "ilceID": "14208",
+    "ilceUrl": "/en-US/14208/prayer-time-for-tralee",
+    "u": 32,
+    "p": "IRLANDA",
+    "d": [
+      "TRALEE"
+    ]
+  },
+  {
+    "n": "Trincomalee",
+    "la": 8.5778,
+    "lo": 81.2289,
+    "tz": "Asia/Colombo",
+    "iso2": "LK",
+    "country": "SRI LANKA",
+    "pop": 108420,
+    "ilceID": "16284",
+    "ilceUrl": "/en-US/16284/prayer-time-for-trincomalee",
+    "u": 74,
+    "p": "SRI LANKA",
+    "d": [
+      "TRINCOMALEE"
     ]
   },
   {
@@ -10685,6 +13021,22 @@
     "p": "LIBYA",
     "d": [
       "TRIPOLI"
+    ]
+  },
+  {
+    "n": "Trnava",
+    "la": 48.3777,
+    "lo": 17.586,
+    "tz": "Europe/Bratislava",
+    "iso2": "SK",
+    "country": "SLOVAKIA",
+    "pop": 62806,
+    "ilceID": "16249",
+    "ilceUrl": "/en-US/16249/prayer-time-for-trnava",
+    "u": 14,
+    "p": "SLOVAKYA",
+    "d": [
+      "TRNAVA"
     ]
   },
   {
@@ -10752,6 +13104,22 @@
     ]
   },
   {
+    "n": "Tulkarm",
+    "la": 32.3116,
+    "lo": 35.0269,
+    "tz": "Asia/Hebron",
+    "iso2": "PS",
+    "country": "FILISTIN",
+    "pop": 44169,
+    "ilceID": "12864",
+    "ilceUrl": "/en-US/12864/prayer-time-for-tulkarem",
+    "u": 204,
+    "p": "FILISTIN",
+    "d": [
+      "TULKAREM"
+    ]
+  },
+  {
     "n": "Tunis",
     "la": 36.819,
     "lo": 10.1658,
@@ -10800,6 +13168,22 @@
     ]
   },
   {
+    "n": "Tursunzoda",
+    "la": 38.5127,
+    "lo": 68.2316,
+    "tz": "Asia/Dushanbe",
+    "iso2": "TJ",
+    "country": "TAJIKISTAN",
+    "pop": 37000,
+    "ilceID": "16329",
+    "ilceUrl": "/en-US/16329/prayer-time-for-tursunzoda",
+    "u": 101,
+    "p": "TACIKISTAN",
+    "d": [
+      "TURSUNZODA "
+    ]
+  },
+  {
     "n": "Tuzla",
     "la": 44.5384,
     "lo": 18.6671,
@@ -10829,6 +13213,38 @@
     "p": "LUBNAN",
     "d": [
       "SUR"
+    ]
+  },
+  {
+    "n": "Udon Thani",
+    "la": 17.4157,
+    "lo": 102.7859,
+    "tz": "Asia/Bangkok",
+    "iso2": "TH",
+    "country": "THAILAND",
+    "pop": 130531,
+    "ilceID": "16355",
+    "ilceUrl": "/en-US/16355/prayer-time-for-udon-thani",
+    "u": 137,
+    "p": "TAYLAND",
+    "d": [
+      "UDON THANI"
+    ]
+  },
+  {
+    "n": "Ulaangom",
+    "la": 49.9811,
+    "lo": 92.0667,
+    "tz": "Asia/Hovd",
+    "iso2": "MN",
+    "country": "MONGOLIA",
+    "pop": 30092,
+    "ilceID": "15515",
+    "ilceUrl": "/en-US/15515/prayer-time-for-ulaangom",
+    "u": 60,
+    "p": "MOGOLISTAN",
+    "d": [
+      "ULAANGOM"
     ]
   },
   {
@@ -10912,6 +13328,22 @@
     ]
   },
   {
+    "n": "Vahdat",
+    "la": 38.5563,
+    "lo": 69.0135,
+    "tz": "Asia/Dushanbe",
+    "iso2": "TJ",
+    "country": "TAJIKISTAN",
+    "pop": 45693,
+    "ilceID": "16325",
+    "ilceUrl": "/en-US/16325/prayer-time-for-orjonikidzeobod",
+    "u": 101,
+    "p": "TACIKISTAN",
+    "d": [
+      "ORJONIKIDZEOBOD "
+    ]
+  },
+  {
     "n": "Valencia (ES)",
     "la": 39.4739,
     "lo": -0.3797,
@@ -10976,6 +13408,38 @@
     ]
   },
   {
+    "n": "Vanadzor",
+    "la": 40.8074,
+    "lo": 44.497,
+    "tz": "Asia/Yerevan",
+    "iso2": "AM",
+    "country": "ARMENIA",
+    "pop": 78100,
+    "ilceID": "12783",
+    "ilceUrl": "/en-US/12783/prayer-time-for-vanadzor",
+    "u": 104,
+    "p": "ERMENISTAN",
+    "d": [
+      "VANADZOR"
+    ]
+  },
+  {
+    "n": "Vang Vieng",
+    "la": 18.9235,
+    "lo": 102.4478,
+    "tz": "Asia/Vientiane",
+    "iso2": "LA",
+    "country": "LAOS",
+    "pop": 25000,
+    "ilceID": "15164",
+    "ilceUrl": "/en-US/15164/prayer-time-for-muang-vangviang",
+    "u": 134,
+    "p": "LAOS",
+    "d": [
+      "MUANG VANGVIANG"
+    ]
+  },
+  {
     "n": "Vantaa",
     "la": 60.2941,
     "lo": 25.041,
@@ -11021,6 +13485,22 @@
     "p": "VATIKAN",
     "d": [
       "VATIKAN"
+    ]
+  },
+  {
+    "n": "Veles",
+    "la": 41.7172,
+    "lo": 21.772,
+    "tz": "Europe/Skopje",
+    "iso2": "MK",
+    "country": "MACEDONIA",
+    "pop": 57873,
+    "ilceID": "15309",
+    "ilceUrl": "/en-US/15309/prayer-time-for-titov-veles",
+    "u": 28,
+    "p": "MAKEDONYA",
+    "d": [
+      "TITOV VELES"
     ]
   },
   {
@@ -11104,6 +13584,22 @@
     ]
   },
   {
+    "n": "Viljandi",
+    "la": 58.3632,
+    "lo": 25.5916,
+    "tz": "Europe/Tallinn",
+    "iso2": "EE",
+    "country": "ESTONYA",
+    "pop": 17407,
+    "ilceID": "12793",
+    "ilceUrl": "/en-US/12793/prayer-time-for-viljandi",
+    "u": 6,
+    "p": "ESTONYA",
+    "d": [
+      "VILJANDI"
+    ]
+  },
+  {
     "n": "Villa Nueva",
     "la": 14.5251,
     "lo": -90.5854,
@@ -11117,6 +13613,22 @@
     "p": "GUATEMALA",
     "d": [
       "VILLA NUEVA"
+    ]
+  },
+  {
+    "n": "Villarrica",
+    "la": -25.7495,
+    "lo": -56.4352,
+    "tz": "America/Asuncion",
+    "iso2": "PY",
+    "country": "PARAGUAY",
+    "pop": 41157,
+    "ilceID": "15820",
+    "ilceUrl": "/en-US/15820/prayer-time-for-villarrica",
+    "u": 194,
+    "p": "PARAGUAY",
+    "d": [
+      "VILLARRICA"
     ]
   },
   {
@@ -11184,6 +13696,22 @@
     ]
   },
   {
+    "n": "Volos",
+    "la": 39.3692,
+    "lo": 22.9477,
+    "tz": "Europe/Athens",
+    "iso2": "GR",
+    "country": "GREECE",
+    "pop": 86048,
+    "ilceID": "16677",
+    "ilceUrl": "/en-US/16677/prayer-time-for-volos",
+    "u": 22,
+    "p": "YUNANISTAN",
+    "d": [
+      "VOLOS"
+    ]
+  },
+  {
     "n": "Warsaw",
     "la": 52.2298,
     "lo": 21.0118,
@@ -11229,6 +13757,22 @@
     "p": "YENI ZELANDA",
     "d": [
       "WELLINGTON"
+    ]
+  },
+  {
+    "n": "Wewak",
+    "la": -3.5496,
+    "lo": 143.6323,
+    "tz": "Pacific/Port_Moresby",
+    "iso2": "PG",
+    "country": "PAPUA YENI GINE",
+    "pop": 18230,
+    "ilceID": "15813",
+    "ilceUrl": "/en-US/15813/prayer-time-for-wewak",
+    "u": 185,
+    "p": "PAPUA YENI GINE",
+    "d": [
+      "WEWAK"
     ]
   },
   {
@@ -11456,6 +14000,38 @@
     ]
   },
   {
+    "n": "Zahle",
+    "la": 33.8468,
+    "lo": 35.902,
+    "tz": "Asia/Beirut",
+    "iso2": "LB",
+    "country": "LEBANON",
+    "pop": 78145,
+    "ilceID": "15215",
+    "ilceUrl": "/en-US/15215/prayer-time-for-zahlah",
+    "u": 42,
+    "p": "LUBNAN",
+    "d": [
+      "ZAHLAH"
+    ]
+  },
+  {
+    "n": "Zamboanga",
+    "la": 6.9103,
+    "lo": 122.0739,
+    "tz": "Asia/Manila",
+    "iso2": "PH",
+    "country": "PHILIPPINES",
+    "pop": 1018849,
+    "ilceID": "12856",
+    "ilceUrl": "/en-US/12856/prayer-time-for-zamboanga-city",
+    "u": 126,
+    "p": "FILIPINLER",
+    "d": [
+      "ZAMBOANGA CITY"
+    ]
+  },
+  {
     "n": "Zanzibar",
     "la": -6.1639,
     "lo": 39.1979,
@@ -11469,6 +14045,38 @@
     "p": "TANZANYA",
     "d": [
       "ZANZIBAR"
+    ]
+  },
+  {
+    "n": "Zapopan",
+    "la": 20.7211,
+    "lo": -103.3874,
+    "tz": "America/Mexico_City",
+    "iso2": "MX",
+    "country": "MEXICO",
+    "pop": 1476491,
+    "ilceID": "15445",
+    "ilceUrl": "/en-US/15445/prayer-time-for-zapopan",
+    "u": 53,
+    "p": "MEKSIKA",
+    "d": [
+      "ZAPOPAN"
+    ]
+  },
+  {
+    "n": "Zaporizhzhya",
+    "la": 47.8517,
+    "lo": 35.1171,
+    "tz": "Europe/Kyiv",
+    "iso2": "UA",
+    "country": "UKRAINE",
+    "pop": 710052,
+    "ilceID": "16477",
+    "ilceUrl": "/en-US/16477/prayer-time-for-zaporizhzhya",
+    "u": 40,
+    "p": "UKRAYNA",
+    "d": [
+      "ZAPORIZHZHYA"
     ]
   },
   {
@@ -11533,6 +14141,22 @@
     "p": "BOSNA HERSEK",
     "d": [
       "ZENICA"
+    ]
+  },
+  {
+    "n": "Ziguinchor",
+    "la": 12.568,
+    "lo": -16.2733,
+    "tz": "Africa/Dakar",
+    "iso2": "SN",
+    "country": "SENEGAL",
+    "pop": 214874,
+    "ilceID": "16187",
+    "ilceUrl": "/en-US/16187/prayer-time-for-ziguinchor",
+    "u": 102,
+    "p": "SENEGAL",
+    "d": [
+      "ZIGUINCHOR"
     ]
   },
   {

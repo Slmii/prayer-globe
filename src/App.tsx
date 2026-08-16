@@ -174,7 +174,7 @@ export default function App() {
             <button
               className={'pill-btn' + (spin ? ' pill-btn-on' : '')}
               aria-pressed={spin}
-              title="Auto-rotate the earth"
+              data-tip="Auto-rotate the earth"
               onClick={() => setSpin((v) => !v)}
             >
               <span className="pill-dot">{spin && <span className="pill-live pill-live-spin" />}</span>
@@ -184,7 +184,7 @@ export default function App() {
             <button
               className={'pill-btn' + (playing ? ' pill-btn-on' : '')}
               aria-pressed={playing !== 0}
-              title="Run the day forward"
+              data-tip="Run the day forward"
               onClick={() => (playing ? clock.stop() : clock.play(1))}
             >
               <span className="pill-dot">{!!playing && <span className="pill-live pill-live-play" />}</span>
@@ -194,7 +194,7 @@ export default function App() {
             <button
               className={'pill-btn' + (showOrrery ? ' pill-btn-on' : '')}
               aria-pressed={showOrrery}
-              title="Stars and planets"
+              data-tip="Stars and planets"
               onClick={() => setShowOrrery((v) => !v)}
             >
               <span className="pill-dot">{showOrrery && <span className="pill-live pill-live-sky" />}</span>
@@ -204,7 +204,7 @@ export default function App() {
             <button
               className={'pill-btn' + (showPaths ? ' pill-btn-on' : '')}
               aria-pressed={showPaths}
-              title="Tracks the sun and moon have taken"
+              data-tip="Tracks the sun and moon have taken"
               onClick={() => setShowPaths((v) => !v)}
             >
               <span className="pill-dot">{showPaths && <span className="pill-live pill-live-path" />}</span>
@@ -215,14 +215,14 @@ export default function App() {
 
             <button
               className="pill-btn pill-btn-plain"
-              title="Fly to the selected city"
+              data-tip="Fly to the selected city"
               onClick={() => selectCity(activeCity, true)}
             >
               City
             </button>
             <button
               className="pill-btn pill-btn-plain"
-              title="Fly to Makkah"
+              data-tip="Fly to Makkah"
               onClick={() => {
                 const makkah = CITIES.find((c) => c.n === 'Makkah')
                 if (makkah) selectCity(makkah, true)
@@ -232,7 +232,7 @@ export default function App() {
             </button>
             <button
               className="pill-btn pill-btn-plain"
-              title="Pull back to the whole earth"
+              data-tip="Pull back to the whole earth"
               onClick={() => {
                 setSpin(false)
                 globe.current?.flyTo(view.lng, 20, 1.4, 2200)
@@ -242,7 +242,7 @@ export default function App() {
             </button>
             <button
               className="pill-btn pill-btn-plain"
-              title="Return to the present"
+              data-tip="Return to the present"
               onClick={() => clock.setScrub(0)}
               disabled={!playing && rounded === 0}
             >

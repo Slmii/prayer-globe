@@ -1660,6 +1660,80 @@ body {
   will-change: transform;
 }
 
+/* ---------- tooltips ----------
+
+   Replaces the native `title` attribute, which the browser renders in its own
+   OS style after a delay of its choosing — jarring against everything else
+   here, and impossible to style. `data-tip` gets the same look as the globe's
+   `.pg-tip`, appears immediately, and shows on keyboard focus as well as hover,
+   which `title` does not.
+
+   Purely a pseudo-element, so it costs no markup and no JS. Browsers do fold
+   `content` into the accessible name — a button labelled "Makkah" announces as
+   "Makkah Fly to Makkah" — which reads fine here, but is worth knowing before
+   writing a tip that would repeat or contradict its own label. Where a control
+   already has its own richer tooltip, use `aria-label` and no `data-tip`, so
+   the two do not stack. */
+
+[data-tip] {
+  position: relative;
+}
+
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 7px);
+  left: 50%;
+  transform: translate(-50%, -3px);
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  font: 500 11px/1 Inter, sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-bright);
+  background: rgba(12, 14, 20, 0.92);
+  border: 1px solid rgba(181, 171, 252, 0.45);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+}
+
+[data-tip]:hover::after,
+[data-tip]:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Right-aligned, for controls hard against the right edge — a centred tip on
+   the zoom buttons would hang off the viewport. */
+[data-tip][data-tip-end]::after {
+  left: auto;
+  right: 0;
+  transform: translate(0, -3px);
+}
+
+[data-tip][data-tip-end]:hover::after,
+[data-tip][data-tip-end]:focus-visible::after {
+  transform: translate(0, 0);
+}
+
+/* Above instead of below, for controls near the bottom of the screen. */
+[data-tip][data-tip-above]::after {
+  top: auto;
+  bottom: calc(100% + 7px);
+  transform: translate(-50%, 3px);
+}
+
+[data-tip][data-tip-above]:hover::after,
+[data-tip][data-tip-above]:focus-visible::after {
+  transform: translate(-50%, 0);
+}
+
 /* ---------- responsive ---------- */
 
 @media (max-width: 1180px) {

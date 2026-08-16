@@ -126,12 +126,23 @@ describe('blendOf', () => {
     expect(early.t).toBe(0)
     expect(early.next).toBe(early.phase)
 
-    // Just before it: fading from sunrise's phase into dhuhr's.
-    const close = blendOf(table, city.ilceID, dhuhr - 6 * 60000)!
-    expect(close.phase).toBe(1)
-    expect(close.next).toBe(2)
-    expect(close.t).toBeGreaterThan(0.7)
-    expect(close.t).toBeLessThan(1)
+    // Approaching it, the ramp rises the closer we get. Asserted as a shape
+    // rather than against fixed numbers: the fade window is a tuning knob, and
+    // pinning a threshold to whatever it happens to be only produces a test
+    // that fails the next time someone adjusts the feel of it.
+    const ramp = [8, 4, 2, 1].map((min) => blendOf(table, city.ilceID, dhuhr - min * 60000)!)
+    for (const r of ramp) {
+      expect(r.phase).toBe(1)
+      expect(r.next).toBe(2)
+      expect(r.t).toBeGreaterThan(0)
+      expect(r.t).toBeLessThan(1)
+    }
+    for (let i = 1; i < ramp.length; i++) {
+      expect(ramp[i].t, `${i} should be further along than ${i - 1}`).toBeGreaterThan(ramp[i - 1].t)
+    }
+
+    // And on the far side of the boundary it has committed to the new phase.
+    expect(blendOf(table, city.ilceID, dhuhr + 60000)!.phase).toBe(2)
   })
 
   it('is null past the window, like phaseOf', () => {

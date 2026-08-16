@@ -30,6 +30,18 @@ export interface SelectedCity {
   d: string[]
 }
 
+/** Biggest N misses per country kept in the report; the rest are noise. */
+const UNMATCHED_REPORTED = 5
+
+/**
+ * ISO2 codes the globe does not show, regardless of what Diyanet publishes.
+ * A product decision, not a data one — Diyanet lists these districts and the
+ * crawler could fetch them perfectly well.
+ */
+const EXCLUDED_ISO2 = new Set([
+  'IL', // Palestinian territories (FILISTIN) are shown instead.
+])
+
 const perCountryArg = process.argv.indexOf('--per')
 const PER_COUNTRY = perCountryArg > -1 ? Number(process.argv[perCountryArg + 1]) : 5
 
@@ -109,18 +121,40 @@ async function main() {
   const countriesWithoutDiyanet: { iso2: string; pop: number }[] = []
 
   for (const [iso2, cities] of geoByIso2) {
+    if (EXCLUDED_ISO2.has(iso2)) continue
+
     const entry = byIso2.get(iso2)
     if (!entry) {
       countriesWithoutDiyanet.push({ iso2, pop: Math.max(...cities.map((c) => c.pop)) })
       continue
     }
 
-    for (const city of pick(cities)) {
+    // Match FIRST, pick second. Picking the biggest six and then asking whether
+    // Diyanet has them spends slots on cities it never publishes: Thailand's
+    // top six by population are Bangkok plus four Bangkok suburbs, so four
+    // slots died and Chiang Mai — which Diyanet does publish — was never even
+    // considered. Matching first and then taking the biggest six of what
+    // matched costs nothing and gained 175 cities.
+    const matched: { city: GeoCity; district: DiyanetDistrict }[] = []
+    const missed: GeoCity[] = []
+    for (const city of cities) {
       const district = matchDistrict(city, entry.districts)
-      if (!district) {
-        unmatchedCities.push({ name: city.ascii, iso2, pop: city.pop })
-        continue
-      }
+      if (district) matched.push({ city, district })
+      else missed.push(city)
+    }
+
+    // Every GeoNames city is now tested, so reporting all the misses would bury
+    // the report in ~30,000 rows. Only the biggest few per country are worth a
+    // human's attention — those are the ones a missing district actually costs.
+    for (const city of missed.sort((a, b) => b.pop - a.pop).slice(0, UNMATCHED_REPORTED)) {
+      unmatchedCities.push({ name: city.ascii, iso2, pop: city.pop })
+    }
+
+    const chosen = pick(matched.map((m) => m.city))
+    const districtOf = new Map(matched.map((m) => [m.city, m.district]))
+
+    for (const city of chosen) {
+      const district = districtOf.get(city)!
       selected.push({
         n: city.ascii,
         la: Number(city.lat.toFixed(4)),

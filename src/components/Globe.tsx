@@ -459,7 +459,22 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
     if (import.meta.env.DEV) (window as unknown as { __pgmap?: MLMap }).__pgmap = map
 
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
-    if (maplibregl.GlobeControl) map.addControl(new maplibregl.GlobeControl(), 'top-right')
+    // No GlobeControl: it toggles the projection to flat Mercator, and every
+    // other layer here — the orrery camera, the night polygon's pole handling,
+    // the buildings' depth remap — is built around the globe.
+
+    // MapLibre's controls ship native `title`s, which the browser renders in its
+    // own style after a delay of its choosing. Move them onto the same tooltip
+    // the rest of the app uses, keeping the accessible name that `title` was
+    // also providing. Right-aligned because these sit against the viewport edge.
+    for (const el of map.getContainer().querySelectorAll<HTMLElement>('[title]')) {
+      const text = el.getAttribute('title')
+      if (!text) continue
+      if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', text)
+      el.dataset.tip = text
+      el.dataset.tipEnd = ''
+      el.removeAttribute('title')
+    }
 
     map.on('error', (e) => {
       const m = e?.error?.message ?? 'unknown'

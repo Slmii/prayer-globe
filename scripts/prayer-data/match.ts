@@ -209,13 +209,26 @@ export function countryIso2(diyanetName: string): string | null {
 const clean = (s: string): string => normalize(s).trim().replace(/\s+/g, ' ')
 
 /** The three readings of a district name, strongest first. */
+/**
+ * Cached because selection now tests every GeoNames city against every district
+ * in its country — Germany alone is ~1,200 × 1,241 — and without this each of
+ * those comparisons re-runs three regexes and a Unicode normalisation over the
+ * same handful of district names.
+ */
+const formsCache = new Map<string, { full: string; stripped: string; inner: string }>()
+
 function forms(s: string): { full: string; stripped: string; inner: string } {
+  const hit = formsCache.get(s)
+  if (hit) return hit
+
   const inner = /\(([^)]+)\)/.exec(s)
-  return {
+  const out = {
     full: clean(s),
     stripped: clean(s.replace(/\([^)]*\)/g, ' ')),
     inner: inner ? clean(inner[1]) : '',
   }
+  formsCache.set(s, out)
+  return out
 }
 
 /**
