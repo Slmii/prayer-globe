@@ -9,12 +9,20 @@
 // 723 files to colour a bar is absurd, so the boundaries get flattened here into
 // one file the app loads once.
 //
-// It is small because of two things. Only the days the scrubber can reach are
-// included — it runs to +10 days, so a 30-day window leaves nearly three weeks
-// of slack before a stale deploy could outrun it. And the instants are stored as
-// deltas: consecutive boundaries sit a few hundred minutes apart, and those
-// small repeated numbers compress roughly six times better than the absolute
-// minute counts they are derived from (117 KB gzipped against 319 KB).
+// It is small because of two things. Only a slice of the 396 days on disk is
+// published, and the instants are stored as deltas: consecutive boundaries sit
+// a few hundred minutes apart, and those small repeated numbers compress
+// roughly six times better than the absolute minute counts they are derived
+// from (117 KB gzipped against 319 KB).
+//
+// The window is sized by the REFRESH INTERVAL, not by the scrubber. The
+// scrubber only reaches +10 days, but this file is rebuilt solely when the
+// scheduled workflow runs, and past its last day `phaseOf` returns null and
+// every dot silently reverts to the solar model. At 30 days against a monthly
+// cron it expired the same week its replacement was due, and a single failed
+// run left the globe computed for a month. 45 days against a twice-monthly
+// cron leaves about two weeks of slack, so a missed run is noticed and re-run
+// long before anything degrades.
 //
 // Reads public/times/ but never writes to it — that directory belongs to the
 // crawler.
@@ -31,8 +39,11 @@ interface SnapshotFile {
   days: Record<string, string[]>
 }
 
-/** Days of boundaries to publish, measured from the first day on disk. */
-const WINDOW = 30
+/**
+ * Days of boundaries to publish, measured from the first day on disk. Sized
+ * against the twice-monthly refresh, not the +10-day scrubber — see above.
+ */
+const WINDOW = 45
 /** fajr, sunrise, dhuhr, asr, maghrib, isha — the order the files use. */
 const PER_DAY = 6
 

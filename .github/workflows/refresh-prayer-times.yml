@@ -10,7 +10,15 @@ name: Refresh prayer times
 
 on:
   schedule:
-    - cron: '0 3 5 * *' # 03:00 UTC, day 5 of each month
+    # 03:00 UTC on the 1st and 15th. Twice a month rather than once because the
+    # phase bundle is a fixed window: at one run a month it expired the same
+    # week its replacement was due, so a single failed run left every dot on the
+    # solar model until the following month. A fortnightly cadence gives a
+    # second attempt well before anything degrades.
+    #
+    # 03:00 UTC also keeps clear of 21:00-24:00, when Diyanet (UTC+3) has
+    # already rolled to tomorrow's date and a crawl would miss today entirely.
+    - cron: '0 3 1,15 * *'
   workflow_dispatch:
 
 # Never `push` — the job's own commit would retrigger it.
