@@ -34,19 +34,25 @@ jobs:
       - name: Crawl
         run: npm run prayer:fetch -- --prune
 
-      # Runs after the crawl and before the commit, so a partial crawl fails the
-      # job rather than pushing a snapshot that would show computed times.
+      # phases.json is a fixed window derived from the snapshots, so it expires
+      # rather than merely going stale: past its last day every dot on the globe
+      # reverts to the solar model. It has to be rebuilt on every refresh.
+      - name: Rebuild the phase bundle
+        run: npm run prayer:phases
+
+      # Runs after both, and before the commit, so a partial crawl or a stale
+      # phase bundle fails the job rather than being deployed.
       - name: Verify coverage
         run: npm run prayer:check
 
       - name: Commit if anything changed
         run: |
-          if git diff --quiet -- public/times; then
+          if git diff --quiet -- public/times public/phases.json; then
             echo "no changes"
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/times
+          git add public/times public/phases.json
           git commit -m "data: refresh prayer times"
           git push
