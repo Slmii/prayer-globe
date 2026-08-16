@@ -213,6 +213,17 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
    */
   const skyDrawnAtRef = useRef(Number.NaN)
   const pathsEmptyRef = useRef(false)
+  /**
+   * Camera signature and clock reading the celestial layer was last drawn for.
+   *
+   * The starfield, the orrery, the sun and moon glyphs and their pulses all
+   * depend on exactly two things: where the camera is, and what time it is.
+   * Neither changes between most frames, yet the block was redrawing a full
+   * three.js scene and running an 18-step project/unproject search sixty times
+   * a second regardless.
+   */
+  const lastCamRef = useRef('')
+  const lastCelestialAtRef = useRef(Number.NaN)
   const tipRef = useRef<HTMLDivElement | null>(null)
   const planetLabelsRef = useRef<Map<string, HTMLDivElement>>(new Map())
   const skyRef = useRef<HTMLCanvasElement>(null)
@@ -722,6 +733,9 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
                 sun: createOrb(sunCv, 'sun', ORB_PX.sun),
                 moon: createOrb(moonCv, 'moon', ORB_PX.moon),
               }
+              // Constant appearance, so once is enough — the frame loop only
+              // redraws the moon, whose phase and tilt actually change.
+              orbsRef.current.sun.render(1, 0)
             })
             .catch((err) => console.error('[orbs]', err))
         }
@@ -891,11 +905,29 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
       }
 
       // The sky shares the globe's frame but not its canvas, so it needs the
-      // measured silhouette radius to line its camera up.
-      // One silhouette measurement per frame. Both blocks below want it and it
-      // is an 18-step project/unproject search, so measuring twice was 72
-      // projection calls a frame for a number that cannot differ between them.
+      // measured silhouette radius to line its camera up. One measurement per
+      // frame: it is an 18-step project/unproject search, and both blocks below
+      // want the same number.
       const frameBox = map.getContainer()
+
+      // Everything below moves only with the camera or the clock. A second of
+      // scrubbed time is 0.004° of celestial motion — far below a pixel — so a
+      // resting globe redraws once a second instead of sixty times, while
+      // scrubbing and spinning still cross the threshold every frame and update
+      // continuously. The container size is in the signature because the rim
+      // measurement depends on it.
+      const cam =
+        `${map.getCenter().lng.toFixed(4)}|${map.getCenter().lat.toFixed(4)}` +
+        `|${map.getZoom().toFixed(3)}|${map.getBearing().toFixed(2)}|${map.getPitch().toFixed(2)}` +
+        `|${frameBox.clientWidth}x${frameBox.clientHeight}`
+      const celestialNow = propsRef.current.getNowMs()
+      const celestialDirty =
+        cam !== lastCamRef.current ||
+        !(Math.abs(celestialNow - lastCelestialAtRef.current) < 1000)
+
+      if (celestialDirty) {
+      lastCamRef.current = cam
+      lastCelestialAtRef.current = celestialNow
       const frameRim = globeRadius(frameBox.clientWidth, frameBox.clientHeight)
 
       const cosmos = cosmosRef.current
@@ -923,7 +955,9 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
         // WebGL contexts to fill invisible pixels.
         const orbs = orbsRef.current
         if (orbs && rim != null) {
-          orbs.sun.render(1, 0)
+          // The sun is not redrawn here. Its arguments are constant, so every
+          // frame produced identical pixels through a WebGL context of its own;
+          // it is rendered once when the orbs are created.
           // The moon's lit limb faces the sun, so the terminator's tilt on
           // screen is the bearing from the sub-lunar point to the sub-solar one,
           // turned from compass degrees (clockwise from up) into an angle from
@@ -937,6 +971,7 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
           pulses.sun.setLngLat([sky.sun.lon, sky.sun.lat])
           pulses.moon.setLngLat([sky.moon.lon, sky.moon.lat])
         }
+      }
       }
 
       const tip = tipRef.current
@@ -983,9 +1018,26 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
     }
     raf = requestAnimationFrame(frame)
 
+    /**
+     * A hidden tab has no reason to run any of this.
+     *
+     * Browsers throttle requestAnimationFrame in background tabs but do not
+     * stop it, and the globe kept spinning, rendering three WebGL contexts and
+     * driving MapLibre's projection-error readback the whole time a user had it
+     * open behind something else. Stopping outright costs nothing: on return,
+     * the camera signature and clock have both moved, so the first frame
+     * redraws everything anyway.
+     */
+    const onVisibility = () => {
+      cancelAnimationFrame(raf)
+      if (!document.hidden) raf = requestAnimationFrame(frame)
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+
     return () => {
       torn = true
       cancelAnimationFrame(raf)
+      document.removeEventListener('visibilitychange', onVisibility)
       ro.disconnect()
       readyRef.current = false
       if (overlayRef.current) overlayRef.current.replaceChildren()
