@@ -6,23 +6,41 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { CITIES } from '../lib/cities'
 import { createMosqueLayer } from './mosqueLayer'
 import { createCosmos } from './cosmos'
+import { createOrb } from './orb'
+import type { Orb } from './orb'
 import type { PlanetLabel } from './cosmos'
 import { MOSQUES } from '../lib/mosques'
 import {
   D,
   PHASES,
-  phaseAt,
   skyState,
   bearing,
   terminatorArcs,
   nightPolygon,
   bodyPaths,
+  phaseBlend,
 } from '../lib/astro'
 
 /** Cities whose dot is replaced by a 3D mosque. */
 const MOSQUE_CITIES = new Set(MOSQUES.map((m) => m.city))
 
 const EMPTY: FeatureCollection = { type: 'FeatureCollection', features: [] }
+
+const HEX = (c: string) => [
+  parseInt(c.slice(1, 3), 16),
+  parseInt(c.slice(3, 5), 16),
+  parseInt(c.slice(5, 7), 16),
+]
+const PHASE_RGB = PHASES.map((p) => HEX(p.c))
+
+/** Blend two phase colours, so a dot eases into its next prayer. */
+function mixPhase(a: number, b: number, t: number): string {
+  if (t <= 0 || a === b) return PHASES[a].c
+  const x = PHASE_RGB[a]
+  const y = PHASE_RGB[b]
+  const m = (i: number) => Math.round(x[i] + (y[i] - x[i]) * t)
+  return `rgb(${m(0)},${m(1)},${m(2)})`
+}
 
 /**
  * Latitude/longitude grid, every 15°.
@@ -71,6 +89,8 @@ interface GlobeProps {
   showPaths: boolean
   /** Draw the planets on their orbits around the globe. */
   showOrrery: boolean
+  /** Pulse every city currently in this prayer phase, or null for none. */
+  highlightPhase: number | null
   onHover(p: { lat: number; lng: number } | null): void
   onView(v: { lng: number; lat: number; zoom: number }): void
   /** A city dot was clicked, by name. */
@@ -82,20 +102,14 @@ interface GlobeProps {
 
 type GlyphKind = 'sun' | 'moon'
 
-// Twelve spokes, each 7° wide on a 30° pitch.
-const SUN_RAYS = `conic-gradient(from 0deg,${Array.from({ length: 12 }, (_, i) => {
-  const a = i * 30
-  return `rgba(255,232,170,.55) ${a}deg ${a + 7}deg,transparent ${a + 7}deg ${a + 30}deg`
-}).join(',')})`
-
-const RAY_MASK = 'radial-gradient(circle,transparent 0 34%,#000 40% 64%,transparent 70%)'
-
-// left, top, width, height, opacity
-const MARIA: [number, number, number, number, number][] = [
-  [2.4, 3.6, 3.6, 3.2, 0.5],
-  [7.6, 2.2, 2.4, 2.2, 0.42],
-  [6, 8.4, 3, 2.6, 0.38],
-]
+/**
+ * Glyph box size in CSS pixels.
+ *
+ * The sun gets the larger frame because the design's model brings a corona out
+ * to 1.26 radii and flares past that; crop it to the moon's size and it loses
+ * the atmosphere that makes it a sun rather than a yellow ball.
+ */
+const ORB_PX: Record<GlyphKind, number> = { sun: 48, moon: 34 }
 
 /** DOM node for one celestial marker. */
 function glyph(kind: GlyphKind): HTMLDivElement {
@@ -105,45 +119,29 @@ function glyph(kind: GlyphKind): HTMLDivElement {
   // the viewport instead of half the glyph.
   n.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none;will-change:transform'
   const b = document.createElement('div')
+  const px = ORB_PX[kind]
+  b.style.cssText = `position:relative;width:${px}px;height:${px}px`
 
-  if (kind === 'sun') {
-    b.style.cssText =
-      'position:relative;width:34px;height:34px;display:flex;align-items:center;justify-content:center'
-    const corona = document.createElement('div')
-    corona.style.cssText =
-      'position:absolute;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle,rgba(255,246,214,.5) 0%,rgba(255,214,120,.24) 42%,rgba(255,196,88,0) 72%);animation:pg-breathe 4.2s ease-in-out infinite'
-    const rays = document.createElement('div')
-    rays.style.cssText = `position:absolute;width:30px;height:30px;border-radius:50%;background:${SUN_RAYS};-webkit-mask:${RAY_MASK};mask:${RAY_MASK};animation:pg-spin 24s linear infinite`
-    const disc = document.createElement('div')
-    disc.style.cssText =
-      'position:relative;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 38% 34%,#fffdf4 0%,#ffe9a8 46%,#ffc65c 78%,#f0a63a 100%);box-shadow:0 0 12px 3px rgba(255,203,102,.6),0 0 26px 10px rgba(255,176,64,.22)'
-    b.append(corona, rays, disc)
-  } else {
-    b.style.cssText =
-      'position:relative;width:26px;height:26px;display:flex;align-items:center;justify-content:center'
-    const halo = document.createElement('div')
-    halo.style.cssText =
-      'position:absolute;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,rgba(226,231,247,.34) 0%,rgba(198,205,232,0) 68%);animation:pg-breathe 6.5s ease-in-out infinite'
-    const disc = document.createElement('div')
-    disc.style.cssText =
-      'position:relative;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 36% 32%,#fdfdff 0%,#e2e6f4 52%,#b9c0d8 100%);box-shadow:0 0 10px 2px rgba(214,220,240,.35);overflow:hidden'
-    for (const [l, t, w, h, o] of MARIA) {
-      const m = document.createElement('div')
-      m.style.cssText = `position:absolute;left:${l}px;top:${t}px;width:${w}px;height:${h}px;border-radius:50%;background:rgba(146,155,183,${o})`
-      disc.appendChild(m)
-    }
-    const shadow = document.createElement('div')
-    shadow.className = 'pg-moon-shadow'
-    shadow.style.cssText =
-      'position:absolute;left:0;top:0;width:14px;height:14px;border-radius:50%;background:#0b0d13;transform:translateX(0);transition:transform .6s ease'
-    disc.appendChild(shadow)
-    b.append(halo, disc)
-  }
+  // The body itself is the design's 3D model on its own canvas; `createOrb`
+  // takes it from here. Both keep a halo behind them, for different reasons: it
+  // is what makes the sun read as a light source rather than a yellow ball, and
+  // it is what keeps the moon findable on the nights when its lit crescent is
+  // only a couple of pixels wide.
+  const halo = document.createElement('div')
+  halo.style.cssText =
+    kind === 'sun'
+      ? 'position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(255,214,120,.22) 0%,rgba(255,196,88,0) 66%);animation:pg-breathe 4.2s ease-in-out infinite'
+      : 'position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(226,231,247,.3) 0%,rgba(198,205,232,0) 68%);animation:pg-breathe 6.5s ease-in-out infinite'
+  b.append(halo)
+  const cv = document.createElement('canvas')
+  cv.className = 'pg-orb'
+  cv.style.cssText = `position:absolute;inset:0;width:${px}px;height:${px}px;display:block`
+  b.append(cv)
 
   const name = kind === 'sun' ? 'SUN' : 'MOON'
   const l = document.createElement('div')
   l.textContent = name
-  l.style.cssText = `position:absolute;left:${kind === 'sun' ? 34 : 28}px;top:50%;transform:translateY(-50%);font:500 8.5px ui-monospace,Menlo,monospace;letter-spacing:.11em;color:rgba(233,233,237,.72);white-space:nowrap;text-shadow:0 1px 6px rgba(6,7,11,.95)`
+  l.style.cssText = `position:absolute;left:${px + 2}px;top:50%;transform:translateY(-50%);font:500 8.5px ui-monospace,Menlo,monospace;letter-spacing:.11em;color:rgba(233,233,237,.72);white-space:nowrap;text-shadow:0 1px 6px rgba(6,7,11,.95)`
   n.dataset.kind = name
   n.append(b, l)
   return n
@@ -164,13 +162,9 @@ function pulse(kind: GlyphKind): HTMLDivElement {
   return n
 }
 
-/**
- * Slide the terminator shadow across the moon disc to match its lit fraction:
- * fully covering at new moon, fully clear at full.
- */
-function setMoonPhase(el: HTMLElement, illum: number) {
-  const shadow = el.querySelector<HTMLElement>('.pg-moon-shadow')
-  if (shadow) shadow.style.transform = `translateX(${(illum * 14).toFixed(1)}px)`
+/** The canvas inside a glyph that `createOrb` draws the 3D body onto. */
+function orbCanvas(el: HTMLElement): HTMLCanvasElement | null {
+  return el.querySelector<HTMLCanvasElement>('canvas.pg-orb')
 }
 
 const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
@@ -179,8 +173,10 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
   const mapRef = useRef<MLMap | null>(null)
   const readyRef = useRef(false)
   const bodiesRef = useRef<Record<GlyphKind, HTMLDivElement> | null>(null)
+  const orbsRef = useRef<Record<GlyphKind, Orb> | null>(null)
   const pulsesRef = useRef<Record<GlyphKind, Marker> | null>(null)
   const hoveredRef = useRef<string | null>(null)
+  const highlightRef = useRef<number | null>(null)
   const tipRef = useRef<HTMLDivElement | null>(null)
   const planetLabelsRef = useRef<Map<string, HTMLDivElement>>(new Map())
   const skyRef = useRef<HTMLCanvasElement>(null)
@@ -408,13 +404,16 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
       type: 'FeatureCollection',
       features: CITIES.filter((c) => visible(c.la, c.lo)).map((c) => {
         const st = (((utcH + c.lo / 15 + eot / 60) % 24) + 24) % 24
+        const blend = phaseBlend(c.la, st, dec)
         return {
           type: 'Feature',
           // `m` marks a site drawn as a mosque; its dot is hidden but the
-          // feature stays so clicking and the active ring still work.
+          // feature stays so clicking and the active ring still work. `p` is the
+          // phase, so a whole prayer can be highlighted at once.
           properties: {
             n: c.n,
-            c: PHASES[phaseAt(c.la, st, dec)].c,
+            c: mixPhase(blend.phase, blend.next, blend.t),
+            p: blend.phase,
             m: MOSQUE_CITIES.has(c.n) ? 1 : 0,
           },
           geometry: { type: 'Point', coordinates: [c.lo, c.la] },
@@ -573,6 +572,20 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
         },
       })
       map.addLayer({
+        id: 'city-highlight',
+        type: 'circle',
+        source: 'cities',
+        filter: ['==', ['get', 'p'], -1],
+        paint: {
+          'circle-color': ['get', 'c'],
+          'circle-opacity': 0.18,
+          'circle-radius': 12,
+          'circle-stroke-color': ['get', 'c'],
+          'circle-stroke-width': 1.4,
+          'circle-stroke-opacity': 0.9,
+        },
+      })
+      map.addLayer({
         id: 'city-hover',
         type: 'circle',
         source: 'cities',
@@ -609,6 +622,15 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
         overlay.append(sun, moon, tip)
         bodiesRef.current = { sun, moon }
         tipRef.current = tip
+
+        const sunCv = orbCanvas(sun)
+        const moonCv = orbCanvas(moon)
+        if (sunCv && moonCv) {
+          orbsRef.current = {
+            sun: createOrb(sunCv, 'sun', ORB_PX.sun),
+            moon: createOrb(moonCv, 'moon', ORB_PX.moon),
+          }
+        }
       }
       // Pulses stay map markers: they belong to a real point on the surface and
       // should disappear with it when it rotates behind the earth.
@@ -739,6 +761,7 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
     // keep up with the fastest the terminator ever sweeps.
     let raf = 0
     let lastLayers = 0
+    let lastPulse = 0
     const frame = (t: number) => {
       raf = requestAnimationFrame(frame)
       if (!mapRef.current) return
@@ -771,7 +794,21 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
         const rim = globeRadius(box.clientWidth, box.clientHeight)
         positionBody(bodies.sun, sky.sun.lat, sky.sun.lon, cen, rim)
         positionBody(bodies.moon, sky.moon.lat, sky.moon.lon, cen, rim)
-        setMoonPhase(bodies.moon, sky.moon.illum)
+
+        // Redraw the 3D bodies, but not while they are hidden — zoomed into a
+        // city both glyphs are switched off, and there is no sense running two
+        // WebGL contexts to fill invisible pixels.
+        const orbs = orbsRef.current
+        if (orbs && rim != null) {
+          orbs.sun.render(1, 0)
+          // The moon's lit limb faces the sun, so the terminator's tilt on
+          // screen is the bearing from the sub-lunar point to the sub-solar one,
+          // turned from compass degrees (clockwise from up) into an angle from
+          // the +x axis, and corrected for however the map itself is rotated.
+          const toSun =
+            bearing(sky.moon.lat, sky.moon.lon, sky.sun.lat, sky.sun.lon) - (map.getBearing() || 0)
+          orbs.moon.render(sky.moon.illum, (90 - toSun) * D)
+        }
         const pulses = pulsesRef.current
         if (pulses) {
           pulses.sun.setLngLat([sky.sun.lon, sky.sun.lat])
@@ -795,6 +832,23 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
         }
       }
 
+      // Pulse the highlighted set. Paint properties are set here rather than
+      // animated declaratively because MapLibre has no keyframes of its own.
+      if (map.getLayer('city-highlight')) {
+        const phase = propsRef.current.highlightPhase
+        if (phase !== highlightRef.current) {
+          highlightRef.current = phase
+          map.setFilter('city-highlight', ['==', ['get', 'p'], phase ?? -1])
+        }
+        if (phase !== null && t - lastPulse > 33) {
+          lastPulse = t
+          const beat = 0.5 + 0.5 * Math.sin(t / 190)
+          map.setPaintProperty('city-highlight', 'circle-radius', 9 + beat * 9)
+          map.setPaintProperty('city-highlight', 'circle-opacity', 0.1 + beat * 0.16)
+          map.setPaintProperty('city-highlight', 'circle-stroke-opacity', 0.35 + beat * 0.55)
+        }
+      }
+
       pushSky()
       if (t - lastLayers > 250) {
         lastLayers = t
@@ -811,6 +865,9 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
       ro.disconnect()
       readyRef.current = false
       if (overlayRef.current) overlayRef.current.replaceChildren()
+      orbsRef.current?.sun.dispose()
+      orbsRef.current?.moon.dispose()
+      orbsRef.current = null
       bodiesRef.current = null
       pulsesRef.current = null
       tipRef.current = null

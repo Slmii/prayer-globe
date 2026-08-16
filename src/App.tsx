@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Globe from './components/Globe'
 import type { GlobeHandle } from './components/Globe'
 import SidePanel from './components/SidePanel'
@@ -8,7 +8,7 @@ import { CITIES } from './lib/cities'
 import type { City } from './lib/cities'
 import { useWorldGeo, usePrayerTimes } from './hooks/queries'
 import { useClock, useSettledValue, SCRUB_MIN, SCRUB_MAX } from './hooks/util'
-import { buildReadout } from './lib/readout'
+import { buildReadout, citiesInPhase } from './lib/readout'
 import { pad } from './lib/astro'
 
 // Minutes of simulated time per real second while playing — 10 days in ~40s.
@@ -34,6 +34,9 @@ export default function App() {
   const [spin, setSpin] = useState(false)
   const [showPaths, setShowPaths] = useState(false)
   const [showOrrery, setShowOrrery] = useState(true)
+  const [highlightPhase, setHighlightPhase] = useState<number | null>(null)
+  const [scrubbing, setScrubbing] = useState(false)
+  const highlightTimer = useRef<number | null>(null)
   const [hover, setHover] = useState<{ lat: number; lng: number } | null>(null)
   const [hoveredCity, setHoveredCity] = useState<string | null>(null)
   const [view, setView] = useState<View>({ lng: 39, lat: 20, zoom: 1.4 })
@@ -90,6 +93,41 @@ export default function App() {
     globe.current?.flyTo(lon, lat, 2.6, 2200)
   }, [])
 
+  /**
+   * Clicking a band of the cities-by-prayer bar takes you to that band of the
+   * earth and pulses the cities in it, so the number turns into a place.
+   */
+  const onPickPhase = useCallback(
+    (phase: number) => {
+      const { cities, centre } = citiesInPhase(getNowMs(), phase)
+      if (!cities.length || !centre) return
+      setSpin(false)
+      globe.current?.flyTo(centre.lon, centre.lat, 1.5, 2200)
+      setHighlightPhase(phase)
+      if (highlightTimer.current) window.clearTimeout(highlightTimer.current)
+      highlightTimer.current = window.setTimeout(() => {
+        setHighlightPhase(null)
+        highlightTimer.current = null
+      }, 8000)
+    },
+    [getNowMs],
+  )
+
+  useEffect(() => () => window.clearTimeout(highlightTimer.current ?? undefined), [])
+
+  // Release can happen anywhere, not just over the slider, so the end of a drag
+  // is caught on the window rather than on the input.
+  useEffect(() => {
+    if (!scrubbing) return
+    const release = () => setScrubbing(false)
+    window.addEventListener('pointerup', release)
+    window.addEventListener('pointercancel', release)
+    return () => {
+      window.removeEventListener('pointerup', release)
+      window.removeEventListener('pointercancel', release)
+    }
+  }, [scrubbing])
+
   const onView = useCallback((v: View) => setView(v), [])
   const onNote = useCallback((n: string) => setNote(n), [])
 
@@ -104,7 +142,14 @@ export default function App() {
 
   return (
     <div className="app">
-      <SidePanel readout={readout} times={times} querying={querying} onGoTo={goTo} />
+      <SidePanel
+        readout={readout}
+        times={times}
+        querying={querying}
+        onGoTo={goTo}
+        onPickPhase={onPickPhase}
+        timeShifted={playing !== 0 || scrubbing}
+      />
 
       <main className="stage">
         <Globe
@@ -115,6 +160,7 @@ export default function App() {
           spin={spin && !hover}
           showPaths={showPaths}
           showOrrery={showOrrery}
+          highlightPhase={highlightPhase}
           onHover={setHover}
           onView={onView}
           onCitySelect={onCitySelect}
@@ -219,9 +265,10 @@ export default function App() {
         <div className="scrubber">
           <div className="scrub-head">
             <span className="scrub-title">TIME</span>
-            <span className="scrub-label">{scrubLabel}</span>
+            <span className="scrub-label">{readout.stamp}</span>
+            <span className="scrub-offset">{scrubLabel === 'now' ? 'now' : `+${scrubLabel.replace('+', '')}`}</span>
             <span className="scrub-note">
-              sun, moon and the night side follow the scrub · UTC {readout.utc}
+              local to {readout.city} · sun, moon and the night side follow the scrub
             </span>
           </div>
           <input
@@ -231,6 +278,7 @@ export default function App() {
             step={5}
             value={rounded}
             aria-label="Scrub time, minutes from now"
+            onPointerDown={() => setScrubbing(true)}
             onChange={(e) => clock.setScrub(Number(e.target.value))}
           />
         </div>

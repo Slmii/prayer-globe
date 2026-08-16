@@ -8,10 +8,20 @@
 
 import { CITIES } from './cities'
 
+/**
+ * Which 3D model stands for a site.
+ *
+ * Most get the generic mosque, which is the point of it — one building that
+ * reads as "a mosque" at marker size. Makkah and Madinah get their own, because
+ * those two are not generic: nobody looking for the Kaaba would accept a
+ * stand-in with a dome and minarets.
+ */
+export type MosqueModel = 'mosque' | 'kaaba' | 'nabawi'
+
 /** Mosque name paired with the city whose dot it replaces. */
-const PAIRS: { name: string; city: string }[] = [
-  { name: 'Masjid al-Haram', city: 'Makkah' },
-  { name: 'Al-Masjid an-Nabawi', city: 'Madinah' },
+const PAIRS: { name: string; city: string; model?: MosqueModel }[] = [
+  { name: 'Masjid al-Haram', city: 'Makkah', model: 'kaaba' },
+  { name: 'Al-Masjid an-Nabawi', city: 'Madinah', model: 'nabawi' },
   { name: 'Al-Aqsa', city: 'Jerusalem' },
   { name: 'Sultan Ahmed (Blue Mosque)', city: 'Istanbul' },
   { name: 'Jumeirah Mosque', city: 'Dubai' },
@@ -40,14 +50,15 @@ export interface Mosque {
   city: string
   lat: number
   lon: number
+  model: MosqueModel
 }
 
-export const MOSQUES: Mosque[] = PAIRS.flatMap(({ name, city }) => {
+export const MOSQUES: Mosque[] = PAIRS.flatMap(({ name, city, model }) => {
   const c = CITIES.find((x) => x.n === city)
   // A typo in `city` would otherwise place a mosque at 0°,0° in the Atlantic.
   if (!c) {
     console.warn(`[mosques] unknown city "${city}" for ${name}`)
     return []
   }
-  return [{ name, city, lat: c.la, lon: c.lo }]
+  return [{ name, city, lat: c.la, lon: c.lo, model: model ?? 'mosque' }]
 })

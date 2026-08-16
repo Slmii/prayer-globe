@@ -9,6 +9,20 @@ interface SidePanelProps {
   querying: boolean
   /** Fly the globe to a point — used by the sun/moon cards. */
   onGoTo(lat: number, lon: number): void
+  /** Show me the cities in this prayer phase. */
+  onPickPhase(phase: number): void
+  /** The clock has been scrubbed or is playing — not the present moment. */
+  timeShifted: boolean
+}
+
+/** h:mm:ss while there is an hour to go, m:ss inside the last one. */
+function countdown(ms: number): string {
+  const t = Math.max(0, Math.floor(ms / 1000))
+  const h = Math.floor(t / 3600)
+  const m = Math.floor((t % 3600) / 60)
+  const s = t % 60
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return h ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`
 }
 
 /** Placeholder for a value that depends on the city's still-unknown UTC offset. */
@@ -189,6 +203,9 @@ export default function SidePanel(props: SidePanelProps) {
   // clock-derived figure would be an hour or so out. Better to show nothing
   // than a number that visibly corrects itself a moment later.
   const pending = props.querying
+  // Which band of the cities-by-prayer bar is under the pointer. The bands carry
+  // no labels of their own, so this is the only way to read them.
+  const [segment, setSegment] = useState<number | null>(null)
 
   return (
     <aside className="panel">
@@ -227,7 +244,19 @@ export default function SidePanel(props: SidePanelProps) {
         </div>
         <div className="city-card-time">
           <div className="city-clock">{pending ? <Skeleton w={64} /> : a.clock}</div>
-          <div className="city-next">{pending ? <Skeleton w={92} /> : a.nextLine}</div>
+          <div className="city-next">
+            {pending ? (
+              <Skeleton w={92} />
+            ) : props.timeShifted ? (
+              // Counting down to a prayer at a moment that is not now would be
+              // a countdown to nothing, so name the next prayer and stop there.
+              <>next: {a.nextLabel}</>
+            ) : (
+              <>
+                <span className="city-countdown">{countdown(a.nextMs)}</span> to {a.nextLabel}
+              </>
+            )}
+          </div>
         </div>
       </div>
 
@@ -323,13 +352,34 @@ export default function SidePanel(props: SidePanelProps) {
 
         <div className="tally">
           <div className="tally-bar">
-            {a.counts.map((c) => (
-              <span
+            {a.counts.map((c, i) => (
+              <button
                 key={c.label}
-                className="tally-seg"
-                title={c.title}
-                style={{ flex: c.flex, background: c.color }}
-              />
+                type="button"
+                className={'tally-cell' + (segment === i ? ' tally-cell-on' : '')}
+                style={{ flex: c.flex }}
+                title={`Show the ${c.n} cities in ${c.label}`}
+                onMouseEnter={() => setSegment(i)}
+                onMouseLeave={() => setSegment(null)}
+                onFocus={() => setSegment(i)}
+                onBlur={() => setSegment(null)}
+                onClick={() => props.onPickPhase(c.phase)}
+              >
+                <span className="tally-seg" style={{ background: c.color }} />
+                {segment === i && (
+                  <span
+                    className={
+                      'tally-tip' +
+                      (i === 0 ? ' tally-tip-first' : '') +
+                      (i === a.counts.length - 1 ? ' tally-tip-last' : '')
+                    }
+                  >
+                    <span className="tally-tip-dot" style={{ background: c.color }} />
+                    <span className="tally-tip-name">{c.label}</span>
+                    <span className="tally-tip-n">{c.n} cities</span>
+                  </span>
+                )}
+              </button>
             ))}
           </div>
           <div className="tally-foot">

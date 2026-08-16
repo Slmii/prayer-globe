@@ -1,13 +1,17 @@
-// Positions of the classical planets.
+// Positions of the planets.
 //
-// The set is deliberate: Mercury, Venus, Mars, Jupiter and Saturn are the five
-// planets visible to the naked eye, which together with the sun and moon make
-// the seven classical planets of pre-telescopic astronomy — the same seven this
-// app already leans on for the sun and moon.
+// Earth is absent by design rather than by omission: it is the globe, so its
+// place in the orrery is the origin every other position is measured from. What
+// is drawn is the other seven — the five naked-eye classical planets that carry
+// the app's sun-and-moon framing, plus Uranus and Neptune, which need a
+// telescope but complete the system.
 //
 // Elements are JPL's "Approximate Positions of the Planets" (Standish), valid
 // 1800–2050 to a few arc-minutes: far better than needed for an orrery, and
-// cheap enough to evaluate every frame.
+// cheap enough to evaluate every frame. Note the outer two are the least
+// accurate of the set — Neptune has not completed one orbit since discovery, so
+// its elements are fitted over a short arc — but at orrery scale that is
+// invisible.
 
 import { D, wrap } from './astro'
 
@@ -90,6 +94,26 @@ export const PLANETS: Elements[] = [
     peri: [92.59887831, -0.41897216],
     node: [113.66242448, -0.28867794],
     color: '#e6d6a8',
+  },
+  {
+    name: 'Uranus',
+    a: [19.18916464, -0.00196176],
+    e: [0.04725744, -0.00004397],
+    i: [0.77263783, -0.00242939],
+    L: [313.23810451, 428.48202785],
+    peri: [170.9542763, 0.40805281],
+    node: [74.01692503, 0.04240589],
+    color: '#a5dde4',
+  },
+  {
+    name: 'Neptune',
+    a: [30.06992276, 0.00026291],
+    e: [0.00859048, 0.00005105],
+    i: [1.77004347, 0.00035372],
+    L: [-55.12002969, 218.45945325],
+    peri: [44.96476227, -0.32241464],
+    node: [131.78422574, -0.00508664],
+    color: '#6d8ae0',
   },
 ]
 
@@ -179,7 +203,7 @@ export interface PlanetState {
 
 const OBLIQUITY = 23.43928 * D
 
-/** Where all five classical planets are, for one instant. */
+/** Where every planet in PLANETS is, for one instant. */
 export function planetStates(date: Date): PlanetState[] {
   const T = centuriesSinceJ2000(date)
   const earth = heliocentric(EARTH, T)
