@@ -198,6 +198,21 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
   const pulsesRef = useRef<Record<GlyphKind, Marker> | null>(null)
   const hoveredRef = useRef<string | null>(null)
   const highlightRef = useRef<number | null>(null)
+  /**
+   * The scrubbed instant `pushSky` last drew, and whether `pushPaths` last left
+   * the source empty.
+   *
+   * Both used to run every frame. That is two `setData` calls on `edges` and
+   * `night` plus one on `paths` — each serialising several hundred coordinates,
+   * posting them to the worker, and re-tiling — sixty times a second, forever,
+   * including with the clock frozen and nobody touching anything. `setData`
+   * also forces a repaint internally, so this was what kept the map from ever
+   * idling; removing the mosque layer's `triggerRepaint` alone did not.
+   *
+   * NaN forces the next push, which is how a style reload gets its data back.
+   */
+  const skyDrawnAtRef = useRef(Number.NaN)
+  const pathsEmptyRef = useRef(false)
   const tipRef = useRef<HTMLDivElement | null>(null)
   const planetLabelsRef = useRef<Map<string, HTMLDivElement>>(new Map())
   const skyRef = useRef<HTMLCanvasElement>(null)
@@ -339,10 +354,21 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
    * visible ~3° jumps. These are only a few hundred coordinates, so rebuilding
    * them per frame is affordable — unlike the city dots below.
    */
-  function pushSky() {
+  /** Terminator, night side and sub-solar point, for the scrubbed instant. */
+  function pushSky(force = false) {
     const map = mapRef.current
     if (!map || !readyRef.current) return
-    const sky = skyState(new Date(propsRef.current.getNowMs()))
+
+    const nowMs = propsRef.current.getNowMs()
+    // The sub-solar point drifts 0.25°/minute, so 30 s of scrubbed time is
+    // 0.125° — around half a pixel at the default zoom, and far less than the
+    // 0.00007° a single frame would move it. Scrubbing and playing cross this
+    // in one frame, so they still update continuously; only a resting clock
+    // goes quiet.
+    if (!force && Math.abs(nowMs - skyDrawnAtRef.current) < 30_000) return
+    skyDrawnAtRef.current = nowMs
+
+    const sky = skyState(new Date(nowMs))
     const { dec } = sky
     const subLat = sky.sun.lat
     const subLon = sky.sun.lon
@@ -384,9 +410,14 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
     const nowMs = propsRef.current.getNowMs()
     const realNow = Date.now()
     if (!propsRef.current.showPaths || Math.abs(nowMs - realNow) < 60000) {
-      src.setData(EMPTY)
+      // Clearing an already-clear source is still a worker round trip.
+      if (!pathsEmptyRef.current) {
+        src.setData(EMPTY)
+        pathsEmptyRef.current = true
+      }
       return
     }
+    pathsEmptyRef.current = false
 
     const paths = bodyPaths(realNow, nowMs)
     src.setData({
@@ -739,7 +770,9 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
         }
       }
 
-      pushSky()
+      // Forced: the sources are brand new after a style load, so there is
+      // nothing to compare the clock against yet.
+      pushSky(true)
       pushCities()
     })
 

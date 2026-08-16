@@ -1,29 +1,18 @@
-// Client for the Diyanet (ezanvakti) prayer-times API.
+// Client for the Diyanet (ezanvakti) prayer-times API, and the parsing shared
+// with the snapshot.
 //
-// The API is purely ID-based: country -> province -> district -> times. It has
-// no coordinates and no geographic search, so each city in cities.ts carries the
-// hints needed to walk that chain. The walk is cheap and heavily cached, and we
-// only ever run it for a city the user actually selects.
+// Only one endpoint is left. This used to walk country -> province -> district
+// to discover a city's ilceID, but every city now ships with one, so that chain
+// was unreachable code against a rate-limited endpoint and has been removed.
+// `/vakitler/{ilceID}` survives as the fallback for a snapshot file that 404s —
+// mid-deploy, say — which is a case that really does happen.
 //
 // The API sends CORS `*` and `cache-control: max-age=432000`, so the browser can
 // call it directly — no proxy needed.
 
-import type { City } from './cities'
 import type { PrayerKey } from './astro'
 
 const BASE = 'https://ezanvakti.emushaf.net'
-
-export interface Province {
-  SehirAdi: string
-  SehirAdiEn: string
-  SehirID: string
-}
-
-export interface District {
-  IlceAdi: string
-  IlceAdiEn: string
-  IlceID: string
-}
 
 /** One day as the API returns it. Only the fields we consume are declared. */
 export interface VakitRow {
@@ -69,72 +58,13 @@ async function get<T>(path: string): Promise<T> {
   return (await res.json()) as T
 }
 
-export const getProvinces = (ulkeID: number) => get<Province[]>(`/sehirler/${ulkeID}`)
-export const getDistricts = (sehirID: string) => get<District[]>(`/ilceler/${sehirID}`)
 export const getTimetable = (ilceID: string) => get<VakitRow[]>(`/vakitler/${ilceID}`)
 
 /** Best match for any of `candidates` among `list`, checking every name field. */
-function pick<T>(list: T[] | undefined, candidates: string[], keys: (keyof T)[]): T | null {
-  if (!Array.isArray(list) || !list.length) return null
-  const wanted = candidates.map(normalize).filter(Boolean)
-  const named = list.map((item) => ({
-    item,
-    names: keys.map((k) => normalize(item[k])).filter(Boolean),
-  }))
-  const tests: ((n: string, w: string) => boolean)[] = [
-    (n, w) => n === w,
-    (n, w) => n.startsWith(w),
-    (n, w) => n.includes(w),
-  ]
-  for (const test of tests) {
-    for (const w of wanted) {
-      const hit = named.find(({ names }) => names.some((n) => test(n, w)))
-      if (hit) return hit.item
-    }
-  }
-  return null
-}
-
 export interface ResolvedDistrict {
   ilceID: string
   districtName: string
   provinceName: string
-}
-
-// The matching rules are pure so the build-time crawler can reuse them while
-// doing its own paced, resumable fetching.
-
-/** Most countries expose a single province; Turkey has 81, hence the `p` hint. */
-export function chooseProvince(provinces: Province[], city: City): Province | null {
-  if (!Array.isArray(provinces) || !provinces.length) return null
-  if (provinces.length === 1) return provinces[0]
-  return pick(provinces, city.p ? [city.p] : city.d, ['SehirAdiEn', 'SehirAdi']) || provinces[0]
-}
-
-export function chooseDistrict(districts: District[], city: City): District | null {
-  if (!Array.isArray(districts) || !districts.length) return null
-  return (
-    pick(districts, city.d, ['IlceAdiEn', 'IlceAdi']) ||
-    (districts.length === 1 ? districts[0] : null)
-  )
-}
-
-/**
- * Walk country -> province -> district for one city.
- * Resolves to null when Diyanet has no coverage for it.
- */
-export async function resolveDistrict(city: City): Promise<ResolvedDistrict | null> {
-  const province = chooseProvince(await getProvinces(city.u), city)
-  if (!province) return null
-
-  const district = chooseDistrict(await getDistricts(province.SehirID), city)
-  if (!district) return null
-
-  return {
-    ilceID: district.IlceID,
-    districtName: district.IlceAdiEn || district.IlceAdi,
-    provinceName: province.SehirAdiEn || province.SehirAdi,
-  }
 }
 
 const DATE_ISO = /^(\d{4})-(\d{2})-(\d{2})T.*?([+-])(\d{2}):(\d{2})$/

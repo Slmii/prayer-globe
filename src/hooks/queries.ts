@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import type { FeatureCollection } from 'geojson'
-import { resolveDistrict, getTimetable, buildTimetable, HttpError } from '../lib/diyanet'
+import { getTimetable, buildTimetable, HttpError } from '../lib/diyanet'
 import type { ResolvedDistrict, TimetableDay } from '../lib/diyanet'
 import type { City } from '../lib/cities'
 import { loadTimetable } from '../lib/snapshot'
@@ -58,23 +58,23 @@ export function usePhases() {
  * This used to fetch public/times/index.json — 94 KB — purely to map a city
  * name to its ilceID, and every timetable fetch waited on it. But cities.json
  * already carries `ilceID` on every city, so the file was a second copy of data
- * the bundle had at module scope, bought with a serial round trip. Resolving
- * from the City itself is synchronous and always available.
+ * the bundle had at module scope, bought with a serial round trip.
  *
- * `resolveDistrict` stays as the live fallback for a city with no snapshot,
- * which the coverage gate is meant to make impossible.
+ * It also used to fall back to `resolveDistrict`, walking the live API's
+ * country -> province -> district chain when a city had no ilceID. Every city
+ * in the generated list has one — `prayer:select` cannot emit a city it failed
+ * to match — so that branch was unreachable, which made it untested code on a
+ * rate-limited endpoint. The timetable fetch keeps its live fallback, because
+ * *that* one is genuinely reachable: a snapshot file can 404 mid-deploy.
  */
 export function useDistrict(city: City | null) {
   return useQuery<ResolvedDistrict | null>({
-    queryKey: ['district', city?.n, city?.ilceID ? 'snapshot' : 'live'],
+    queryKey: ['district', city?.ilceID],
     queryFn: () =>
-      city?.ilceID
-        ? { ilceID: city.ilceID, districtName: city.d[0] ?? city.n, provinceName: city.p ?? '' }
-        : resolveDistrict(city as City),
+      city ? { ilceID: city.ilceID, districtName: city.d[0] ?? city.n, provinceName: city.p ?? '' } : null,
     enabled: !!city,
     staleTime: Infinity,
     gcTime: Infinity,
-    retry: retryUnlessRateLimited,
   })
 }
 
