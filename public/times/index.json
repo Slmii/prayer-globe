@@ -1,22 +1,3617 @@
 {
+  "Aalborg": {
+    "ilceID": "12647",
+    "districtName": "AALBORG",
+    "provinceName": "DANIMARKA"
+  },
+  "Abeche": {
+    "ilceID": "12292",
+    "districtName": "ABECHE",
+    "provinceName": "CAD"
+  },
+  "Abidjan": {
+    "ilceID": "12822",
+    "districtName": "ABIDJAN",
+    "provinceName": "FILDISI SAHILI"
+  },
+  "Abomey": {
+    "ilceID": "11936",
+    "districtName": "ABOMEY",
+    "provinceName": "BENIN"
+  },
+  "Abu Dhabi": {
+    "ilceID": "11942",
+    "districtName": "ABU DHABI",
+    "provinceName": "BIRLESIK ARAP EMIRLIGI"
+  },
+  "Abuja": {
+    "ilceID": "15600",
+    "districtName": "ABUJA",
+    "provinceName": "NIJERYA"
+  },
+  "Accra": {
+    "ilceID": "13445",
+    "districtName": "ACCRA",
+    "provinceName": "GANA"
+  },
+  "Adamstown": {
+    "ilceID": "15842",
+    "districtName": "ADAMSTOWN",
+    "provinceName": "PITCAIRN ADASI"
+  },
+  "Addis Ababa": {
+    "ilceID": "19018",
+    "districtName": "ADIS ABABA",
+    "provinceName": "ETYOPYA"
+  },
+  "Adelaide": {
+    "ilceID": "11426",
+    "districtName": "ADELAIDE",
+    "provinceName": "AVUSTRALYA"
+  },
+  "Aden": {
+    "ilceID": "16609",
+    "districtName": "ADEN",
+    "provinceName": "YEMEN"
+  },
+  "Agadez": {
+    "ilceID": "15571",
+    "districtName": "AGADEZ",
+    "provinceName": "NIJER"
+  },
+  "Ahmedabad": {
+    "ilceID": "13569",
+    "districtName": "AHMEDABAD",
+    "provinceName": "HINDISTAN"
+  },
+  "Ajman": {
+    "ilceID": "11945",
+    "districtName": "AJMAN",
+    "provinceName": "BIRLESIK ARAP EMIRLIGI"
+  },
+  "Aktobe": {
+    "ilceID": "15001",
+    "districtName": "AKTEPE (aktyubinsk)",
+    "provinceName": "KAZAKISTAN"
+  },
+  "Al Ain City": {
+    "ilceID": "11944",
+    "districtName": "ALAYN",
+    "provinceName": "BIRLESIK ARAP EMIRLIGI"
+  },
+  "Al Hudaydah": {
+    "ilceID": "16607",
+    "districtName": "AL HUDAYDAH",
+    "provinceName": "YEMEN"
+  },
+  "Al Khums": {
+    "ilceID": "15183",
+    "districtName": "AL KHUMS",
+    "provinceName": "LIBYA"
+  },
+  "Alajuela": {
+    "ilceID": "15128",
+    "districtName": "ALAJUELA",
+    "provinceName": "KOSTARIKA"
+  },
+  "Aleppo": {
+    "ilceID": "16305",
+    "districtName": "ALEPPO",
+    "provinceName": "SURIYE"
+  },
+  "Alexandria": {
+    "ilceID": "15454",
+    "districtName": "ISKENDERIYE",
+    "provinceName": "MISIR"
+  },
+  "Algiers": {
+    "ilceID": "12361",
+    "districtName": "ALGIERS",
+    "provinceName": "CEZAYIR"
+  },
+  "Ali Sabih": {
+    "ilceID": "12363",
+    "districtName": "ALI SABIH",
+    "provinceName": "CIBUTI"
+  },
+  "Almaty": {
+    "ilceID": "14997",
+    "districtName": "ALMATY",
+    "provinceName": "KAZAKISTAN"
+  },
+  "Alofi": {
+    "ilceID": "15617",
+    "districtName": "ALOFI",
+    "provinceName": "NIUE"
+  },
+  "Am Timan": {
+    "ilceID": "12297",
+    "districtName": "AM TIMAN",
+    "provinceName": "CAD"
+  },
+  "Ambato": {
+    "ilceID": "12690",
+    "districtName": "AMBATO",
+    "provinceName": "EKVATOR"
+  },
+  "Amman": {
+    "ilceID": "16535",
+    "districtName": "AMMAN",
+    "provinceName": "URDUN"
+  },
+  "Amsterdam": {
+    "ilceID": "13976",
+    "districtName": "AMSTERDAM",
+    "provinceName": "HOLLANDA"
+  },
+  "Andijon": {
+    "ilceID": "15758",
+    "districtName": "ANDIZHAN",
+    "provinceName": "OZBEKISTAN"
+  },
+  "Andorra la Vella": {
+    "ilceID": "11130",
+    "districtName": "ANDORRA LA VELLA",
+    "provinceName": "ANDORRA"
+  },
+  "Ankara": {
+    "ilceID": "9206",
+    "districtName": "ANKARA",
+    "provinceName": "ANKARA"
+  },
+  "Annaba": {
+    "ilceID": "12346",
+    "districtName": "ANNABA",
+    "provinceName": "CEZAYIR"
+  },
+  "Antananarivo": {
+    "ilceID": "15268",
+    "districtName": "ANTANANARIVO",
+    "provinceName": "MADAGASKAR"
+  },
+  "Antofagasta": {
+    "ilceID": "20064",
+    "districtName": "ANTOFAGASTA",
+    "provinceName": "SILI"
+  },
+  "Antsirabe": {
+    "ilceID": "15271",
+    "districtName": "ANTSIRABE",
+    "provinceName": "MADAGASKAR"
+  },
+  "Antwerp": {
+    "ilceID": "11914",
+    "districtName": "ANTWERPEN",
+    "provinceName": "BELCIKA"
+  },
+  "Apia": {
+    "ilceID": "16182",
+    "districtName": "APIA",
+    "provinceName": "SAMOA"
+  },
+  "Ar Raqqah": {
+    "ilceID": "16303",
+    "districtName": "AR RAQQAH",
+    "provinceName": "SURIYE"
+  },
+  "Ar Rayyan": {
+    "ilceID": "14877",
+    "districtName": "AR RAYYAN",
+    "provinceName": "KATAR"
+  },
+  "Arequipa": {
+    "ilceID": "15823",
+    "districtName": "AREQUIPA",
+    "provinceName": "PERU"
+  },
+  "Arhus": {
+    "ilceID": "12620",
+    "districtName": "AARHUS",
+    "provinceName": "DANIMARKA"
+  },
+  "Arima": {
+    "ilceID": "16376",
+    "districtName": "ARIMA",
+    "provinceName": "TRINIDAT VE TOBAGO"
+  },
+  "Arusha": {
+    "ilceID": "16335",
+    "districtName": "ARUSHA",
+    "provinceName": "TANZANYA"
+  },
+  "As Salimiyah": {
+    "ilceID": "15151",
+    "districtName": "SALMIYA (AS SALIMIYAH)",
+    "provinceName": "KUVEYT"
+  },
+  "Ashgabat": {
+    "ilceID": "16408",
+    "districtName": "ASHGABAT",
+    "provinceName": "TURKMENISTAN"
+  },
+  "Asmara": {
+    "ilceID": "12776",
+    "districtName": "ASMARA",
+    "provinceName": "ERITRE"
+  },
+  "Astana": {
+    "ilceID": "14880",
+    "districtName": "ASTANA",
+    "provinceName": "KAZAKISTAN"
+  },
+  "Asuncion": {
+    "ilceID": "15816",
+    "districtName": "ASUNCION",
+    "provinceName": "PARAGUAY"
+  },
+  "Athens": {
+    "ilceID": "16685",
+    "districtName": "ATINA",
+    "provinceName": "YUNANISTAN"
+  },
+  "Auckland": {
+    "ilceID": "16640",
+    "districtName": "AUCKLAND",
+    "provinceName": "YENI ZELANDA"
+  },
+  "Bafoussam": {
+    "ilceID": "14854",
+    "districtName": "BAFOUSSAM",
+    "provinceName": "KAMERUN"
+  },
+  "Baghdad": {
+    "ilceID": "14170",
+    "districtName": "BAGHDAD",
+    "provinceName": "IRAK"
+  },
+  "Baku": {
+    "ilceID": "11631",
+    "districtName": "BAKU",
+    "provinceName": "AZERBAYCAN"
+  },
+  "Balkanabat": {
+    "ilceID": "18939",
+    "districtName": "BALKANABAT",
+    "provinceName": "TURKMENISTAN"
+  },
+  "Balti": {
+    "ilceID": "15542",
+    "districtName": "BALTI",
+    "provinceName": "MOLDAVYA"
+  },
+  "Bamako": {
+    "ilceID": "15345",
+    "districtName": "BAMAKO",
+    "provinceName": "MALI"
+  },
+  "Bambari": {
+    "ilceID": "15708",
+    "districtName": "BAMBARI",
+    "provinceName": "ORTA AFRIKA CUMHURIYETI"
+  },
+  "Bamenda": {
+    "ilceID": "14853",
+    "districtName": "BAMENDA",
+    "provinceName": "KAMERUN"
+  },
+  "Bandar Seri Begawan": {
+    "ilceID": "12203",
+    "districtName": "BANDAR SERI BEGAWAN",
+    "provinceName": "BRUNEI"
+  },
+  "Bandung": {
+    "ilceID": "12731",
+    "districtName": "BANDUNG (JAWA BARAT)",
+    "provinceName": "ENDONEZYA"
+  },
+  "Bangkok": {
+    "ilceID": "16361",
+    "districtName": "BANGKOK",
+    "provinceName": "TAYLAND"
+  },
+  "Bangui": {
+    "ilceID": "15703",
+    "districtName": "BANGUI",
+    "provinceName": "ORTA AFRIKA CUMHURIYETI"
+  },
+  "Banja Luka": {
+    "ilceID": "12027",
+    "districtName": "BANJA LUKA",
+    "provinceName": "BOSNA HERSEK"
+  },
+  "Banjul": {
+    "ilceID": "13435",
+    "districtName": "BANJUL",
+    "provinceName": "GAMBIYA"
+  },
+  "Banqiao": {
+    "ilceID": "16369",
+    "districtName": "PANCHIAO",
+    "provinceName": "TAYVAN"
+  },
+  "Bar": {
+    "ilceID": "14862",
+    "districtName": "BAR",
+    "provinceName": "KARADAG"
+  },
+  "Barcelona (ES)": {
+    "ilceID": "14262",
+    "districtName": "BARCELONA",
+    "provinceName": "ISPANYA"
+  },
+  "Barcelona (VE)": {
+    "ilceID": "16565",
+    "districtName": "BARCELONA",
+    "provinceName": "VENEZUELA"
+  },
+  "Barquisimeto": {
+    "ilceID": "16555",
+    "districtName": "BARQUISIMETO",
+    "provinceName": "VENEZUELA"
+  },
+  "Barranquilla": {
+    "ilceID": "15077",
+    "districtName": "BARRANQUILLA",
+    "provinceName": "KOLOMBIYA"
+  },
+  "Basel": {
+    "ilceID": "14525",
+    "districtName": "BASEL",
+    "provinceName": "ISVICRE"
+  },
+  "Basrah": {
+    "ilceID": "14157",
+    "districtName": "BASRA",
+    "provinceName": "IRAK"
+  },
+  "Basse-Terre": {
+    "ilceID": "13453",
+    "districtName": "BASSE-TERRE",
+    "provinceName": "GUADELOPE"
+  },
+  "Batna": {
+    "ilceID": "12359",
+    "districtName": "BATNA",
+    "provinceName": "CEZAYIR"
+  },
+  "Battambang": {
+    "ilceID": "14843",
+    "districtName": "BATTAMBANG",
+    "provinceName": "KAMBOCYA"
+  },
+  "Batumi": {
+    "ilceID": "13555",
+    "districtName": "BATUMI",
+    "provinceName": "GURCISTAN"
+  },
+  "Bayamon": {
+    "ilceID": "15907",
+    "districtName": "BAYAMON",
+    "provinceName": "PORTO RIKO"
+  },
+  "Beau Bassin-Rose Hill": {
+    "ilceID": "15355",
+    "districtName": "BEAU BASSIN",
+    "provinceName": "MAURITIUS ADASI"
+  },
+  "Beijing": {
+    "ilceID": "12587",
+    "districtName": "BEIJING",
+    "provinceName": "CIN"
+  },
+  "Beira": {
+    "ilceID": "15552",
+    "districtName": "BEIRA",
+    "provinceName": "MOZAMBIK"
+  },
+  "Beirut": {
+    "ilceID": "15216",
+    "districtName": "BEYRUT",
+    "provinceName": "LUBNAN"
+  },
+  "Bekasi": {
+    "ilceID": "12733",
+    "districtName": "BEKASI",
+    "provinceName": "ENDONEZYA"
+  },
+  "Belgrade": {
+    "ilceID": "16234",
+    "districtName": "BELGRAD",
+    "provinceName": "SIRBISTAN"
+  },
+  "Belize City": {
+    "ilceID": "11924",
+    "districtName": "BELIZE CITY",
+    "provinceName": "BELIZE"
+  },
+  "Belmopan": {
+    "ilceID": "11918",
+    "districtName": "BELMOPAN",
+    "provinceName": "BELIZE"
+  },
+  "Belo Horizonte": {
+    "ilceID": "12048",
+    "districtName": "BELO HORIZONTE",
+    "provinceName": "BREZILYA"
+  },
+  "Bender": {
+    "ilceID": "15541",
+    "districtName": "TIGHINA",
+    "provinceName": "MOLDAVYA"
+  },
+  "Bengaluru": {
+    "ilceID": "13568",
+    "districtName": "BANGALORE",
+    "provinceName": "HINDISTAN"
+  },
+  "Benghazi": {
+    "ilceID": "15190",
+    "districtName": "BINGAZI",
+    "provinceName": "LIBYA"
+  },
+  "Bergen": {
+    "ilceID": "15691",
+    "districtName": "BERGEN",
+    "provinceName": "NORVEC"
+  },
+  "Berlin": {
+    "ilceID": "11002",
+    "districtName": "BERLIN",
+    "provinceName": "BERLIN"
+  },
+  "Bern": {
+    "ilceID": "18945",
+    "districtName": "BERN",
+    "provinceName": "ISVICRE"
+  },
+  "Bihac": {
+    "ilceID": "11993",
+    "districtName": "BIHAC",
+    "provinceName": "BOSNA HERSEK"
+  },
+  "Birkirkara": {
+    "ilceID": "15350",
+    "districtName": "BIRKIRKARA",
+    "provinceName": "MALTA"
+  },
+  "Birmingham": {
+    "ilceID": "14105",
+    "districtName": "BIRMINGHAM",
+    "provinceName": "INGILTERE"
+  },
+  "Bishkek": {
+    "ilceID": "15071",
+    "districtName": "BISHKEK",
+    "provinceName": "KIRGIZISTAN"
+  },
+  "Bitola": {
+    "ilceID": "15299",
+    "districtName": "MANASTIR(bitola)",
+    "provinceName": "MAKEDONYA"
+  },
+  "Bizerte": {
+    "ilceID": "16386",
+    "districtName": "BIZERTE",
+    "provinceName": "TUNUS"
+  },
+  "Blantyre": {
+    "ilceID": "15310",
+    "districtName": "BLANTYRE",
+    "provinceName": "MALAVI"
+  },
+  "Blida": {
+    "ilceID": "12352",
+    "districtName": "BLIDA",
+    "provinceName": "CEZAYIR"
+  },
+  "Bo": {
+    "ilceID": "20045",
+    "districtName": "BO",
+    "provinceName": "SIERRA LEONE"
+  },
+  "Bobo-Dioulasso": {
+    "ilceID": "12255",
+    "districtName": "BOBO-DIOULASSO",
+    "provinceName": "BURKINA FASO"
+  },
+  "Bogota": {
+    "ilceID": "15078",
+    "districtName": "BOGOTA",
+    "provinceName": "KOLOMBIYA"
+  },
+  "Bouake": {
+    "ilceID": "12825",
+    "districtName": "BOUAKE",
+    "provinceName": "FILDISI SAHILI"
+  },
+  "Brades": {
+    "ilceID": "33363",
+    "districtName": "BRADES",
+    "provinceName": "MONTSERRAT (U.K.)"
+  },
+  "Braga": {
+    "ilceID": "15886",
+    "districtName": "BRAGA",
+    "provinceName": "PORTEKIZ"
+  },
+  "Bratislava": {
+    "ilceID": "16250",
+    "districtName": "BRATISLAVA",
+    "provinceName": "SLOVAKYA"
+  },
+  "Brest": {
+    "ilceID": "11687",
+    "districtName": "BREST",
+    "provinceName": "BELARUS"
+  },
+  "Bridgetown": {
+    "ilceID": "11673",
+    "districtName": "BRIDGETOWN",
+    "provinceName": "BARBADOS"
+  },
+  "Brisbane": {
+    "ilceID": "11428",
+    "districtName": "BRISBANE",
+    "provinceName": "AVUSTRALYA"
+  },
+  "Brno": {
+    "ilceID": "12304",
+    "districtName": "BRNO",
+    "provinceName": "CEK CUMHURIYETI"
+  },
+  "Brooklyn": {
+    "ilceID": "20023",
+    "districtName": "BROOKLYN",
+    "provinceName": "NEW YORK"
+  },
+  "Brussels": {
+    "ilceID": "11915",
+    "districtName": "BRUXELLES",
+    "provinceName": "BELCIKA"
+  },
+  "Buchanan": {
+    "ilceID": "15180",
+    "districtName": "BUCHANAN",
+    "provinceName": "LIBERYA"
+  },
+  "Bucharest": {
+    "ilceID": "15944",
+    "districtName": "BUKRES(bucharest)",
+    "provinceName": "ROMANYA"
+  },
+  "Budapest": {
+    "ilceID": "15267",
+    "districtName": "BUDAPESTE",
+    "provinceName": "MACARISTAN"
+  },
+  "Budva": {
+    "ilceID": "14863",
+    "districtName": "BUDVA ",
+    "provinceName": "KARADAG"
+  },
+  "Buenos Aires": {
+    "ilceID": "11202",
+    "districtName": "BUENOS AIRES",
+    "provinceName": "ARJANTIN"
+  },
+  "Bujumbura": {
+    "ilceID": "12277",
+    "districtName": "BUJUMBURA",
+    "provinceName": "BURUNDI"
+  },
+  "Bukavu": {
+    "ilceID": "12667",
+    "districtName": "BUKAVU",
+    "provinceName": "DEMOKRATIK KONGO CUMHURIYETI"
+  },
+  "Bulawayo": {
+    "ilceID": "16699",
+    "districtName": "BULAWAYO",
+    "provinceName": "ZIMBABVE"
+  },
+  "Burgas": {
+    "ilceID": "12238",
+    "districtName": "BURGAS",
+    "provinceName": "BULGARISTAN"
+  },
+  "Bursa": {
+    "ilceID": "9335",
+    "districtName": "BURSA",
+    "provinceName": "BURSA"
+  },
+  "Busan": {
+    "ilceID": "13500",
+    "districtName": "PUSAN",
+    "provinceName": "GUNEY KORE"
+  },
+  "Cairo": {
+    "ilceID": "15474",
+    "districtName": "CAIRO",
+    "provinceName": "MISIR"
+  },
+  "Calgary": {
+    "ilceID": "9060",
+    "districtName": "CALGARY",
+    "provinceName": "ALBERTA"
+  },
+  "Cali": {
+    "ilceID": "15081",
+    "districtName": "CALI",
+    "provinceName": "KOLOMBIYA"
+  },
+  "Camagueey": {
+    "ilceID": "15135",
+    "districtName": "CAMAGUEY",
+    "provinceName": "KUBA"
+  },
+  "Can Tho": {
+    "ilceID": "16585",
+    "districtName": "CAN THO",
+    "provinceName": "VIETNAM"
+  },
+  "Canberra": {
+    "ilceID": "11430",
+    "districtName": "CANBERRA",
+    "provinceName": "AVUSTRALYA"
+  },
+  "Cape Coast": {
+    "ilceID": "13438",
+    "districtName": "CAPE COAST",
+    "provinceName": "GANA"
+  },
+  "Cape Town": {
+    "ilceID": "13496",
+    "districtName": "CAPE TOWN",
+    "provinceName": "GUNEY AFRIKA"
+  },
+  "Caracas": {
+    "ilceID": "16554",
+    "districtName": "CARACAS",
+    "provinceName": "VENEZUELA"
+  },
+  "Carnot": {
+    "ilceID": "15710",
+    "districtName": "CARNOT",
+    "provinceName": "ORTA AFRIKA CUMHURIYETI"
+  },
+  "Carolina": {
+    "ilceID": "15908",
+    "districtName": "CAROLINA",
+    "provinceName": "PORTO RIKO"
+  },
+  "Carrefour": {
+    "ilceID": "13563",
+    "districtName": "CARREFOUR",
+    "provinceName": "HAITI"
+  },
+  "Cartagena": {
+    "ilceID": "15082",
+    "districtName": "CARTAGENA",
+    "provinceName": "KOLOMBIYA"
+  },
+  "Casablanca": {
+    "ilceID": "12806",
+    "districtName": "KASABLANKA",
+    "provinceName": "FAS"
+  },
+  "Castries": {
+    "ilceID": "16698",
+    "districtName": "CASTRIES",
+    "provinceName": "ST. LUCIA"
+  },
+  "Celje": {
+    "ilceID": "20033",
+    "districtName": "CELJE",
+    "provinceName": "SLOVENYA"
+  },
+  "Charleroi": {
+    "ilceID": "11895",
+    "districtName": "CHARLEROI",
+    "provinceName": "BELCIKA"
+  },
+  "Chengdu": {
+    "ilceID": "12442",
+    "districtName": "CHENGDU",
+    "provinceName": "CIN"
+  },
+  "Chicago": {
+    "ilceID": "8760",
+    "districtName": "CHICAGO",
+    "provinceName": "ILLINOIS"
+  },
+  "Chiclayo": {
+    "ilceID": "15828",
+    "districtName": "CHICLAYO",
+    "provinceName": "PERU"
+  },
+  "Chimoio": {
+    "ilceID": "15551",
+    "districtName": "CHIMOIO",
+    "provinceName": "MOZAMBIK"
+  },
+  "Chinandega": {
+    "ilceID": "15616",
+    "districtName": "CHINANDEGA",
+    "provinceName": "NIKARAGUA"
+  },
+  "Chisinau": {
+    "ilceID": "15538",
+    "districtName": "KISHINEV",
+    "provinceName": "MOLDAVYA"
+  },
+  "Chitungwiza": {
+    "ilceID": "16695",
+    "districtName": "CHITUNGWIZA",
+    "provinceName": "ZIMBABVE"
+  },
+  "Chon Buri": {
+    "ilceID": "16350",
+    "districtName": "CHON BURI",
+    "provinceName": "TAYLAND"
+  },
+  "Christchurch": {
+    "ilceID": "16639",
+    "districtName": "CHRISTCHURCH",
+    "provinceName": "YENI ZELANDA"
+  },
+  "Ciudad del Este": {
+    "ilceID": "15819",
+    "districtName": "CIUDAD DEL ESTE",
+    "provinceName": "PARAGUAY"
+  },
+  "Ciudad Guayana": {
+    "ilceID": "16563",
+    "districtName": "CIUDAD GUAYANA",
+    "provinceName": "VENEZUELA"
+  },
+  "Coban": {
+    "ilceID": "13456",
+    "districtName": "COBAN",
+    "provinceName": "GUATEMALA"
+  },
+  "Cochabamba": {
+    "ilceID": "11984",
+    "districtName": "COCHABAMBA",
+    "provinceName": "BOLIVYA"
+  },
+  "Coimbra": {
+    "ilceID": "15894",
+    "districtName": "COIMBRA",
+    "provinceName": "PORTEKIZ"
+  },
+  "Colombo": {
+    "ilceID": "16278",
+    "districtName": "COLOMBO",
+    "provinceName": "SRI LANKA"
+  },
+  "Colon": {
+    "ilceID": "15800",
+    "districtName": "COLON",
+    "provinceName": "PANAMA"
+  },
+  "Conakry": {
+    "ilceID": "13446",
+    "districtName": "CONAKRY",
+    "provinceName": "GINE"
+  },
+  "Constanta": {
+    "ilceID": "15943",
+    "districtName": "KOSTENCE(constanta)",
+    "provinceName": "ROMANYA"
+  },
+  "Constantine": {
+    "ilceID": "12349",
+    "districtName": "CONSTANTINE",
+    "provinceName": "CEZAYIR"
+  },
+  "Copenhagen": {
+    "ilceID": "12618",
+    "districtName": "KOPENHAGEN",
+    "provinceName": "DANIMARKA"
+  },
+  "Cordoba": {
+    "ilceID": "11155",
+    "districtName": "CORDOBA",
+    "provinceName": "ARJANTIN"
+  },
+  "Cork": {
+    "ilceID": "14212",
+    "districtName": "CORK",
+    "provinceName": "IRLANDA"
+  },
+  "Cotonou": {
+    "ilceID": "11938",
+    "districtName": "COTONOU",
+    "provinceName": "BENIN"
+  },
+  "Cuenca": {
+    "ilceID": "12692",
+    "districtName": "CUENCA",
+    "provinceName": "EKVATOR"
+  },
+  "Da Nang": {
+    "ilceID": "16597",
+    "districtName": "DA NANG",
+    "provinceName": "VIETNAM"
+  },
+  "Daegu": {
+    "ilceID": "13526",
+    "districtName": "DAEGU",
+    "provinceName": "GUNEY KORE"
+  },
+  "Daejeon": {
+    "ilceID": "13527",
+    "districtName": "DAEJEON",
+    "provinceName": "GUNEY KORE"
+  },
+  "Dakar": {
+    "ilceID": "16183",
+    "districtName": "DAKAR",
+    "provinceName": "SENEGAL"
+  },
+  "Daloa": {
+    "ilceID": "12824",
+    "districtName": "DALOA",
+    "provinceName": "FILDISI SAHILI"
+  },
+  "Damascus": {
+    "ilceID": "16306",
+    "districtName": "DAMASCUS",
+    "provinceName": "SURIYE"
+  },
+  "Dammam": {
+    "ilceID": "16311",
+    "districtName": "AD DAMMAM",
+    "provinceName": "S. ARABISTAN"
+  },
+  "Danli": {
+    "ilceID": "13985",
+    "districtName": "DANLI",
+    "provinceName": "HONDURAS"
+  },
+  "Dar es Salaam": {
+    "ilceID": "16336",
+    "districtName": "DAR ES SALAAM",
+    "provinceName": "TANZANYA"
+  },
+  "Darhan": {
+    "ilceID": "15532",
+    "districtName": "DARHAN",
+    "provinceName": "MOGOLISTAN"
+  },
+  "Daugavpils": {
+    "ilceID": "15177",
+    "districtName": "DAUGAVPILS",
+    "provinceName": "LETONYA"
+  },
+  "Davao": {
+    "ilceID": "12838",
+    "districtName": "DAVAO",
+    "provinceName": "FILIPINLER"
+  },
+  "David": {
+    "ilceID": "15801",
+    "districtName": "DAVID",
+    "provinceName": "PANAMA"
+  },
+  "Debrecen": {
+    "ilceID": "15235",
+    "districtName": "DEBRECEN",
+    "provinceName": "MACARISTAN"
+  },
+  "Delhi": {
+    "ilceID": "13680",
+    "districtName": "NEW DELHI",
+    "provinceName": "HINDISTAN"
+  },
+  "Delmas": {
+    "ilceID": "13562",
+    "districtName": "DELMAS",
+    "provinceName": "HAITI"
+  },
+  "Depok": {
+    "ilceID": "12736",
+    "districtName": "DEPOK",
+    "provinceName": "ENDONEZYA"
+  },
+  "Dhaka": {
+    "ilceID": "11672",
+    "districtName": "DHAKA",
+    "provinceName": "BANGLADES"
+  },
+  "Dikhil": {
+    "ilceID": "12364",
+    "districtName": "DIKHIL",
+    "provinceName": "CIBUTI"
+  },
+  "Dili": {
+    "ilceID": "12673",
+    "districtName": "DILI",
+    "provinceName": "DOGU TIMOR"
+  },
+  "Diyarbakir": {
+    "ilceID": "9402",
+    "districtName": "DIYARBAKIR",
+    "provinceName": "DİYARBAKIR"
+  },
+  "Djibouti": {
+    "ilceID": "12366",
+    "districtName": "CIBUTI",
+    "provinceName": "CIBUTI"
+  },
+  "Dnipro": {
+    "ilceID": "16450",
+    "districtName": "DNIPROPETROVSK",
+    "provinceName": "UKRAYNA"
+  },
+  "Dodoma": {
+    "ilceID": "16342",
+    "districtName": "DODOMA",
+    "provinceName": "TANZANYA"
+  },
+  "Doha": {
+    "ilceID": "14879",
+    "districtName": "DOHA",
+    "provinceName": "KATAR"
+  },
+  "Donetsk": {
+    "ilceID": "16492",
+    "districtName": "DONETSK",
+    "provinceName": "UKRAYNA"
+  },
+  "Douala": {
+    "ilceID": "14851",
+    "districtName": "DOUALA",
+    "provinceName": "KAMERUN"
+  },
+  "Douglas": {
+    "ilceID": "20093",
+    "districtName": "DOUGLAS",
+    "provinceName": "MAN ADASI"
+  },
+  "Drammen": {
+    "ilceID": "15682",
+    "districtName": "DRAMMEN",
+    "provinceName": "NORVEC"
+  },
+  "Dubai": {
+    "ilceID": "11947",
+    "districtName": "DUBAI",
+    "provinceName": "BIRLESIK ARAP EMIRLIGI"
+  },
+  "Dublin": {
+    "ilceID": "14210",
+    "districtName": "DUBLIN",
+    "provinceName": "IRLANDA"
+  },
+  "Dudelange": {
+    "ilceID": "15220",
+    "districtName": "DUDELANGE",
+    "provinceName": "LUKSEMBURG"
+  },
+  "Duesseldorf": {
+    "ilceID": "11008",
+    "districtName": "DUSSELDORF",
+    "provinceName": "NORDRHEIN-WESTFALEN"
+  },
+  "Durban": {
+    "ilceID": "13471",
+    "districtName": "DURBAN",
+    "provinceName": "GUNEY AFRIKA"
+  },
+  "Durres": {
+    "ilceID": "11206",
+    "districtName": "DURRES",
+    "provinceName": "ARNAVUTLUK"
+  },
+  "Edmonton": {
+    "ilceID": "9061",
+    "districtName": "EDMONTON",
+    "provinceName": "ALBERTA"
+  },
+  "Eindhoven": {
+    "ilceID": "13978",
+    "districtName": "EINDHOVEN",
+    "provinceName": "HOLLANDA"
+  },
+  "Elbasan": {
+    "ilceID": "11205",
+    "districtName": "ELBASAN",
+    "provinceName": "ARNAVUTLUK"
+  },
+  "Eldoret": {
+    "ilceID": "15011",
+    "districtName": "ELDORET",
+    "provinceName": "KENYA"
+  },
+  "Erbil": {
+    "ilceID": "14171",
+    "districtName": "IRBIL",
+    "provinceName": "IRAK"
+  },
+  "Erdenet": {
+    "ilceID": "15475",
+    "districtName": "ERDENET",
+    "provinceName": "MOGOLISTAN"
+  },
+  "Esbjerg": {
+    "ilceID": "12638",
+    "districtName": "ESBJERG",
+    "provinceName": "DANIMARKA"
+  },
+  "Esch-sur-Alzette": {
+    "ilceID": "15232",
+    "districtName": "ESCH",
+    "provinceName": "LUKSEMBURG"
+  },
+  "Espoo": {
+    "ilceID": "12941",
+    "districtName": "ESPOO",
+    "provinceName": "FINLANDIYA"
+  },
+  "Esteli": {
+    "ilceID": "15603",
+    "districtName": "ESTELI",
+    "provinceName": "NIKARAGUA"
+  },
+  "Faisalabad": {
+    "ilceID": "15770",
+    "districtName": "FAISALABAD",
+    "provinceName": "PAKISTAN"
+  },
+  "Famagusta": {
+    "ilceID": "15160",
+    "districtName": "GAZI MAGOSA",
+    "provinceName": "KUZEY KIBRIS"
+  },
+  "Ferizaj": {
+    "ilceID": "15123",
+    "districtName": "UROSEVAC",
+    "provinceName": "KOSOVA"
+  },
+  "Fes": {
+    "ilceID": "12808",
+    "districtName": "FEZ",
+    "provinceName": "FAS"
+  },
+  "Fianarantsoa": {
+    "ilceID": "15272",
+    "districtName": "FIANARANTSOA",
+    "provinceName": "MADAGASKAR"
+  },
+  "Fort-de-France": {
+    "ilceID": "15353",
+    "districtName": "FORT-DE-FRANCE",
+    "provinceName": "MARTINIK"
+  },
+  "Fortaleza": {
+    "ilceID": "12200",
+    "districtName": "FORTALEZA",
+    "provinceName": "BREZILYA"
+  },
+  "Frankfurt am Main": {
+    "ilceID": "11010",
+    "districtName": "FRANKFURT",
+    "provinceName": "HESSEN"
+  },
+  "Freeport": {
+    "ilceID": "11654",
+    "districtName": "FREEPORT",
+    "provinceName": "BAHAMALAR"
+  },
+  "Freetown": {
+    "ilceID": "20046",
+    "districtName": "FREETOWN",
+    "provinceName": "SIERRA LEONE"
+  },
+  "Fukuoka": {
+    "ilceID": "14834",
+    "districtName": "FUKUOKA",
+    "provinceName": "JAPONYA"
+  },
+  "Gaborone": {
+    "ilceID": "12032",
+    "districtName": "GABORONE",
+    "provinceName": "BOTSVANA"
+  },
+  "Galway": {
+    "ilceID": "14207",
+    "districtName": "GALWAY",
+    "provinceName": "IRLANDA"
+  },
+  "Ganja": {
+    "ilceID": "11634",
+    "districtName": "GENCE",
+    "provinceName": "AZERBAYCAN"
+  },
+  "Gaza": {
+    "ilceID": "12867",
+    "districtName": "GAZZE",
+    "provinceName": "FILISTIN"
+  },
+  "Gaziantep": {
+    "ilceID": "9479",
+    "districtName": "GAZIANTEP",
+    "provinceName": "GAZİANTEP"
+  },
+  "Gdansk": {
+    "ilceID": "15880",
+    "districtName": "GDANSK",
+    "provinceName": "POLONYA"
+  },
+  "Geneva": {
+    "ilceID": "14550",
+    "districtName": "CENEVRE",
+    "provinceName": "ISVICRE"
+  },
+  "Genoa": {
+    "ilceID": "14563",
+    "districtName": "GENOVA",
+    "provinceName": "ITALYA"
+  },
+  "Gent": {
+    "ilceID": "11916",
+    "districtName": "GENT",
+    "provinceName": "BELCIKA"
+  },
+  "Georgetown": {
+    "ilceID": "13559",
+    "districtName": "GEORGETOWN",
+    "provinceName": "GUYANA"
+  },
+  "Gitega": {
+    "ilceID": "12280",
+    "districtName": "GITEGA",
+    "provinceName": "BURUNDI"
+  },
+  "Glasgow": {
+    "ilceID": "14097",
+    "districtName": "GLASGOW",
+    "provinceName": "INGILTERE"
+  },
+  "Gonder": {
+    "ilceID": "12797",
+    "districtName": "GONDER",
+    "provinceName": "ETYOPYA"
+  },
+  "Gori": {
+    "ilceID": "13541",
+    "districtName": "GORI",
+    "provinceName": "GURCISTAN"
+  },
+  "Gothenburg": {
+    "ilceID": "14320",
+    "districtName": "GOTEBORG",
+    "provinceName": "ISVEC"
+  },
+  "Gqeberha": {
+    "ilceID": "13481",
+    "districtName": "PORT ELIZABETH",
+    "provinceName": "GUNEY AFRIKA"
+  },
+  "Graz": {
+    "ilceID": "11600",
+    "districtName": "GRAZ",
+    "provinceName": "AVUSTURYA"
+  },
+  "Groningen": {
+    "ilceID": "13979",
+    "districtName": "GRONINGEN",
+    "provinceName": "HOLLANDA"
+  },
+  "Guangzhou": {
+    "ilceID": "12577",
+    "districtName": "GUANGZHOU",
+    "provinceName": "CIN"
+  },
+  "Guantanamo": {
+    "ilceID": "15138",
+    "districtName": "GUANTANAMO",
+    "provinceName": "KUBA"
+  },
+  "Guatemala City": {
+    "ilceID": "13458",
+    "districtName": "GUATEMALA CITY",
+    "provinceName": "GUATEMALA"
+  },
+  "Guayaquil": {
+    "ilceID": "12694",
+    "districtName": "GUAYAQUIL",
+    "provinceName": "EKVATOR"
+  },
+  "Gwangju": {
+    "ilceID": "13516",
+    "districtName": "GWANGJU",
+    "provinceName": "GUNEY KORE"
+  },
+  "Gweru": {
+    "ilceID": "16696",
+    "districtName": "GWERU",
+    "provinceName": "ZIMBABVE"
+  },
+  "Hagatna": {
+    "ilceID": "13455",
+    "districtName": "AGANA",
+    "provinceName": "GUAM ADASI"
+  },
+  "Haifa": {
+    "ilceID": "14271",
+    "districtName": "HAIFA",
+    "provinceName": "ISRAIL"
+  },
+  "Haiphong": {
+    "ilceID": "16601",
+    "districtName": "HAIPHONG",
+    "provinceName": "VIETNAM"
+  },
+  "Hamah": {
+    "ilceID": "16301",
+    "districtName": "HAMAH",
+    "provinceName": "SURIYE"
+  },
+  "Hamburg": {
+    "ilceID": "11012",
+    "districtName": "HAMBURG",
+    "provinceName": "HAMBURG"
+  },
+  "Hamilton (BM)": {
+    "ilceID": "11939",
+    "districtName": "HAMILTON",
+    "provinceName": "BERMUDA"
+  },
+  "Hamilton (NZ)": {
+    "ilceID": "16624",
+    "districtName": "HAMILTON",
+    "provinceName": "YENI ZELANDA"
+  },
+  "Hanoi": {
+    "ilceID": "16605",
+    "districtName": "HANOI",
+    "provinceName": "VIETNAM"
+  },
+  "Harare": {
+    "ilceID": "16697",
+    "districtName": "HARARE",
+    "provinceName": "ZIMBABVE"
+  },
+  "Havana": {
+    "ilceID": "15147",
+    "districtName": "HAVANA",
+    "provinceName": "KUBA"
+  },
+  "Helsinki": {
+    "ilceID": "12929",
+    "districtName": "HELSINKI",
+    "provinceName": "FINLANDIYA"
+  },
+  "Herat": {
+    "ilceID": "9971",
+    "districtName": "HERAT",
+    "provinceName": "AFGANISTAN"
+  },
+  "Herceg Novi": {
+    "ilceID": "14866",
+    "districtName": "HERCEG NOVI ",
+    "provinceName": "KARADAG"
+  },
+  "Ho Chi Minh City": {
+    "ilceID": "16584",
+    "districtName": "HO CHI MINH CITY",
+    "provinceName": "VIETNAM"
+  },
+  "Holguin": {
+    "ilceID": "15139",
+    "districtName": "HOLGUIN",
+    "provinceName": "KUBA"
+  },
+  "Homs": {
+    "ilceID": "16300",
+    "districtName": "HIMS",
+    "provinceName": "SURIYE"
+  },
+  "Homyel'": {
+    "ilceID": "11685",
+    "districtName": "HOMEL",
+    "provinceName": "BELARUS"
+  },
+  "Hong Kong": {
+    "ilceID": "14001",
+    "districtName": "HONG KONG",
+    "provinceName": "HONG KONG"
+  },
+  "Hrodna": {
+    "ilceID": "11681",
+    "districtName": "GRODNO",
+    "provinceName": "BELARUS"
+  },
+  "Hue": {
+    "ilceID": "16587",
+    "districtName": "HUE",
+    "provinceName": "VIETNAM"
+  },
+  "Hyderabad": {
+    "ilceID": "13679",
+    "districtName": "HYDERABAD",
+    "provinceName": "HINDISTAN"
+  },
+  "Iasi": {
+    "ilceID": "15912",
+    "districtName": "IASI",
+    "provinceName": "ROMANYA"
+  },
+  "Ibadan": {
+    "ilceID": "15573",
+    "districtName": "IBADAN",
+    "provinceName": "NIJERYA"
+  },
+  "Incheon": {
+    "ilceID": "13510",
+    "districtName": "INCHEON",
+    "provinceName": "GUNEY KORE"
+  },
+  "Ipoh": {
+    "ilceID": "15318",
+    "districtName": "IPOH",
+    "provinceName": "MALEZYA"
+  },
+  "Irbid": {
+    "ilceID": "16534",
+    "districtName": "IRBID",
+    "provinceName": "URDUN"
+  },
+  "Isfahan": {
+    "ilceID": "14203",
+    "districtName": "ISFEHAN",
+    "provinceName": "IRAN"
+  },
+  "Islamabad": {
+    "ilceID": "15766",
+    "districtName": "ISLAMABAD",
+    "provinceName": "PAKISTAN"
+  },
   "Istanbul": {
     "ilceID": "9541",
     "districtName": "ISTANBUL",
-    "provinceName": "ISTANBUL"
+    "provinceName": "İSTANBUL"
+  },
+  "Izmir": {
+    "ilceID": "9560",
+    "districtName": "IZMIR",
+    "provinceName": "İZMİR"
+  },
+  "Jaffna": {
+    "ilceID": "16279",
+    "districtName": "JAFFNA",
+    "provinceName": "SRI LANKA"
+  },
+  "Jakarta": {
+    "ilceID": "12726",
+    "districtName": "JAKARTA",
+    "provinceName": "ENDONEZYA"
+  },
+  "Jalapa": {
+    "ilceID": "13460",
+    "districtName": "JALAPA",
+    "provinceName": "GUATEMALA"
+  },
+  "Jeddah": {
+    "ilceID": "16310",
+    "districtName": "JEDDAH",
+    "provinceName": "S. ARABISTAN"
+  },
+  "Jelgava": {
+    "ilceID": "15173",
+    "districtName": "JELGAVA",
+    "provinceName": "LETONYA"
+  },
+  "Johannesburg": {
+    "ilceID": "13495",
+    "districtName": "JOHANNESBURG",
+    "provinceName": "GUNEY AFRIKA"
+  },
+  "Johor Bahru": {
+    "ilceID": "15319",
+    "districtName": "JOHOR BAHARU",
+    "provinceName": "MALEZYA"
+  },
+  "Juba": {
+    "ilceID": "16291",
+    "districtName": "JUBA",
+    "provinceName": "GUNEY SUDAN"
+  },
+  "Kabul": {
+    "ilceID": "9972",
+    "districtName": "KABUL",
+    "provinceName": "AFGANISTAN"
+  },
+  "Kabwe": {
+    "ilceID": "16689",
+    "districtName": "KABWE",
+    "provinceName": "ZAMBIYA"
+  },
+  "Kaduna": {
+    "ilceID": "15575",
+    "districtName": "KADUNA",
+    "provinceName": "NIJERYA"
+  },
+  "Kairouan": {
+    "ilceID": "16382",
+    "districtName": "AL QAYRAWAN",
+    "provinceName": "TUNUS"
+  },
+  "Kampala": {
+    "ilceID": "16416",
+    "districtName": "KAMPALA",
+    "provinceName": "UGANDA"
+  },
+  "Kananga": {
+    "ilceID": "12663",
+    "districtName": "KANANGA",
+    "provinceName": "DEMOKRATIK KONGO CUMHURIYETI"
+  },
+  "Kandahar": {
+    "ilceID": "9973",
+    "districtName": "KANDAHAR",
+    "provinceName": "AFGANISTAN"
+  },
+  "Kankan": {
+    "ilceID": "13449",
+    "districtName": "KANKAN",
+    "provinceName": "GINE"
+  },
+  "Kano": {
+    "ilceID": "15590",
+    "districtName": "KANO",
+    "provinceName": "NIJERYA"
+  },
+  "Kaohsiung": {
+    "ilceID": "16368",
+    "districtName": "KAOHSIUNG",
+    "provinceName": "TAYVAN"
+  },
+  "Kaolack": {
+    "ilceID": "16184",
+    "districtName": "KAOLACK",
+    "provinceName": "SENEGAL"
+  },
+  "Karachi": {
+    "ilceID": "15767",
+    "districtName": "KARACHI",
+    "provinceName": "PAKISTAN"
+  },
+  "Karagandy": {
+    "ilceID": "14986",
+    "districtName": "KARAGANDA",
+    "provinceName": "KAZAKISTAN"
+  },
+  "Karaj": {
+    "ilceID": "14186",
+    "districtName": "KARAJ",
+    "provinceName": "IRAN"
+  },
+  "Karakol": {
+    "ilceID": "15068",
+    "districtName": "KARAKOL",
+    "provinceName": "KIRGIZISTAN"
+  },
+  "Karbala": {
+    "ilceID": "14161",
+    "districtName": "KERBELA",
+    "provinceName": "IRAK"
+  },
+  "Kassala": {
+    "ilceID": "16289",
+    "districtName": "KASSALA",
+    "provinceName": "SUDAN"
+  },
+  "Kathmandu": {
+    "ilceID": "15563",
+    "districtName": "KATHMANDU",
+    "provinceName": "NEPAL"
+  },
+  "Kaunas": {
+    "ilceID": "15205",
+    "districtName": "KAUNAS",
+    "provinceName": "LITVANYA"
+  },
+  "Kazan": {
+    "ilceID": "16132",
+    "districtName": "KAZAN",
+    "provinceName": "RUSYA"
+  },
+  "Kelo": {
+    "ilceID": "12287",
+    "districtName": "KELO",
+    "provinceName": "CAD"
+  },
+  "Kenema": {
+    "ilceID": "20042",
+    "districtName": "KENEMA",
+    "provinceName": "SIERRA LEONE"
+  },
+  "Khan Yunis": {
+    "ilceID": "12868",
+    "districtName": "YUNUS",
+    "provinceName": "FILISTIN"
+  },
+  "Khartoum": {
+    "ilceID": "16285",
+    "districtName": "HARTUM",
+    "provinceName": "SUDAN"
+  },
+  "Khujand": {
+    "ilceID": "16331",
+    "districtName": "KHUJAND",
+    "provinceName": "TACIKISTAN"
+  },
+  "Khulna": {
+    "ilceID": "11670",
+    "districtName": "KHULNA",
+    "provinceName": "BANGLADES"
+  },
+  "Kiffa": {
+    "ilceID": "16715",
+    "districtName": "KİFFA",
+    "provinceName": "MORITANYA"
+  },
+  "Kigali": {
+    "ilceID": "15958",
+    "districtName": "KIGALI",
+    "provinceName": "RUANDA"
+  },
+  "Kingston": {
+    "ilceID": "14695",
+    "districtName": "KINGSTON",
+    "provinceName": "JAMAIKA"
+  },
+  "Kinshasa": {
+    "ilceID": "12672",
+    "districtName": "KINSHASA",
+    "provinceName": "DEMOKRATIK KONGO CUMHURIYETI"
+  },
+  "Kisangani": {
+    "ilceID": "12666",
+    "districtName": "KISANGANI",
+    "provinceName": "DEMOKRATIK KONGO CUMHURIYETI"
+  },
+  "Kismayo": {
+    "ilceID": "16274",
+    "districtName": "KISMAAYO",
+    "provinceName": "SOMALI"
+  },
+  "Kitwe": {
+    "ilceID": "16687",
+    "districtName": "KITWE",
+    "provinceName": "ZAMBIYA"
+  },
+  "Klaipeda": {
+    "ilceID": "15206",
+    "districtName": "KLAIPEDA",
+    "provinceName": "LITVANYA"
+  },
+  "Koeln": {
+    "ilceID": "11019",
+    "districtName": "KOLN",
+    "provinceName": "NORDRHEIN-WESTFALEN"
+  },
+  "Koidu": {
+    "ilceID": "20044",
+    "districtName": "KOIDU",
+    "provinceName": "SIERRA LEONE"
+  },
+  "Koper": {
+    "ilceID": "16261",
+    "districtName": "KOPER",
+    "provinceName": "SLOVENYA"
+  },
+  "Korhogo": {
+    "ilceID": "12826",
+    "districtName": "KORHOGO",
+    "provinceName": "FILDISI SAHILI"
+  },
+  "Kosice": {
+    "ilceID": "16253",
+    "districtName": "KOSICE",
+    "provinceName": "SLOVAKYA"
+  },
+  "Koudougou": {
+    "ilceID": "12258",
+    "districtName": "KOUDOUGOU",
+    "provinceName": "BURKINA FASO"
+  },
+  "Kowloon": {
+    "ilceID": "14000",
+    "districtName": "KOWLOON",
+    "provinceName": "HONG KONG"
+  },
+  "Kragujevac": {
+    "ilceID": "16241",
+    "districtName": "KRAGUJEVAC",
+    "provinceName": "SIRBISTAN"
+  },
+  "Krakow": {
+    "ilceID": "15845",
+    "districtName": "KRAKOW",
+    "provinceName": "POLONYA"
+  },
+  "Kranj": {
+    "ilceID": "16260",
+    "districtName": "KRANJ",
+    "provinceName": "SLOVENYA"
+  },
+  "Kristiansand": {
+    "ilceID": "15685",
+    "districtName": "KRISTIANSAND",
+    "provinceName": "NORVEC"
+  },
+  "Kuala Belait": {
+    "ilceID": "12204",
+    "districtName": "KUALA BELAIT",
+    "provinceName": "BRUNEI"
+  },
+  "Kuala Lumpur": {
+    "ilceID": "15344",
+    "districtName": "KUALA LUMPUR",
+    "provinceName": "MALEZYA"
+  },
+  "Kulob": {
+    "ilceID": "16332",
+    "districtName": "KULOB",
+    "provinceName": "TACIKISTAN"
+  },
+  "Kumanovo": {
+    "ilceID": "15300",
+    "districtName": "KUMANOVO",
+    "provinceName": "MAKEDONYA"
+  },
+  "Kumasi": {
+    "ilceID": "13439",
+    "districtName": "KUMASI",
+    "provinceName": "GANA"
+  },
+  "Kunduz": {
+    "ilceID": "9963",
+    "districtName": "KONDOZ",
+    "provinceName": "AFGANISTAN"
+  },
+  "Kutaisi": {
+    "ilceID": "17820",
+    "districtName": "KUTAISI",
+    "provinceName": "GURCISTAN"
+  },
+  "Kuwait City": {
+    "ilceID": "15149",
+    "districtName": "KUWAIT",
+    "provinceName": "KUVEYT"
+  },
+  "Kyiv": {
+    "ilceID": "16498",
+    "districtName": "KIEV",
+    "provinceName": "UKRAYNA"
+  },
+  "La Ceiba": {
+    "ilceID": "13987",
+    "districtName": "LA CEIBA",
+    "provinceName": "HONDURAS"
+  },
+  "La Paz": {
+    "ilceID": "11958",
+    "districtName": "LA PAZ",
+    "provinceName": "BOLIVYA"
+  },
+  "La Romana": {
+    "ilceID": "12680",
+    "districtName": "LA ROMANA",
+    "provinceName": "DOMINIK CUMHURIYETI"
+  },
+  "Lae": {
+    "ilceID": "15809",
+    "districtName": "LAE",
+    "provinceName": "PAPUA YENI GINE"
+  },
+  "Lagos": {
+    "ilceID": "15601",
+    "districtName": "LAGOS",
+    "provinceName": "NIJERYA"
+  },
+  "Lahore": {
+    "ilceID": "15793",
+    "districtName": "LAHOR",
+    "provinceName": "PAKISTAN"
+  },
+  "Larisa": {
+    "ilceID": "16681",
+    "districtName": "LARISA",
+    "provinceName": "YUNANISTAN"
+  },
+  "Larnaca": {
+    "ilceID": "15157",
+    "districtName": "LARNAKA",
+    "provinceName": "KUZEY KIBRIS"
+  },
+  "Latakia": {
+    "ilceID": "16298",
+    "districtName": "AL LADHIQIYAH",
+    "provinceName": "SURIYE"
+  },
+  "Lausanne": {
+    "ilceID": "14551",
+    "districtName": "LOZAN",
+    "provinceName": "ISVICRE"
+  },
+  "Lautoka": {
+    "ilceID": "12819",
+    "districtName": "LAUTOKA",
+    "provinceName": "FIJI"
+  },
+  "Leeds": {
+    "ilceID": "14107",
+    "districtName": "LEEDS",
+    "provinceName": "INGILTERE"
+  },
+  "Leiria": {
+    "ilceID": "15889",
+    "districtName": "LEIRIA",
+    "provinceName": "PORTEKIZ"
+  },
+  "Leon": {
+    "ilceID": "15608",
+    "districtName": "LEON",
+    "provinceName": "NIKARAGUA"
+  },
+  "Liberec": {
+    "ilceID": "12344",
+    "districtName": "LIBEREC",
+    "provinceName": "CEK CUMHURIYETI"
+  },
+  "Liberia": {
+    "ilceID": "15131",
+    "districtName": "LIBERIA",
+    "provinceName": "KOSTARIKA"
+  },
+  "Libreville": {
+    "ilceID": "13430",
+    "districtName": "LIBREVILLE",
+    "provinceName": "GABON"
+  },
+  "Liege": {
+    "ilceID": "11917",
+    "districtName": "LIEGE",
+    "provinceName": "BELCIKA"
+  },
+  "Liepaja": {
+    "ilceID": "15171",
+    "districtName": "LIEPAJA",
+    "provinceName": "LETONYA"
+  },
+  "Lilongwe": {
+    "ilceID": "15311",
+    "districtName": "LILONGWE",
+    "provinceName": "MALAVI"
+  },
+  "Lima": {
+    "ilceID": "15837",
+    "districtName": "LIMA",
+    "provinceName": "PERU"
+  },
+  "Limassol": {
+    "ilceID": "17913",
+    "districtName": "LEMESOS",
+    "provinceName": "KUZEY KIBRIS"
+  },
+  "Limon": {
+    "ilceID": "15132",
+    "districtName": "LIMON",
+    "provinceName": "KOSTARIKA"
+  },
+  "Linden": {
+    "ilceID": "13560",
+    "districtName": "LINDEN",
+    "provinceName": "GUYANA"
+  },
+  "Linkoeping": {
+    "ilceID": "14361",
+    "districtName": "LINKOPING",
+    "provinceName": "ISVEC"
+  },
+  "Linz": {
+    "ilceID": "11615",
+    "districtName": "LINZ",
+    "provinceName": "AVUSTURYA"
+  },
+  "Lisbon": {
+    "ilceID": "15905",
+    "districtName": "LISBON",
+    "provinceName": "PORTEKIZ"
+  },
+  "Ljubljana": {
+    "ilceID": "16269",
+    "districtName": "LJUBLJANA",
+    "provinceName": "SLOVENYA"
+  },
+  "Lodz": {
+    "ilceID": "15843",
+    "districtName": "LODZ",
+    "provinceName": "POLONYA"
+  },
+  "Lome": {
+    "ilceID": "16374",
+    "districtName": "LOME",
+    "provinceName": "TOGO"
+  },
+  "London": {
+    "ilceID": "14096",
+    "districtName": "LONDON",
+    "provinceName": "INGILTERE"
+  },
+  "Longyearbyen": {
+    "ilceID": "16317",
+    "districtName": "LONGYEARBYEN",
+    "provinceName": "SVALBARD"
+  },
+  "Los Angeles": {
+    "ilceID": "8626",
+    "districtName": "LOS ANGELES",
+    "provinceName": "CALIFORNIA"
+  },
+  "Luanda": {
+    "ilceID": "11131",
+    "districtName": "LUANDA",
+    "provinceName": "ANGOLA"
+  },
+  "Lubumbashi": {
+    "ilceID": "12660",
+    "districtName": "LUBUMBASHI",
+    "provinceName": "DEMOKRATIK KONGO CUMHURIYETI"
+  },
+  "Lusaka": {
+    "ilceID": "16688",
+    "districtName": "LUSAKA",
+    "provinceName": "ZAMBIYA"
+  },
+  "Lushnje": {
+    "ilceID": "11209",
+    "districtName": "LUSHNJE",
+    "provinceName": "ARNAVUTLUK"
+  },
+  "Luxembourg": {
+    "ilceID": "15234",
+    "districtName": "LUKSEMBURG",
+    "provinceName": "LUKSEMBURG"
+  },
+  "Lviv": {
+    "ilceID": "16451",
+    "districtName": "LVIV",
+    "provinceName": "UKRAYNA"
+  },
+  "Lyon": {
+    "ilceID": "13381",
+    "districtName": "LYON",
+    "provinceName": "FRANSA"
+  },
+  "Macau": {
+    "ilceID": "15273",
+    "districtName": "MAKAO",
+    "provinceName": "MAKAO"
+  },
+  "Madang": {
+    "ilceID": "15810",
+    "districtName": "MADANG",
+    "provinceName": "PAPUA YENI GINE"
+  },
+  "Madinah": {
+    "ilceID": "16308",
+    "districtName": "MEDINA",
+    "provinceName": "S. ARABISTAN"
+  },
+  "Madrid": {
+    "ilceID": "14263",
+    "districtName": "MADRID",
+    "provinceName": "ISPANYA"
+  },
+  "Mahajanga": {
+    "ilceID": "15269",
+    "districtName": "MAHAJANGA",
+    "provinceName": "MADAGASKAR"
+  },
+  "Mahilyow": {
+    "ilceID": "11689",
+    "districtName": "MAHILYOW",
+    "provinceName": "BELARUS"
+  },
+  "Makeni": {
+    "ilceID": "20043",
+    "districtName": "MAKENI",
+    "provinceName": "SIERRA LEONE"
   },
   "Makkah": {
     "ilceID": "16309",
     "districtName": "MECCA",
     "provinceName": "S. ARABISTAN"
   },
-  "Kuala Lumpur": {
-    "ilceID": "15344",
-    "districtName": "KUALA LUMPUR",
-    "provinceName": "MALAYSIA"
+  "Malabo": {
+    "ilceID": "12713",
+    "districtName": "MALABO",
+    "provinceName": "EKVATOR GINESI"
   },
-  "London": {
-    "ilceID": "14096",
-    "districtName": "LONDON",
-    "provinceName": "UNITED KINGDOM"
+  "Malaga": {
+    "ilceID": "14229",
+    "districtName": "MALAGA",
+    "provinceName": "ISPANYA"
+  },
+  "Maldonado": {
+    "ilceID": "16541",
+    "districtName": "MALDONADO",
+    "provinceName": "URUGUAY"
+  },
+  "Male": {
+    "ilceID": "15313",
+    "districtName": "MALE",
+    "provinceName": "MALDIVLER"
+  },
+  "Malmoe": {
+    "ilceID": "14350",
+    "districtName": "MALMO",
+    "provinceName": "ISVEC"
+  },
+  "Mamoudzou": {
+    "ilceID": "15356",
+    "districtName": "MAMOUDZOU",
+    "provinceName": "MAYOTTE"
+  },
+  "Managua": {
+    "ilceID": "15609",
+    "districtName": "MANAGUA",
+    "provinceName": "NIKARAGUA"
+  },
+  "Manama": {
+    "ilceID": "11667",
+    "districtName": "MANAMA",
+    "provinceName": "BAHREYN"
+  },
+  "Manas": {
+    "ilceID": "15066",
+    "districtName": "JALAL ABAD",
+    "provinceName": "KIRGIZISTAN"
+  },
+  "Manchester": {
+    "ilceID": "14098",
+    "districtName": "MANCHESTER",
+    "provinceName": "INGILTERE"
+  },
+  "Mandalay": {
+    "ilceID": "12266",
+    "districtName": "MANDALAY",
+    "provinceName": "MYANMAR"
+  },
+  "Mandeville": {
+    "ilceID": "14696",
+    "districtName": "MANDEVILLE",
+    "provinceName": "JAMAIKA"
+  },
+  "Manila": {
+    "ilceID": "12827",
+    "districtName": "MANILA",
+    "provinceName": "FILIPINLER"
+  },
+  "Manukau City": {
+    "ilceID": "16626",
+    "districtName": "MANUKAU",
+    "provinceName": "YENI ZELANDA"
+  },
+  "Maputo": {
+    "ilceID": "15548",
+    "districtName": "MAPUTO",
+    "provinceName": "MOZAMBIK"
+  },
+  "Mar del Plata": {
+    "ilceID": "11145",
+    "districtName": "MAR DEL PLATA",
+    "provinceName": "ARJANTIN"
+  },
+  "Maracaibo": {
+    "ilceID": "16571",
+    "districtName": "MARACAIBO",
+    "provinceName": "VENEZUELA"
+  },
+  "Maradi": {
+    "ilceID": "15568",
+    "districtName": "MARADI",
+    "provinceName": "NIJER"
+  },
+  "Maribor": {
+    "ilceID": "16262",
+    "districtName": "MARIBOR",
+    "provinceName": "SLOVENYA"
+  },
+  "Maroua": {
+    "ilceID": "14858",
+    "districtName": "MAROUA",
+    "provinceName": "KAMERUN"
+  },
+  "Marrakesh": {
+    "ilceID": "12805",
+    "districtName": "MARAKES",
+    "provinceName": "FAS"
+  },
+  "Marseille": {
+    "ilceID": "13383",
+    "districtName": "MARSEILLE",
+    "provinceName": "FRANSA"
+  },
+  "Mary": {
+    "ilceID": "16411",
+    "districtName": "MARY",
+    "provinceName": "TURKMENISTAN"
+  },
+  "Masaya": {
+    "ilceID": "15610",
+    "districtName": "MASAYA",
+    "provinceName": "NIKARAGUA"
+  },
+  "Maseru": {
+    "ilceID": "15169",
+    "districtName": "MASERU",
+    "provinceName": "LESOTO"
+  },
+  "Mashhad": {
+    "ilceID": "14175",
+    "districtName": "MASHHAD",
+    "provinceName": "IRAN"
+  },
+  "Matola": {
+    "ilceID": "15550",
+    "districtName": "MATOLA",
+    "provinceName": "MOZAMBIK"
+  },
+  "Maun": {
+    "ilceID": "12033",
+    "districtName": "MAUN",
+    "provinceName": "BOTSVANA"
+  },
+  "Mawlamyine": {
+    "ilceID": "12270",
+    "districtName": "MOULMEIN",
+    "provinceName": "MYANMAR"
+  },
+  "Mazar-e Sharif": {
+    "ilceID": "9974",
+    "districtName": "MAZAR-I SHARIF",
+    "provinceName": "AFGANISTAN"
+  },
+  "Mbabane": {
+    "ilceID": "16319",
+    "districtName": "MBABANE",
+    "provinceName": "ESWATINI"
+  },
+  "Mbeya": {
+    "ilceID": "16345",
+    "districtName": "MBEYA",
+    "provinceName": "TANZANYA"
+  },
+  "Mbuji-Mayi": {
+    "ilceID": "12664",
+    "districtName": "MBUJI-MAYI",
+    "provinceName": "DEMOKRATIK KONGO CUMHURIYETI"
+  },
+  "Medan": {
+    "ilceID": "12745",
+    "districtName": "MEDAN",
+    "provinceName": "ENDONEZYA"
+  },
+  "Medellin": {
+    "ilceID": "15094",
+    "districtName": "MEDELLIN",
+    "provinceName": "KOLOMBIYA"
+  },
+  "Mejicanos": {
+    "ilceID": "12722",
+    "districtName": "MEJICANOS",
+    "provinceName": "EL SALVADOR"
+  },
+  "Mek'ele": {
+    "ilceID": "12796",
+    "districtName": "MEKELE",
+    "provinceName": "ETYOPYA"
+  },
+  "Melbourne": {
+    "ilceID": "11421",
+    "districtName": "MELBOURNE",
+    "provinceName": "AVUSTRALYA"
+  },
+  "Mendefera": {
+    "ilceID": "12778",
+    "districtName": "ADI UGRI",
+    "provinceName": "ERITRE"
+  },
+  "Mexico City": {
+    "ilceID": "15357",
+    "districtName": "MEXICO CITY",
+    "provinceName": "MEKSIKA"
+  },
+  "Milan": {
+    "ilceID": "14586",
+    "districtName": "MILANO",
+    "provinceName": "ITALYA"
+  },
+  "Mindelo": {
+    "ilceID": "16641",
+    "districtName": "MINDELO",
+    "provinceName": "YESIL BURUN"
+  },
+  "Mingachevir": {
+    "ilceID": "11625",
+    "districtName": "MINGACEVIR",
+    "provinceName": "AZERBAYCAN"
+  },
+  "Minsk": {
+    "ilceID": "11700",
+    "districtName": "MINSK",
+    "provinceName": "BELARUS"
+  },
+  "Miskolc": {
+    "ilceID": "15237",
+    "districtName": "MISKOLC",
+    "provinceName": "MACARISTAN"
+  },
+  "Misratah": {
+    "ilceID": "15182",
+    "districtName": "MISRATAH",
+    "provinceName": "LIBYA"
+  },
+  "Mitrovice": {
+    "ilceID": "15125",
+    "districtName": "MİTROVİÇE",
+    "provinceName": "KOSOVA"
+  },
+  "Mixco": {
+    "ilceID": "13461",
+    "districtName": "MIXCO",
+    "provinceName": "GUATEMALA"
+  },
+  "Mogadishu": {
+    "ilceID": "16273",
+    "districtName": "MOGADISHU",
+    "provinceName": "SOMALI"
+  },
+  "Mombasa": {
+    "ilceID": "15010",
+    "districtName": "MOMBASA",
+    "provinceName": "KENYA"
+  },
+  "Monaco": {
+    "ilceID": "15543",
+    "districtName": "MONACO",
+    "provinceName": "MONAKO"
+  },
+  "Monrovia": {
+    "ilceID": "15179",
+    "districtName": "MONROVIA",
+    "provinceName": "LIBERYA"
+  },
+  "Montego Bay": {
+    "ilceID": "14697",
+    "districtName": "MONTEGO BAY",
+    "provinceName": "JAMAIKA"
+  },
+  "Montevideo": {
+    "ilceID": "16544",
+    "districtName": "MONTEVIDEO",
+    "provinceName": "URUGUAY"
+  },
+  "Montreal": {
+    "ilceID": "9132",
+    "districtName": "MONTREAL",
+    "provinceName": "QUEBEC"
+  },
+  "Moratuwa": {
+    "ilceID": "16282",
+    "districtName": "MORATUWA",
+    "provinceName": "SRI LANKA"
+  },
+  "Moroni": {
+    "ilceID": "15112",
+    "districtName": "MORONI",
+    "provinceName": "KOMORLAR"
+  },
+  "Moscow": {
+    "ilceID": "22184",
+    "districtName": "MOSCOW",
+    "provinceName": "RUSYA"
+  },
+  "Mostar": {
+    "ilceID": "12030",
+    "districtName": "MOSTAR",
+    "provinceName": "BOSNA HERSEK"
+  },
+  "Mosul": {
+    "ilceID": "14167",
+    "districtName": "MUSUL",
+    "provinceName": "IRAK"
+  },
+  "Moundou": {
+    "ilceID": "12288",
+    "districtName": "MOUNDOU",
+    "provinceName": "CAD"
+  },
+  "Mukalla": {
+    "ilceID": "16608",
+    "districtName": "AL MUKALLA",
+    "provinceName": "YEMEN"
+  },
+  "Mumbai": {
+    "ilceID": "13681",
+    "districtName": "MUMBAI",
+    "provinceName": "HINDISTAN"
+  },
+  "Munich": {
+    "ilceID": "11022",
+    "districtName": "MUNCHEN",
+    "provinceName": "BAYERN"
+  },
+  "Muscat": {
+    "ilceID": "16527",
+    "districtName": "MASKAT",
+    "provinceName": "UMMAN"
+  },
+  "Mutare": {
+    "ilceID": "22213",
+    "districtName": "MUTARE",
+    "provinceName": "ZIMBABVE"
+  },
+  "Mwanza": {
+    "ilceID": "16344",
+    "districtName": "MWANZA",
+    "provinceName": "TANZANYA"
+  },
+  "N'Djamena": {
+    "ilceID": "12284",
+    "districtName": "NDJAMENA",
+    "provinceName": "CAD"
+  },
+  "Nablus": {
+    "ilceID": "12872",
+    "districtName": "NABLUS (W.B.)",
+    "provinceName": "FILISTIN"
+  },
+  "Nagoya": {
+    "ilceID": "14827",
+    "districtName": "NAGOYA",
+    "provinceName": "JAPONYA"
+  },
+  "Nairobi": {
+    "ilceID": "15015",
+    "districtName": "NAIROBI",
+    "provinceName": "KENYA"
+  },
+  "Nakuru": {
+    "ilceID": "15014",
+    "districtName": "NAKURU",
+    "provinceName": "KENYA"
+  },
+  "Nalayh": {
+    "ilceID": "15533",
+    "districtName": "NALAYH",
+    "provinceName": "MOGOLISTAN"
+  },
+  "Namangan": {
+    "ilceID": "15760",
+    "districtName": "NAMANGAN",
+    "provinceName": "OZBEKISTAN"
+  },
+  "Nampula": {
+    "ilceID": "15549",
+    "districtName": "NAMPULA",
+    "provinceName": "MOZAMBIK"
+  },
+  "Nantes": {
+    "ilceID": "13386",
+    "districtName": "NANTES",
+    "provinceName": "FRANSA"
+  },
+  "Naples": {
+    "ilceID": "14589",
+    "districtName": "NAPOLI",
+    "provinceName": "ITALYA"
+  },
+  "Nassau": {
+    "ilceID": "11665",
+    "districtName": "NASSAU",
+    "provinceName": "BAHAMALAR"
+  },
+  "Nay Pyi Taw": {
+    "ilceID": "12263",
+    "districtName": "PYINMANA (Naypyidaw)",
+    "provinceName": "MYANMAR"
+  },
+  "Ndola": {
+    "ilceID": "16693",
+    "districtName": "NDOLA",
+    "provinceName": "ZAMBIYA"
+  },
+  "Nema": {
+    "ilceID": "16716",
+    "districtName": "NEMA",
+    "provinceName": "MORITANYA"
+  },
+  "New Amsterdam": {
+    "ilceID": "13561",
+    "districtName": "NEW AMSTERDAM",
+    "provinceName": "GUYANA"
+  },
+  "New York City": {
+    "ilceID": "8903",
+    "districtName": "NEW YORK",
+    "provinceName": "NEW YORK"
+  },
+  "Ngozi": {
+    "ilceID": "12278",
+    "districtName": "NGOZI",
+    "provinceName": "BURUNDI"
+  },
+  "Niamey": {
+    "ilceID": "15566",
+    "districtName": "NIAMEY",
+    "provinceName": "NIJER"
+  },
+  "Nice": {
+    "ilceID": "13390",
+    "districtName": "NICE",
+    "provinceName": "FRANSA"
+  },
+  "Nicosia": {
+    "ilceID": "15158",
+    "districtName": "LEFKOSA",
+    "provinceName": "KUZEY KIBRIS"
+  },
+  "Nis": {
+    "ilceID": "16236",
+    "districtName": "NIS",
+    "provinceName": "SIRBISTAN"
+  },
+  "Nitra": {
+    "ilceID": "16255",
+    "districtName": "NITRA",
+    "provinceName": "SLOVAKYA"
+  },
+  "Nouadhibou": {
+    "ilceID": "16713",
+    "districtName": "NOUADHİBOU",
+    "provinceName": "MORITANYA"
+  },
+  "Nouakchott": {
+    "ilceID": "15546",
+    "districtName": "NOUAKCHOTT",
+    "provinceName": "MORITANYA"
+  },
+  "Noumea": {
+    "ilceID": "16612",
+    "districtName": "NOUMEA",
+    "provinceName": "YENI KALEDONYA"
+  },
+  "Novi Beograd": {
+    "ilceID": "16219",
+    "districtName": "NOVI BEOGRAD ",
+    "provinceName": "SIRBISTAN"
+  },
+  "Novi Sad": {
+    "ilceID": "16233",
+    "districtName": "NOVI SAD",
+    "provinceName": "SIRBISTAN"
+  },
+  "Novo Mesto": {
+    "ilceID": "16264",
+    "districtName": "NOVO MESTO",
+    "provinceName": "SLOVENYA"
+  },
+  "Novosibirsk": {
+    "ilceID": "16171",
+    "districtName": "NOVOSIBIRSK",
+    "provinceName": "RUSYA"
+  },
+  "Nuku'alofa": {
+    "ilceID": "16375",
+    "districtName": "NUKUALOFA",
+    "provinceName": "TONGA"
+  },
+  "Nukus": {
+    "ilceID": "15763",
+    "districtName": "NUKUS",
+    "provinceName": "OZBEKISTAN"
+  },
+  "Nuuk": {
+    "ilceID": "13452",
+    "districtName": "NUUK",
+    "provinceName": "GRONLAND"
+  },
+  "Nyala": {
+    "ilceID": "16286",
+    "districtName": "NYALA",
+    "provinceName": "SUDAN"
+  },
+  "Nzerekore": {
+    "ilceID": "13450",
+    "districtName": "NZEREKORE",
+    "provinceName": "GINE"
+  },
+  "Odense": {
+    "ilceID": "12619",
+    "districtName": "ODENSE",
+    "provinceName": "DANIMARKA"
+  },
+  "Odesa": {
+    "ilceID": "16493",
+    "districtName": "ODESSA",
+    "provinceName": "UKRAYNA"
+  },
+  "OErebro": {
+    "ilceID": "14404",
+    "districtName": "OREBRO",
+    "provinceName": "ISVEC"
+  },
+  "Olomouc": {
+    "ilceID": "12330",
+    "districtName": "OLOMOUC",
+    "provinceName": "CEK CUMHURIYETI"
+  },
+  "Oran": {
+    "ilceID": "12362",
+    "districtName": "ORAN",
+    "provinceName": "CEZAYIR"
+  },
+  "Orange Walk": {
+    "ilceID": "11919",
+    "districtName": "ORANGE WALK",
+    "provinceName": "BELIZE"
+  },
+  "Oranjestad": {
+    "ilceID": "11222",
+    "districtName": "ORANJESTAD",
+    "provinceName": "ARUBA"
+  },
+  "Oruro": {
+    "ilceID": "11961",
+    "districtName": "ORURO",
+    "provinceName": "BOLIVYA"
+  },
+  "Osaka": {
+    "ilceID": "14840",
+    "districtName": "OSAKA",
+    "provinceName": "JAPONYA"
+  },
+  "Osh": {
+    "ilceID": "15070",
+    "districtName": "OSH",
+    "provinceName": "KIRGIZISTAN"
+  },
+  "Oshakati": {
+    "ilceID": "15556",
+    "districtName": "OSHAKATI",
+    "provinceName": "NAMIBYA"
+  },
+  "Osijek": {
+    "ilceID": "13683",
+    "districtName": "OSIJEK",
+    "provinceName": "HIRVATISTAN"
+  },
+  "Oslo": {
+    "ilceID": "15702",
+    "districtName": "OSLO",
+    "provinceName": "NORVEC"
+  },
+  "Ostrava": {
+    "ilceID": "12332",
+    "districtName": "OSTRAVA",
+    "provinceName": "CEK CUMHURIYETI"
+  },
+  "Ottawa": {
+    "ilceID": "9109",
+    "districtName": "OTTAVA",
+    "provinceName": "ONTARIO"
+  },
+  "Ouagadougou": {
+    "ilceID": "12256",
+    "districtName": "OUAGADOUGOU",
+    "provinceName": "BURKINA FASO"
+  },
+  "Ouahigouya": {
+    "ilceID": "12254",
+    "districtName": "OUAHIGOUYA",
+    "provinceName": "BURKINA FASO"
+  },
+  "Oulu": {
+    "ilceID": "12919",
+    "districtName": "OULU",
+    "provinceName": "FINLANDIYA"
+  },
+  "Oyem": {
+    "ilceID": "13432",
+    "districtName": "OYEM",
+    "provinceName": "GABON"
+  },
+  "Palermo": {
+    "ilceID": "14693",
+    "districtName": "PALERMO",
+    "provinceName": "ITALYA"
+  },
+  "Palikir": {
+    "ilceID": "15452",
+    "districtName": "PALIKIR",
+    "provinceName": "MIKRONEZYA"
+  },
+  "Panama City": {
+    "ilceID": "15806",
+    "districtName": "PANAMA CITY",
+    "provinceName": "PANAMA"
+  },
+  "Panevezys": {
+    "ilceID": "33350",
+    "districtName": "PANEVEZYS",
+    "provinceName": "LITVANYA"
+  },
+  "Parakou": {
+    "ilceID": "11928",
+    "districtName": "PARAKOU",
+    "provinceName": "BENIN"
+  },
+  "Paramaribo": {
+    "ilceID": "16296",
+    "districtName": "PARAMARIBO",
+    "provinceName": "SURINAM"
+  },
+  "Paris": {
+    "ilceID": "13382",
+    "districtName": "PARIS",
+    "provinceName": "FRANSA"
+  },
+  "Paysandu": {
+    "ilceID": "16545",
+    "districtName": "PAYSANDU",
+    "provinceName": "URUGUAY"
+  },
+  "Perth": {
+    "ilceID": "11427",
+    "districtName": "PERTH",
+    "provinceName": "AVUSTRALYA"
+  },
+  "Phnom Penh": {
+    "ilceID": "14847",
+    "districtName": "PHNOM PENH",
+    "provinceName": "KAMBOCYA"
+  },
+  "Pilsen": {
+    "ilceID": "12335",
+    "districtName": "PLZEN",
+    "provinceName": "CEK CUMHURIYETI"
+  },
+  "Piura": {
+    "ilceID": "15838",
+    "districtName": "PIURA",
+    "provinceName": "PERU"
+  },
+  "Pljevlja": {
+    "ilceID": "14876",
+    "districtName": "PLJEVLJA",
+    "provinceName": "KARADAG"
+  },
+  "Plovdiv": {
+    "ilceID": "12243",
+    "districtName": "PLOVDIV",
+    "provinceName": "BULGARISTAN"
+  },
+  "Plymouth": {
+    "ilceID": "15545",
+    "districtName": "PLYMOUTH",
+    "provinceName": "MONTSERRAT (U.K.)"
+  },
+  "Podgorica": {
+    "ilceID": "14875",
+    "districtName": "PODGORICA",
+    "provinceName": "KARADAG"
+  },
+  "Ponce": {
+    "ilceID": "15909",
+    "districtName": "PONCE",
+    "provinceName": "PORTO RIKO"
+  },
+  "Port Harcourt": {
+    "ilceID": "15577",
+    "districtName": "PORT HARCOURT",
+    "provinceName": "NIJERYA"
+  },
+  "Port Louis": {
+    "ilceID": "15354",
+    "districtName": "PORT LOUIS",
+    "provinceName": "MAURITIUS ADASI"
+  },
+  "Port Moresby": {
+    "ilceID": "15811",
+    "districtName": "PORT MORESBY",
+    "provinceName": "PAPUA YENI GINE"
+  },
+  "Port of Spain": {
+    "ilceID": "16377",
+    "districtName": "PORT OF SPAIN",
+    "provinceName": "TRINIDAT VE TOBAGO"
+  },
+  "Port Said": {
+    "ilceID": "15467",
+    "districtName": "PORT SAID",
+    "provinceName": "MISIR"
+  },
+  "Port Sudan": {
+    "ilceID": "16287",
+    "districtName": "PORT SUDAN",
+    "provinceName": "SUDAN"
+  },
+  "Port-au-Prince": {
+    "ilceID": "13567",
+    "districtName": "PORT -AU -PRINCE",
+    "provinceName": "HAITI"
+  },
+  "Port-Gentil": {
+    "ilceID": "13431",
+    "districtName": "PORT GENTIL",
+    "provinceName": "GABON"
+  },
+  "Port-Vila": {
+    "ilceID": "16552",
+    "districtName": "PORT-VILA",
+    "provinceName": "VANUATU"
+  },
+  "Porto": {
+    "ilceID": "15899",
+    "districtName": "PORTO",
+    "provinceName": "PORTEKIZ"
+  },
+  "Porto-Novo": {
+    "ilceID": "11926",
+    "districtName": "PORTO-NOVO",
+    "provinceName": "BENIN"
+  },
+  "Portoviejo": {
+    "ilceID": "12700",
+    "districtName": "PORTOVIEJO",
+    "provinceName": "EKVATOR"
+  },
+  "Poznan": {
+    "ilceID": "15846",
+    "districtName": "POZNAN",
+    "provinceName": "POLONYA"
+  },
+  "Prague": {
+    "ilceID": "12315",
+    "districtName": "PRAGUE",
+    "provinceName": "CEK CUMHURIYETI"
+  },
+  "Praia": {
+    "ilceID": "16642",
+    "districtName": "PRAIA",
+    "provinceName": "YESIL BURUN"
+  },
+  "Presov": {
+    "ilceID": "16257",
+    "districtName": "PRESOV",
+    "provinceName": "SLOVAKYA"
+  },
+  "Pretoria": {
+    "ilceID": "13497",
+    "districtName": "PRETORIA",
+    "provinceName": "GUNEY AFRIKA"
+  },
+  "Prilep": {
+    "ilceID": "15307",
+    "districtName": "PRILEP",
+    "provinceName": "MAKEDONYA"
+  },
+  "Pristina": {
+    "ilceID": "15126",
+    "districtName": "PRİSTİNE",
+    "provinceName": "KOSOVA"
+  },
+  "Prizren": {
+    "ilceID": "15127",
+    "districtName": "PRİZREN",
+    "provinceName": "KOSOVA"
+  },
+  "Puebla": {
+    "ilceID": "15419",
+    "districtName": "PUEBLA",
+    "provinceName": "MEKSIKA"
+  },
+  "Puerto Cortez": {
+    "ilceID": "13989",
+    "districtName": "PUERTO CORTES",
+    "provinceName": "HONDURAS"
+  },
+  "Pyongyang": {
+    "ilceID": "15161",
+    "districtName": "PYONGYANG",
+    "provinceName": "KUZEY KORE"
+  },
+  "Quetzaltenango": {
+    "ilceID": "13463",
+    "districtName": "QUEZALTENANGO",
+    "provinceName": "GUATEMALA"
+  },
+  "Quito": {
+    "ilceID": "12702",
+    "districtName": "QUITO",
+    "provinceName": "EKVATOR"
+  },
+  "Rabat": {
+    "ilceID": "12818",
+    "districtName": "RABAT",
+    "provinceName": "FAS"
+  },
+  "Rajshahi": {
+    "ilceID": "11671",
+    "districtName": "RAJSHAHI",
+    "provinceName": "BANGLADES"
+  },
+  "Rawalpindi": {
+    "ilceID": "15782",
+    "districtName": "RAWALPINDI",
+    "provinceName": "PAKISTAN"
+  },
+  "Reykjavik": {
+    "ilceID": "14694",
+    "districtName": "REYKJAVIK",
+    "provinceName": "IZLANDA"
+  },
+  "Riga": {
+    "ilceID": "15170",
+    "districtName": "RIGA",
+    "provinceName": "LETONYA"
+  },
+  "Rijeka": {
+    "ilceID": "13685",
+    "districtName": "RIJEKA",
+    "provinceName": "HIRVATISTAN"
+  },
+  "Rio de Janeiro": {
+    "ilceID": "12196",
+    "districtName": "RIO DE JANEIRO",
+    "provinceName": "BREZILYA"
+  },
+  "Rivera": {
+    "ilceID": "16546",
+    "districtName": "RIVERA",
+    "provinceName": "URUGUAY"
+  },
+  "Riyadh": {
+    "ilceID": "16307",
+    "districtName": "RIYADH",
+    "provinceName": "S. ARABISTAN"
+  },
+  "Rome": {
+    "ilceID": "14588",
+    "districtName": "ROMA",
+    "provinceName": "ITALYA"
+  },
+  "Rosario": {
+    "ilceID": "11179",
+    "districtName": "ROSARIO",
+    "provinceName": "ARJANTIN"
+  },
+  "Roseau": {
+    "ilceID": "12674",
+    "districtName": "ROSEAU",
+    "provinceName": "DOMINIK"
+  },
+  "Rotterdam": {
+    "ilceID": "13980",
+    "districtName": "ROTTERDAM",
+    "provinceName": "HOLLANDA"
+  },
+  "Ruse": {
+    "ilceID": "12234",
+    "districtName": "RUSCUK (Ruse)",
+    "provinceName": "BULGARISTAN"
+  },
+  "Rustavi": {
+    "ilceID": "13549",
+    "districtName": "RUSTAVI",
+    "provinceName": "GURCISTAN"
+  },
+  "Sacaba": {
+    "ilceID": "11982",
+    "districtName": "SACABA",
+    "provinceName": "BOLIVYA"
+  },
+  "Saint George's": {
+    "ilceID": "13451",
+    "districtName": "SAINT GEORGES",
+    "provinceName": "GRENADA"
+  },
+  "Saint John's": {
+    "ilceID": "11144",
+    "districtName": "SAINT JOHNS",
+    "provinceName": "ANTIGUA VE BARBUDA"
+  },
+  "Saint Petersburg": {
+    "ilceID": "16141",
+    "districtName": "St. PETERSBURG",
+    "provinceName": "RUSYA"
+  },
+  "Salalah": {
+    "ilceID": "16531",
+    "districtName": "SALALAH",
+    "provinceName": "UMMAN"
+  },
+  "Sale": {
+    "ilceID": "12813",
+    "districtName": "SALE",
+    "provinceName": "FAS"
+  },
+  "Salta": {
+    "ilceID": "11180",
+    "districtName": "SALTA",
+    "provinceName": "ARJANTIN"
+  },
+  "Salto": {
+    "ilceID": "16548",
+    "districtName": "SALTO",
+    "provinceName": "URUGUAY"
+  },
+  "Salvador": {
+    "ilceID": "12101",
+    "districtName": "SALVADOR",
+    "provinceName": "BREZILYA"
+  },
+  "San Fernando": {
+    "ilceID": "16378",
+    "districtName": "SAN FERNANDO",
+    "provinceName": "TRINIDAT VE TOBAGO"
+  },
+  "San Ignacio": {
+    "ilceID": "11920",
+    "districtName": "SAN IGNACIO",
+    "provinceName": "BELIZE"
+  },
+  "San Jose": {
+    "ilceID": "15133",
+    "districtName": "SAN JOSE",
+    "provinceName": "KOSTARIKA"
+  },
+  "San Juan": {
+    "ilceID": "15910",
+    "districtName": "SAN JUAN",
+    "provinceName": "PORTO RIKO"
+  },
+  "San Miguel": {
+    "ilceID": "12717",
+    "districtName": "SAN MIGUEL",
+    "provinceName": "EL SALVADOR"
+  },
+  "San Miguel de Tucuman": {
+    "ilceID": "11188",
+    "districtName": "SAN MIGUEL DE TUCUMAN",
+    "provinceName": "ARJANTIN"
+  },
+  "San Miguelito": {
+    "ilceID": "15805",
+    "districtName": "SAN MIGUELITO",
+    "provinceName": "PANAMA"
+  },
+  "San Pedro Sula": {
+    "ilceID": "13993",
+    "districtName": "SAN PEDRO SULA",
+    "provinceName": "HONDURAS"
+  },
+  "San Salvador": {
+    "ilceID": "12723",
+    "districtName": "SAN SALVADOR",
+    "provinceName": "EL SALVADOR"
+  },
+  "Sanaa": {
+    "ilceID": "16611",
+    "districtName": "SANAA",
+    "provinceName": "YEMEN"
+  },
+  "Santa Ana": {
+    "ilceID": "12718",
+    "districtName": "SANTA ANA",
+    "provinceName": "EL SALVADOR"
+  },
+  "Santa Clara": {
+    "ilceID": "15144",
+    "districtName": "SANTA CLARA",
+    "provinceName": "KUBA"
+  },
+  "Santa Cruz de la Sierra": {
+    "ilceID": "11969",
+    "districtName": "SANTA CRUZ",
+    "provinceName": "BOLIVYA"
+  },
+  "Santa Tecla": {
+    "ilceID": "12719",
+    "districtName": "NUEVA SAN SALVADOR",
+    "provinceName": "EL SALVADOR"
+  },
+  "Santiago": {
+    "ilceID": "16190",
+    "districtName": "SANTIAGO",
+    "provinceName": "SILI"
+  },
+  "Santiago de Cuba": {
+    "ilceID": "15145",
+    "districtName": "SANTIAGO DE CUBA",
+    "provinceName": "KUBA"
+  },
+  "Santiago de los Caballeros": {
+    "ilceID": "12686",
+    "districtName": "SANTIAGO",
+    "provinceName": "DOMINIK CUMHURIYETI"
+  },
+  "Santo Domingo": {
+    "ilceID": "12687",
+    "districtName": "SANTO DOMINGO",
+    "provinceName": "DOMINIK CUMHURIYETI"
+  },
+  "Santo Domingo de los Colorados": {
+    "ilceID": "12704",
+    "districtName": "SANTO DOMINGO DE LOS COLORADOS",
+    "provinceName": "EKVATOR"
+  },
+  "Sao Paulo": {
+    "ilceID": "12197",
+    "districtName": "SAO PAULO (S.P.)",
+    "provinceName": "BREZILYA"
+  },
+  "Sapporo": {
+    "ilceID": "14837",
+    "districtName": "SAPPORO",
+    "provinceName": "JAPONYA"
+  },
+  "Sarajevo": {
+    "ilceID": "12029",
+    "districtName": "SARAJEVO",
+    "provinceName": "BOSNA HERSEK"
+  },
+  "Sarh": {
+    "ilceID": "12293",
+    "districtName": "SARH",
+    "provinceName": "CAD"
+  },
+  "Segou": {
+    "ilceID": "15348",
+    "districtName": "SEGOU",
+    "provinceName": "MALI"
+  },
+  "Sekondi": {
+    "ilceID": "13444",
+    "districtName": "SEKONDI",
+    "provinceName": "GANA"
+  },
+  "Seoul": {
+    "ilceID": "13499",
+    "districtName": "SEUL",
+    "provinceName": "GUNEY KORE"
+  },
+  "Sevilla": {
+    "ilceID": "14223",
+    "districtName": "SEVILLE",
+    "provinceName": "ISPANYA"
+  },
+  "Sfax": {
+    "ilceID": "16379",
+    "districtName": "SFAX",
+    "provinceName": "TUNUS"
+  },
+  "Shanghai": {
+    "ilceID": "12585",
+    "districtName": "SHANGHAI",
+    "provinceName": "CIN"
+  },
+  "Sharjah": {
+    "ilceID": "11943",
+    "districtName": "SHARJAH",
+    "provinceName": "BIRLESIK ARAP EMIRLIGI"
+  },
+  "Sheffield": {
+    "ilceID": "14018",
+    "districtName": "SHEFFIELD",
+    "provinceName": "INGILTERE"
+  },
+  "Shenzhen": {
+    "ilceID": "12381",
+    "districtName": "SHENZHEN",
+    "provinceName": "CIN"
+  },
+  "Shiraz": {
+    "ilceID": "14172",
+    "districtName": "SHIRAZ",
+    "provinceName": "IRAN"
+  },
+  "Shkoder": {
+    "ilceID": "11204",
+    "districtName": "ISKODRA(shkoder)",
+    "provinceName": "ARNAVUTLUK"
+  },
+  "Shymkent": {
+    "ilceID": "14910",
+    "districtName": "CHIMKENT",
+    "provinceName": "KAZAKISTAN"
+  },
+  "Siauliai": {
+    "ilceID": "15208",
+    "districtName": "SIAULIAI",
+    "provinceName": "LITVANYA"
+  },
+  "Sidon": {
+    "ilceID": "15214",
+    "districtName": "SAYDA",
+    "provinceName": "LUBNAN"
+  },
+  "Siem Reap": {
+    "ilceID": "14850",
+    "districtName": "SIEM REAB",
+    "provinceName": "KAMBOCYA"
+  },
+  "Singapore": {
+    "ilceID": "16214",
+    "districtName": "SINGAPORE",
+    "provinceName": "SINGAPUR"
+  },
+  "Skopje": {
+    "ilceID": "15298",
+    "districtName": "SKOPJE",
+    "provinceName": "MAKEDONYA"
+  },
+  "Sliema": {
+    "ilceID": "15349",
+    "districtName": "SLIEMA",
+    "provinceName": "MALTA"
+  },
+  "Sofia": {
+    "ilceID": "12237",
+    "districtName": "SOFYA",
+    "provinceName": "BULGARISTAN"
+  },
+  "Sokhumi": {
+    "ilceID": "13556",
+    "districtName": "SOKHUMI",
+    "provinceName": "GURCISTAN"
+  },
+  "Sokode": {
+    "ilceID": "16373",
+    "districtName": "SOKODE",
+    "provinceName": "TOGO"
+  },
+  "Sousse": {
+    "ilceID": "16381",
+    "districtName": "SUSAH",
+    "provinceName": "TUNUS"
+  },
+  "Soweto": {
+    "ilceID": "13483",
+    "districtName": "SOWETO",
+    "provinceName": "GUNEY AFRIKA"
+  },
+  "Soyapango": {
+    "ilceID": "12715",
+    "districtName": "SOYAPANGO",
+    "provinceName": "EL SALVADOR"
+  },
+  "Spanish Town": {
+    "ilceID": "14698",
+    "districtName": "SPANISH TOWN",
+    "provinceName": "JAMAIKA"
+  },
+  "Split": {
+    "ilceID": "13703",
+    "districtName": "SPLIT",
+    "provinceName": "HIRVATISTAN"
+  },
+  "Stara Zagora": {
+    "ilceID": "12242",
+    "districtName": "ESKIZAGRA(STARA ZAGORA)",
+    "provinceName": "BULGARISTAN"
+  },
+  "Stavanger": {
+    "ilceID": "15681",
+    "districtName": "STAVANGER",
+    "provinceName": "NORVEC"
+  },
+  "Stockholm": {
+    "ilceID": "14351",
+    "districtName": "STOCKHOLM",
+    "provinceName": "ISVEC"
+  },
+  "Sucre": {
+    "ilceID": "11970",
+    "districtName": "SUCRE",
+    "provinceName": "BOLIVYA"
+  },
+  "Suez": {
+    "ilceID": "15465",
+    "districtName": "SUEZ",
+    "provinceName": "MISIR"
+  },
+  "Sumgayit": {
+    "ilceID": "11641",
+    "districtName": "SUMQAYIT",
+    "provinceName": "AZERBAYCAN"
+  },
+  "Surabaya": {
+    "ilceID": "12758",
+    "districtName": "SURABAYA",
+    "provinceName": "ENDONEZYA"
+  },
+  "Suva": {
+    "ilceID": "12821",
+    "districtName": "SUVA",
+    "provinceName": "FIJI"
+  },
+  "Suva Reka": {
+    "ilceID": "17822",
+    "districtName": "SUVA REKA",
+    "provinceName": "KOSOVA"
+  },
+  "Sydney": {
+    "ilceID": "22182",
+    "districtName": "SYDNEY",
+    "provinceName": "AVUSTRALYA"
+  },
+  "Szeged": {
+    "ilceID": "15266",
+    "districtName": "SZEGED",
+    "provinceName": "MACARISTAN"
+  },
+  "Tabriz": {
+    "ilceID": "14178",
+    "districtName": "TABRIZ",
+    "provinceName": "IRAN"
+  },
+  "Tahoua": {
+    "ilceID": "15567",
+    "districtName": "TAHOUA",
+    "provinceName": "NIJER"
+  },
+  "Taichung": {
+    "ilceID": "16363",
+    "districtName": "TAICHUNG",
+    "provinceName": "TAYVAN"
+  },
+  "Tainan": {
+    "ilceID": "16371",
+    "districtName": "TAINAN",
+    "provinceName": "TAYVAN"
+  },
+  "Taipei": {
+    "ilceID": "16364",
+    "districtName": "TAIPEI",
+    "provinceName": "TAYVAN"
+  },
+  "Taiz": {
+    "ilceID": "16606",
+    "districtName": "TAIZZ",
+    "provinceName": "YEMEN"
+  },
+  "Takoradi": {
+    "ilceID": "13443",
+    "districtName": "TAKORADI",
+    "provinceName": "GANA"
+  },
+  "Tallinn": {
+    "ilceID": "12785",
+    "districtName": "TALLINN",
+    "provinceName": "ESTONYA"
+  },
+  "Tamale": {
+    "ilceID": "13441",
+    "districtName": "TAMALE",
+    "provinceName": "GANA"
+  },
+  "Tampere": {
+    "ilceID": "12928",
+    "districtName": "TAMPERE",
+    "provinceName": "FINLANDIYA"
+  },
+  "Tangier": {
+    "ilceID": "12803",
+    "districtName": "TANGIER",
+    "provinceName": "FAS"
+  },
+  "Taraz": {
+    "ilceID": "14991",
+    "districtName": "TARAZ",
+    "provinceName": "KAZAKISTAN"
+  },
+  "Tartu": {
+    "ilceID": "12792",
+    "districtName": "TARTU",
+    "provinceName": "ESTONYA"
+  },
+  "Tashkent": {
+    "ilceID": "15765",
+    "districtName": "TASHKENT",
+    "provinceName": "OZBEKISTAN"
+  },
+  "Tbilisi": {
+    "ilceID": "13554",
+    "districtName": "TBILISI",
+    "provinceName": "GURCISTAN"
+  },
+  "Tegucigalpa": {
+    "ilceID": "13994",
+    "districtName": "TEGUCIGALPA",
+    "provinceName": "HONDURAS"
+  },
+  "Tehran": {
+    "ilceID": "14177",
+    "districtName": "TEHRAN",
+    "provinceName": "IRAN"
+  },
+  "Tel Aviv": {
+    "ilceID": "14269",
+    "districtName": "TEL AVIV",
+    "provinceName": "ISRAIL"
+  },
+  "Tete": {
+    "ilceID": "15555",
+    "districtName": "TETE",
+    "provinceName": "MOZAMBIK"
+  },
+  "Tetovo": {
+    "ilceID": "15301",
+    "districtName": "TETOVO",
+    "provinceName": "MAKEDONYA"
+  },
+  "The Hague": {
+    "ilceID": "13956",
+    "districtName": "THE HAGUE",
+    "provinceName": "HOLLANDA"
+  },
+  "The Valley": {
+    "ilceID": "11142",
+    "districtName": "THE VALLEY",
+    "provinceName": "ANGUILLA"
+  },
+  "Thessaloniki": {
+    "ilceID": "16684",
+    "districtName": "SELANIK(thessaloniki)",
+    "provinceName": "YUNANISTAN"
+  },
+  "Thies": {
+    "ilceID": "16188",
+    "districtName": "THIES",
+    "provinceName": "SENEGAL"
+  },
+  "Thimphu": {
+    "ilceID": "12283",
+    "districtName": "THIMPHU",
+    "provinceName": "BUTAN"
+  },
+  "Tianjin": {
+    "ilceID": "12377",
+    "districtName": "TIANJIN",
+    "provinceName": "CIN"
+  },
+  "Tijuana": {
+    "ilceID": "15433",
+    "districtName": "TIJUANA",
+    "provinceName": "MEKSIKA"
+  },
+  "Tirana": {
+    "ilceID": "11203",
+    "districtName": "TIRANA",
+    "provinceName": "ARNAVUTLUK"
+  },
+  "Tiraspol": {
+    "ilceID": "15540",
+    "districtName": "TIRASPOL",
+    "provinceName": "MOLDAVYA"
+  },
+  "Toamasina": {
+    "ilceID": "15270",
+    "districtName": "TOAMASINA",
+    "provinceName": "MADAGASKAR"
+  },
+  "Tokmok": {
+    "ilceID": "15018",
+    "districtName": "TOKMOK",
+    "provinceName": "KIRGIZISTAN"
+  },
+  "Tokyo": {
+    "ilceID": "14833",
+    "districtName": "TOKYO",
+    "provinceName": "JAPONYA"
+  },
+  "Toronto": {
+    "ilceID": "9118",
+    "districtName": "TORONTO",
+    "provinceName": "ONTARIO"
+  },
+  "Toulouse": {
+    "ilceID": "13385",
+    "districtName": "TOULOUSE",
+    "provinceName": "FRANSA"
+  },
+  "Tripoli (LB)": {
+    "ilceID": "15217",
+    "districtName": "TRIPOLI",
+    "provinceName": "LUBNAN"
+  },
+  "Tripoli (LY)": {
+    "ilceID": "15191",
+    "districtName": "TRIPOLI",
+    "provinceName": "LIBYA"
+  },
+  "Trondheim": {
+    "ilceID": "15701",
+    "districtName": "TRONDHEIM",
+    "provinceName": "NORVEC"
+  },
+  "Trujillo": {
+    "ilceID": "15841",
+    "districtName": "TRUJILLO",
+    "provinceName": "PERU"
+  },
+  "Tuerkmenabat": {
+    "ilceID": "18938",
+    "districtName": "TURKMENABAT",
+    "provinceName": "TURKMENISTAN"
+  },
+  "Tuerkmenbasy": {
+    "ilceID": "16412",
+    "districtName": "TURKMENBASHI",
+    "provinceName": "TURKMENISTAN"
+  },
+  "Tunis": {
+    "ilceID": "16385",
+    "districtName": "TUNUSIA",
+    "provinceName": "TUNUS"
+  },
+  "Turin": {
+    "ilceID": "14590",
+    "districtName": "TORINO",
+    "provinceName": "ITALYA"
+  },
+  "Turku": {
+    "ilceID": "12943",
+    "districtName": "TURKU",
+    "provinceName": "FINLANDIYA"
+  },
+  "Tuzla": {
+    "ilceID": "12028",
+    "districtName": "TUZLA",
+    "provinceName": "BOSNA HERSEK"
+  },
+  "Tyre": {
+    "ilceID": "15211",
+    "districtName": "SUR",
+    "provinceName": "LUBNAN"
+  },
+  "Ulan Bator": {
+    "ilceID": "15534",
+    "districtName": "ULAN BATOR",
+    "provinceName": "MOGOLISTAN"
+  },
+  "Uppsala": {
+    "ilceID": "14402",
+    "districtName": "UPPSALA",
+    "provinceName": "ISVEC"
+  },
+  "Utrecht": {
+    "ilceID": "13975",
+    "districtName": "UTRECHT",
+    "provinceName": "HOLLANDA"
+  },
+  "Uzgen": {
+    "ilceID": "15052",
+    "districtName": "OZGON ",
+    "provinceName": "KIRGIZISTAN"
+  },
+  "Vaduz": {
+    "ilceID": "15192",
+    "districtName": "VADUZ",
+    "provinceName": "LIECHTENSTEIN"
+  },
+  "Valencia (ES)": {
+    "ilceID": "14228",
+    "districtName": "VALENCIA",
+    "provinceName": "ISPANYA"
+  },
+  "Valencia (VE)": {
+    "ilceID": "16582",
+    "districtName": "VALENCIA",
+    "provinceName": "VENEZUELA"
+  },
+  "Valletta": {
+    "ilceID": "15352",
+    "districtName": "VALLETTA",
+    "provinceName": "MALTA"
+  },
+  "Valparaiso": {
+    "ilceID": "16211",
+    "districtName": "VALPARAISO",
+    "provinceName": "SILI"
+  },
+  "Vantaa": {
+    "ilceID": "12902",
+    "districtName": "VANTAA",
+    "provinceName": "FINLANDIYA"
+  },
+  "Varna": {
+    "ilceID": "12215",
+    "districtName": "VARNA",
+    "provinceName": "BULGARISTAN"
+  },
+  "Vatican City": {
+    "ilceID": "16553",
+    "districtName": "VATIKAN",
+    "provinceName": "VATIKAN"
+  },
+  "Ventspils": {
+    "ilceID": "15172",
+    "districtName": "VENTSPILS",
+    "provinceName": "LETONYA"
+  },
+  "Victoria (HK)": {
+    "ilceID": "14003",
+    "districtName": "VICTORIA",
+    "provinceName": "HONG KONG"
+  },
+  "Victoria (SC)": {
+    "ilceID": "16189",
+    "districtName": "VICTORIA",
+    "provinceName": "SEYSEL ADALARI"
+  },
+  "Vienna": {
+    "ilceID": "11618",
+    "districtName": "WIEN",
+    "provinceName": "AVUSTURYA"
+  },
+  "Vientiane": {
+    "ilceID": "15162",
+    "districtName": "VIENTIANE",
+    "provinceName": "LAOS"
+  },
+  "Villa Nueva": {
+    "ilceID": "13464",
+    "districtName": "VILLA NUEVA",
+    "provinceName": "GUATEMALA"
+  },
+  "Vilnius": {
+    "ilceID": "15203",
+    "districtName": "VILNIUS",
+    "provinceName": "LITVANYA"
+  },
+  "Vina del Mar": {
+    "ilceID": "16212",
+    "districtName": "VINA DEL MAR",
+    "provinceName": "SILI"
+  },
+  "Vitebsk": {
+    "ilceID": "11691",
+    "districtName": "VITEBSK",
+    "provinceName": "BELARUS"
+  },
+  "Vlore": {
+    "ilceID": "11210",
+    "districtName": "VLORE",
+    "provinceName": "ARNAVUTLUK"
+  },
+  "Warsaw": {
+    "ilceID": "15884",
+    "districtName": "VARSOVA",
+    "provinceName": "POLONYA"
+  },
+  "Washington": {
+    "ilceID": "8696",
+    "districtName": "WASHINGTON",
+    "provinceName": "D.C"
+  },
+  "Wellington": {
+    "ilceID": "16638",
+    "districtName": "WELLINGTON",
+    "provinceName": "YENI ZELANDA"
+  },
+  "Willemstad": {
+    "ilceID": "13981",
+    "districtName": "WILLEMSTAD",
+    "provinceName": "ÇURAÇAO"
+  },
+  "Windhoek": {
+    "ilceID": "15559",
+    "districtName": "WINDHOEK",
+    "provinceName": "NAMIBYA"
+  },
+  "Winnipeg": {
+    "ilceID": "9078",
+    "districtName": "WINNIPEG",
+    "provinceName": "MANITOBA"
+  },
+  "Winterthur": {
+    "ilceID": "14543",
+    "districtName": "WINTERTHUR",
+    "provinceName": "ISVICRE"
+  },
+  "Wroclaw": {
+    "ilceID": "15882",
+    "districtName": "WROCLAW",
+    "provinceName": "POLONYA"
+  },
+  "Xam Nua": {
+    "ilceID": "15165",
+    "districtName": "XAM NUA",
+    "provinceName": "LAOS"
+  },
+  "Yamoussoukro": {
+    "ilceID": "12823",
+    "districtName": "YAMOUSSOUKRO",
+    "provinceName": "FILDISI SAHILI"
+  },
+  "Yangon": {
+    "ilceID": "12264",
+    "districtName": "YANGON",
+    "provinceName": "MYANMAR"
+  },
+  "Yaounde": {
+    "ilceID": "14856",
+    "districtName": "YAOUNDE",
+    "provinceName": "KAMERUN"
+  },
+  "Yekaterinburg": {
+    "ilceID": "16169",
+    "districtName": "YEKATERINBURG",
+    "provinceName": "RUSYA"
+  },
+  "Yerevan": {
+    "ilceID": "12784",
+    "districtName": "YEREVAN",
+    "provinceName": "ERMENISTAN"
+  },
+  "Yevlakh": {
+    "ilceID": "11638",
+    "districtName": "YEVLAX",
+    "provinceName": "AZERBAYCAN"
+  },
+  "Zadar": {
+    "ilceID": "13702",
+    "districtName": "ZADAR",
+    "provinceName": "HIRVATISTAN"
+  },
+  "Zagreb": {
+    "ilceID": "13686",
+    "districtName": "ZAGREB",
+    "provinceName": "HIRVATISTAN"
+  },
+  "Zanzibar": {
+    "ilceID": "16340",
+    "districtName": "ZANZIBAR",
+    "provinceName": "TANZANYA"
+  },
+  "Zaragoza": {
+    "ilceID": "14264",
+    "districtName": "ZARAGOZA",
+    "provinceName": "ISPANYA"
+  },
+  "Zarqa": {
+    "ilceID": "16533",
+    "districtName": "AZ ZARQA",
+    "provinceName": "URDUN"
+  },
+  "Zemun": {
+    "ilceID": "16238",
+    "districtName": "ZEMUN",
+    "provinceName": "SIRBISTAN"
+  },
+  "Zenica": {
+    "ilceID": "12031",
+    "districtName": "ZENICA",
+    "provinceName": "BOSNA HERSEK"
+  },
+  "Zinder": {
+    "ilceID": "15569",
+    "districtName": "ZINDER",
+    "provinceName": "NIJER"
+  },
+  "Zuerich": {
+    "ilceID": "14547",
+    "districtName": "ZURIH",
+    "provinceName": "ISVICRE"
   }
 }

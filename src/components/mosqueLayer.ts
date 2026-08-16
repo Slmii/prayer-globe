@@ -10,7 +10,10 @@ import * as THREE from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import type { CustomLayerInterface, Map as MLMap } from 'maplibre-gl'
 import { buildMosque, MOSQUE_FOOTPRINT } from '../lib/mosque-model'
+import { buildKaaba, KAABA_FOOTPRINT } from '../lib/kaaba-model'
+import { buildNabawi, NABAWI_FOOTPRINT } from '../lib/nabawi-model'
 import { MOSQUES } from '../lib/mosques'
+import type { MosqueModel } from '../lib/mosques'
 
 /** MapLibre's internal earth radius, in metres. */
 const EARTH_RADIUS = 6371008.8
@@ -47,6 +50,51 @@ function targetPx(zoom: number): number {
 /** Metres per degree of latitude — near enough anywhere for a marker scale. */
 const METRES_PER_DEGREE = 111320
 
+/** Clip-space depth and w of a globe-space point under a projection matrix. */
+function clipDepth(m: THREE.Matrix4, p: THREE.Vector3): { z: number; w: number } {
+  const e = m.elements
+  return {
+    z: e[2] * p.x + e[6] * p.y + e[10] * p.z + e[14],
+    w: e[3] * p.x + e[7] * p.y + e[11] * p.z + e[15],
+  }
+}
+
+const ORIGIN = new THREE.Vector3(0, 0, 0)
+
+/**
+ * Rebuild the projection so depth stops at the globe instead of at infinity.
+ *
+ * MapLibre's frustum runs from a near plane of 0.5 out to a far plane tens of
+ * thousands of units away — a range of about 1e5 to 1, nearly all of it empty.
+ * What is left for a building standing on the surface is a handful of
+ * distinguishable depth steps across its entire thickness, so its plaza, its
+ * skirt and the cube itself all land on one value and the winner is whichever
+ * drew last. That is what shredded the Kaaba.
+ *
+ * The fix leaves x and y strictly alone — they are what pins each building to
+ * its city — and rewrites only the depth row. It also leaves the *near* plane
+ * exactly where MapLibre put it, which matters more than it looks: zoomed in,
+ * the camera hovers a few thousandths of a radius above the ground, so any
+ * near reference chosen in earth radii ends up behind it and everything
+ * vanishes. Only the far plane moves, in to the centre of the globe. Nothing we
+ * draw is further than that, because far-side sites are culled before this.
+ *
+ * Since these depths no longer mean what MapLibre's do, the buffer is cleared
+ * before the models are drawn.
+ */
+function remapDepth(main: THREE.Matrix4): THREE.Matrix4 {
+  const far = clipDepth(main, ORIGIN)
+  const dFar = far.z / far.w
+  // Hold d = -1 fixed and send dFar to +1: k·(-1) + shift = -1 gives shift = k-1,
+  // and k·dFar + shift = 1 then gives k = 2/(dFar + 1).
+  if (!isFinite(dFar) || dFar <= -1 + 1e-9) return main
+  const k = 2 / (dFar + 1)
+  const shift = k - 1
+  // Row-major here; only the z row changes, so x/y projection is untouched.
+  const depth = new THREE.Matrix4().set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, k, shift, 0, 0, 0, 1)
+  return depth.multiply(main)
+}
+
 /**
  * Metres per screen pixel, measured from the projection rather than predicted.
  *
@@ -68,14 +116,29 @@ function metresPerPixel(map: MLMap): number {
 }
 
 /**
- * Collapse the model to one mesh per material.
+ * The three buildings, each with the ground extent it should be scaled by.
  *
- * The design builds the mosque from ~100 small meshes, which is fine for a
- * single-object viewer but not when twenty of them redraw every frame. Merging
- * by material takes it to six draw calls each.
+ * Sizing every model by its own full extent is what keeps them comparable: the
+ * Kaaba is a 13 m cube and Masjid an-Nabawi is 110 m across its cornice, so
+ * scaling by a shared constant would leave one invisible and the other covering
+ * half a continent. Normalising by extent instead gives each site the same
+ * screen footprint, whatever it actually is on the ground.
  */
-function buildMergedMosque(): THREE.Group {
-  const source = buildMosque()
+const MODELS: Record<MosqueModel, { build: () => THREE.Group; footprint: number }> = {
+  mosque: { build: buildMosque, footprint: MOSQUE_FOOTPRINT },
+  kaaba: { build: buildKaaba, footprint: KAABA_FOOTPRINT },
+  nabawi: { build: buildNabawi, footprint: NABAWI_FOOTPRINT },
+}
+
+/**
+ * Collapse a model to one mesh per material.
+ *
+ * The design builds each of these from ~100 small meshes, which is fine for a
+ * single-object viewer but not when twenty of them redraw every frame. Merging
+ * by material takes it to a handful of draw calls each.
+ */
+function buildMerged(build: () => THREE.Group, name: string): THREE.Group {
+  const source = build()
   source.updateMatrixWorld(true)
 
   const byMaterial = new Map<THREE.Material, THREE.BufferGeometry[]>()
@@ -107,7 +170,7 @@ function buildMergedMosque(): THREE.Group {
   })
 
   const merged = new THREE.Group()
-  merged.name = 'mosque_merged'
+  merged.name = name
   for (const [mat, geoms] of byMaterial) {
     const g = mergeGeometries(geoms, false)
     if (!g) continue
@@ -153,10 +216,14 @@ export function createMosqueLayer(opts: MosqueLayerOptions = {}): CustomLayerInt
       fill.position.set(-5, 3, -4)
       scene.add(fill)
 
-      const prototype = buildMergedMosque()
-      for (let i = 0; i < MOSQUES.length; i++) {
+      // One merged prototype per building, cloned per site.
+      const prototypes = new Map<MosqueModel, THREE.Group>()
+      for (const kind of Object.keys(MODELS) as MosqueModel[]) {
+        prototypes.set(kind, buildMerged(MODELS[kind].build, `${kind}_merged`))
+      }
+      for (const site of MOSQUES) {
         // clone() shares geometry and material, so this costs almost nothing.
-        const inst = prototype.clone()
+        const inst = (prototypes.get(site.model) as THREE.Group).clone()
         inst.matrixAutoUpdate = false
         inst.visible = false
         scene.add(inst)
@@ -195,12 +262,13 @@ export function createMosqueLayer(opts: MosqueLayerOptions = {}): CustomLayerInt
       const rad = Math.PI / 180
       let drawn = 0
 
-      // One scale for the whole frame, so every mosque is the same size on
-      // screen wherever it sits on the globe.
+      // One target size for the whole frame, so every site is the same size on
+      // screen wherever it sits on the globe; each model then divides by its own
+      // footprint to reach it.
       const mpp = metresPerPixel(map)
-      const exaggeration = (targetPx(zoom) * mpp) / MOSQUE_FOOTPRINT
-      const s = exaggeration / EARTH_RADIUS
-      if (!isFinite(s) || s <= 0) return
+      const spanMetres = targetPx(zoom) * mpp
+      if (!isFinite(spanMetres) || spanMetres <= 0) return
+
 
       for (let i = 0; i < MOSQUES.length; i++) {
         const site = MOSQUES[i]
@@ -217,6 +285,7 @@ export function createMosqueLayer(opts: MosqueLayerOptions = {}): CustomLayerInt
         inst.visible = true
         drawn++
 
+        const s = spanMetres / MODELS[site.model].footprint / EARTH_RADIUS
         inst.matrix
           .makeRotationY(site.lon * rad)
           .multiply(new THREE.Matrix4().makeRotationX(-site.lat * rad))
@@ -228,9 +297,12 @@ export function createMosqueLayer(opts: MosqueLayerOptions = {}): CustomLayerInt
 
       opts.onCount?.(drawn)
 
-      camera.projectionMatrix = new THREE.Matrix4().fromArray(main)
+      camera.projectionMatrix = remapDepth(new THREE.Matrix4().fromArray(main))
+
       scene.updateMatrixWorld()
       renderer.resetState()
+      // Our depths are on a different scale from the globe's, so start clean.
+      renderer.clearDepth()
       renderer.render(scene, camera)
       map.triggerRepaint()
     },

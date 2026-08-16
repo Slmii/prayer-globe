@@ -179,6 +179,43 @@ export function phaseAt(lat: number, st: number, dec: number, table?: SolarTable
   return 5
 }
 
+/**
+ * The current phase plus how far into the run-up to the next one we are.
+ *
+ * A city's dot changes colour the instant it crosses a boundary, which as the
+ * terminator sweeps reads as a rank of dots snapping in turn. Returning the
+ * approach to the next boundary lets the colour be crossfaded instead.
+ */
+export function phaseBlend(
+  lat: number,
+  st: number,
+  dec: number,
+  table?: SolarTable,
+  /** Solar hours over which the next colour fades in. */
+  window = 0.6,
+): { phase: number; next: number; t: number } {
+  const t0 = table || solarTable(lat, dec)
+  const phase = phaseAt(lat, st, dec, t0)
+  const x = ((st % 24) + 24) % 24
+
+  // The next boundary ahead of `st`, wrapping past midnight.
+  let bestGap = Infinity
+  let nextPhase = phase
+  for (const row of ROWS) {
+    const b = t0[row.key]
+    if (isNaN(b)) continue
+    const gap = (((b - x) % 24) + 24) % 24
+    if (gap > 0 && gap < bestGap) {
+      bestGap = gap
+      nextPhase = row.phase
+    }
+  }
+  if (!isFinite(bestGap) || bestGap > window || nextPhase === phase) {
+    return { phase, next: phase, t: 0 }
+  }
+  return { phase, next: nextPhase, t: 1 - bestGap / window }
+}
+
 /** Great-circle initial bearing from a point to the Kaaba, degrees. */
 export function qibla(la: number, lo: number): number {
   const f1 = la * D

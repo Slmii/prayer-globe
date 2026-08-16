@@ -67,8 +67,8 @@ export function useDistrict(city: City | null) {
 }
 
 /**
- * Step 2: IlceID -> 32 days of prayer times, normalised to UTC instants.
- * That window comfortably covers the ±12h scrubber.
+ * Step 2: IlceID -> the snapshot's ~396 days of prayer times, normalised to UTC
+ * instants. The scrubber reaches +10 days, so that window is never the limit.
  */
 export function useTimetable(ilceID: string | undefined, fallbackOffsetMin: number) {
   return useQuery({

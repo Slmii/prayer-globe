@@ -11,7 +11,6 @@ import {
   fmt,
   latTxt,
   lonTxt,
-  pad,
   phaseAt,
   skyState,
   solarTable,
@@ -37,6 +36,8 @@ export interface TimeRow {
 export interface CountChip {
   label: string
   color: string
+  /** Index into PHASES, so a click can ask the globe for these cities. */
+  phase: number
   n: number
   /** Share of the 143 cities, for the proportional bar. */
   flex: number
@@ -60,7 +61,9 @@ export interface Readout {
   city: string
   coord: string
   clock: string
-  nextLine: string
+  /** Milliseconds until the next prayer, for a live countdown. */
+  nextMs: number
+  nextLabel: string
   times: TimeRow[]
   counts: CountChip[]
   utc: string
@@ -85,6 +88,8 @@ export interface Readout {
   hijri: string
   /** The selected city's local date, written out. */
   dateLine: string
+  /** The scrubbed instant as DD-MM-YYYY HH:MM in the city's local time. */
+  stamp: string
   /** Prayer boundaries around the day arc, plus where "now" sits on it. */
   arcMarks: ArcMark[]
   nowF: number
@@ -180,12 +185,12 @@ export function buildReadout({ city, nowMs, hover, centerLng, days }: ReadoutInp
   const sunriseGeo = civilFromSolar(table.rise)
   const sunsetGeo = civilFromSolar(table.set)
 
-  // Countdown to the next boundary.
-  let nextLine: string
+  // Countdown to the next boundary, in milliseconds so the panel can tick it.
+  let nextMs: number
+  let nextLabel: string
   if (hit) {
-    const dh = hit.msToNext / 3600000
-    const label = ROWS.find((r) => r.key === hit.next.key)?.label ?? hit.next.key
-    nextLine = `${Math.floor(dh)}h ${pad(Math.round((dh % 1) * 60))}m to ${label}`
+    nextMs = hit.msToNext
+    nextLabel = ROWS.find((r) => r.key === hit.next.key)?.label ?? hit.next.key
   } else {
     const bounds = ROWS.map((r) => ({ label: r.label, solar: table[r.key] })).filter(
       (b) => !isNaN(b.solar),
@@ -196,8 +201,8 @@ export function buildReadout({ city, nowMs, hover, centerLng, days }: ReadoutInp
         label: bounds.length ? bounds[0].label : 'Fajr',
         solar: (bounds.length ? bounds[0].solar : 4) + 24,
       } as { label: string; solar: number })
-    const dh = next.solar - solarNow
-    nextLine = `${Math.floor(dh)}h ${pad(Math.round((dh % 1) * 60))}m to ${next.label}`
+    nextMs = (next.solar - solarNow) * 3600000
+    nextLabel = next.label
   }
 
   // How many of the 143 cities are in each phase right now. Always local — this
@@ -206,6 +211,7 @@ export function buildReadout({ city, nowMs, hover, centerLng, days }: ReadoutInp
   const counts: CountChip[] = [0, 2, 3, 4, 5].map((i) => ({
     label: PHASES[i].tr,
     color: PHASES[i].c,
+    phase: i,
     n: 0,
     flex: 1,
     title: '',
@@ -253,6 +259,12 @@ export function buildReadout({ city, nowMs, hover, centerLng, days }: ReadoutInp
     timeZone: 'UTC',
   }).format(localDate)
 
+  // The scrubber reads better as a real moment than as an offset from now.
+  const two = (n: number) => String(n).padStart(2, '0')
+  const stamp =
+    `${two(localDate.getUTCDate())}-${two(localDate.getUTCMonth() + 1)}-${localDate.getUTCFullYear()}` +
+    ` ${two(localDate.getUTCHours())}:${two(localDate.getUTCMinutes())}`
+
   const qb = qibla(city.la, city.lo)
 
   return {
@@ -261,7 +273,8 @@ export function buildReadout({ city, nowMs, hover, centerLng, days }: ReadoutInp
     city: city.n,
     coord: latTxt(city.la) + ' · ' + lonTxt(city.lo),
     clock,
-    nextLine,
+    nextMs,
+    nextLabel,
     times,
     counts,
     utc: fmt(utcH),
@@ -287,10 +300,43 @@ export function buildReadout({ city, nowMs, hover, centerLng, days }: ReadoutInp
     source,
     hijri: day?.hijri ?? '',
     dateLine,
+    stamp,
     arcMarks,
     nowF,
     countLead: `${lead.label.toUpperCase()} LEADS · ${Math.round((lead.n / total) * 100)}%`,
   }
+}
+
+/**
+ * The cities in one prayer phase at an instant, and where to look to see them.
+ *
+ * Computed on demand rather than carried in the readout: it is the same sweep
+ * the counts already do, and only a click ever needs the names.
+ */
+export function citiesInPhase(nowMs: number, phase: number) {
+  const { dec, eot, utcH } = skyState(new Date(nowMs))
+  const cities = CITIES.filter((c) => {
+    const st = (((utcH + c.lo / 15 + eot / 60) % 24) + 24) % 24
+    return phaseAt(c.la, st, dec) === phase
+  })
+
+  // Averaging longitudes directly would fail across the antimeridian, so take
+  // the mean of the direction vectors and read the centre back off that.
+  let x = 0
+  let y = 0
+  let z = 0
+  for (const c of cities) {
+    const la = c.la * D
+    const lo = c.lo * D
+    x += Math.cos(la) * Math.cos(lo)
+    y += Math.cos(la) * Math.sin(lo)
+    z += Math.sin(la)
+  }
+  const centre = cities.length
+    ? { lat: Math.atan2(z, Math.hypot(x, y)) / D, lon: Math.atan2(y, x) / D }
+    : null
+
+  return { cities, centre }
 }
 
 export type { PrayerKey }

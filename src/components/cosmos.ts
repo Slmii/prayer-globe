@@ -15,12 +15,41 @@
 import * as THREE from 'three'
 import type { Map as MLMap } from 'maplibre-gl'
 import { planetStates, eclipticPole, gmstDeg, PLANETS } from '../lib/planets'
+import { buildBody, PLANET_RADIUS } from '../lib/planets-model'
+import type { BodyId } from '../lib/planets-model'
+import { skyState } from '../lib/astro'
 
 const D = Math.PI / 180
 
 /** Orbit radii in earth radii — schematic spacing, real angles. */
-const RING_RADII = [1.45, 1.78, 2.12, 2.5, 2.92]
-const BODY_RADIUS = 0.045
+const RING_RADII = [1.45, 1.78, 2.12, 2.5, 2.92, 3.34, 3.76]
+
+/**
+ * Which model to build for each entry of PLANETS, in order.
+ *
+ * Kept as a parallel array rather than a field on the elements so the ephemeris
+ * stays free of anything to do with rendering.
+ */
+const BODY_FOR_PLANET: BodyId[] = [
+  'mercury',
+  'venus',
+  'mars',
+  'jupiter',
+  'saturn',
+  'uranus',
+  'neptune',
+]
+
+/**
+ * Planet radius in earth radii — schematic, like the orbit spacing.
+ *
+ * Nothing here is to scale and it cannot be: at true relative size Jupiter would
+ * be a tenth of the earth's disc and Mercury a third of a pixel. The design
+ * builds every body at one radius for the same reason, so this is only asking
+ * how big a marker should be — big enough that the banding and the rings read,
+ * small enough that seven of them do not crowd the globe.
+ */
+const BODY_RADIUS = 0.062
 const RING_SEGMENTS = 256
 const STAR_COUNT = 3200
 const STAR_SHELL = 40
@@ -155,8 +184,23 @@ export function createCosmos(canvas: HTMLCanvasElement) {
   const orbits = new THREE.Group()
   scene.add(orbits)
 
+  // The planets are textured MeshStandardMaterial, so unlike the stars and the
+  // orbit lines they need lighting. One directional light stands in for the sun,
+  // aimed down the sub-solar direction each frame, so each planet shows a lit
+  // limb on the same side as the globe's own daylight.
+  //
+  // The ambient is deliberately strong. Lighting these purely by the sun is more
+  // truthful and looks worse: a planet is about eighteen pixels across here, and
+  // whenever the sun is round the back of the globe every one of them turns into
+  // a dark disc — which throws away the banding and the red spot that are the
+  // whole point of the textures. So the sun sets which side is brighter, and the
+  // ambient guarantees the surface still reads on the other one.
+  const sunlight = new THREE.DirectionalLight(0xfff4e0, 2.2)
+  scene.add(sunlight)
+  scene.add(new THREE.AmbientLight(0xb9c8e4, 1.35))
+
   const rings: THREE.LineLoop[] = []
-  const bodies: THREE.Mesh[] = []
+  const bodies: THREE.Object3D[] = []
   for (let i = 0; i < PLANETS.length; i++) {
     const colour = new THREE.Color(PLANETS[i].color)
     const pts: THREE.Vector3[] = []
@@ -172,17 +216,18 @@ export function createCosmos(canvas: HTMLCanvasElement) {
     orbits.add(ring)
     rings.push(ring)
 
-    const body = new THREE.Mesh(
-      new THREE.SphereGeometry(BODY_RADIUS, 20, 14),
-      new THREE.MeshBasicMaterial({ color: colour }),
-    )
-    body.matrixAutoUpdate = false
+    // The model is built at PLANET_RADIUS and carries its own axial tilt in
+    // `rotation.z`, so it is scaled and positioned rather than having its matrix
+    // overwritten — that would throw the tilt away.
+    const body = buildBody(BODY_FOR_PLANET[i])
+    body.scale.setScalar(BODY_RADIUS / PLANET_RADIUS)
     scene.add(body)
     bodies.push(body)
   }
 
   const tmp = new THREE.Vector3()
   const viewDir = new THREE.Vector3()
+  const sunDir = new THREE.Vector3()
 
   return {
     resize(w: number, h: number) {
@@ -241,13 +286,17 @@ export function createCosmos(canvas: HTMLCanvasElement) {
       orbits.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction(pole.lat, pole.lon))
       orbits.updateMatrixWorld(true)
 
+      // Light the planets from wherever the sun actually stands this instant.
+      const solar = skyState(date).sun
+      direction(solar.lat, solar.lon, sunDir)
+      sunlight.position.copy(sunDir).multiplyScalar(50)
+
       const states = planetStates(date)
       const labels: PlanetLabel[] = []
       for (let i = 0; i < states.length; i++) {
         const p = states[i]
         const at = direction(p.lat, p.lon).multiplyScalar(RING_RADII[i])
-        bodies[i].matrix.makeTranslation(at.x, at.y, at.z)
-        bodies[i].matrixWorldNeedsUpdate = true
+        bodies[i].position.copy(at)
 
         tmp.copy(at).project(camera)
         // Behind the earth's centre along the view axis and inside its

@@ -8,7 +8,10 @@
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
-    "fetch-times": "node --experimental-strip-types scripts/fetch-times.ts",
+    "prayer:discover": "node --experimental-strip-types scripts/prayer-data/discover.ts",
+    "prayer:fetch": "node --experimental-strip-types scripts/prayer-data/fetch-times.ts",
+    "prayer:select": "node --experimental-strip-types scripts/prayer-data/select-cities.ts",
+    "prayer:check": "node --experimental-strip-types scripts/prayer-data/check-coverage.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -21,6 +24,7 @@
   },
   "devDependencies": {
     "@types/geojson": "^7946.0.15",
+    "@types/node": "^22.20.1",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "@types/three": "^0.184.1",

@@ -15,7 +15,7 @@ import {
 } from './astro'
 import { MOSQUES } from './mosques'
 import { CITIES } from './cities'
-import { planetStates } from './planets'
+import { planetStates, PLANETS } from './planets'
 
 // Fixed instant so every assertion is deterministic: 2026-08-15 12:00 UTC.
 const BASE = Date.UTC(2026, 7, 15, 12, 0, 0)
@@ -352,7 +352,7 @@ describe('mosque placement', () => {
   })
 })
 
-describe('classical planets', () => {
+describe('planets', () => {
   it('keeps the inner planets within their elongation limits', () => {
     // Mercury never strays more than ~28° from the sun as seen from earth, and
     // Venus ~47°. Nothing else constrains an ephemeris this tightly, so this is
@@ -372,6 +372,34 @@ describe('classical planets', () => {
     expect(maxVenus).toBeLessThan(48)
   })
 
+  /**
+   * Guards the element table against a mistyped digit.
+   *
+   * Every row is 12 numbers copied by hand out of JPL's table, and the two that
+   * would quietly ruin a planet are the semi-major axis and the mean-longitude
+   * rate — one puts the planet in the wrong orbit, the other makes it run at the
+   * wrong speed, and neither shows up as anything but "the orrery looks a bit
+   * off". Both are checkable against textbook values without an ephemeris.
+   */
+  it('matches each planet to its known orbit and period', () => {
+    const known: Record<string, { au: number; years: number }> = {
+      Mercury: { au: 0.387, years: 0.241 },
+      Venus: { au: 0.723, years: 0.615 },
+      Mars: { au: 1.524, years: 1.881 },
+      Jupiter: { au: 5.203, years: 11.862 },
+      Saturn: { au: 9.537, years: 29.457 },
+      Uranus: { au: 19.189, years: 84.021 },
+      Neptune: { au: 30.07, years: 164.79 },
+    }
+    expect(PLANETS.map((p) => p.name)).toEqual(Object.keys(known))
+    for (const el of PLANETS) {
+      const { au, years } = known[el.name]
+      expect(el.a[0], `${el.name} semi-major axis`).toBeCloseTo(au, 2)
+      // L is degrees per Julian century, so a full turn takes 360/rate centuries.
+      expect(36000 / el.L[1], `${el.name} period`).toBeCloseTo(years, 1)
+    }
+  })
+
   it('lets the outer planets reach opposition', () => {
     // Mars, Jupiter and Saturn must all pass through 180° elongation.
     const maxima: Record<string, number> = {}
@@ -380,7 +408,7 @@ describe('classical planets', () => {
         maxima[p.name] = Math.max(maxima[p.name] ?? 0, p.elongation)
       }
     }
-    for (const name of ['Mars', 'Jupiter', 'Saturn']) {
+    for (const name of ['Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']) {
       expect(maxima[name], name).toBeGreaterThan(150)
     }
   })
@@ -393,6 +421,8 @@ describe('classical planets', () => {
       Mars: [0.35, 2.7],
       Jupiter: [3.9, 6.5],
       Saturn: [7.9, 11.1],
+      Uranus: [17.0, 21.5],
+      Neptune: [28.4, 31.6],
     }
     for (let d = 0; d < 800; d += 7) {
       for (const p of planetStates(new Date(BASE + d * DAY))) {
