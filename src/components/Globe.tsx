@@ -1,5 +1,5 @@
 import { useEffect, useImperativeHandle, useRef, forwardRef } from 'react'
-import maplibregl from 'maplibre-gl'
+import * as maplibregl from 'maplibre-gl'
 import type { Map as MLMap, Marker, LngLat } from 'maplibre-gl'
 import type { FeatureCollection } from 'geojson'
 import 'maplibre-gl/dist/maplibre-gl.css'

@@ -1759,6 +1759,11 @@
     "districtName": "ERIHA",
     "provinceName": "FILISTIN"
   },
+  "Jerusalem": {
+    "ilceID": "17923",
+    "districtName": "KUDUS",
+    "provinceName": "FILISTIN"
+  },
   "Johannesburg": {
     "ilceID": "13495",
     "districtName": "JOHANNESBURG",
@@ -3493,6 +3498,11 @@
     "ilceID": "11617",
     "districtName": "SALZBURG",
     "provinceName": "AVUSTURYA"
+  },
+  "Samarkand": {
+    "ilceID": "15762",
+    "districtName": "SEMERKAND",
+    "provinceName": "OZBEKISTAN"
   },
   "San Cristobal": {
     "ilceID": "12683",

@@ -42,6 +42,46 @@ const EXCLUDED_ISO2 = new Set([
   'IL', // Palestinian territories (FILISTIN) are shown instead.
 ])
 
+/**
+ * Cities that ship regardless of population, because something on the globe
+ * depends on them existing.
+ *
+ * A 3D mosque model *replaces* its city's dot, so it has nowhere to stand if
+ * that city was not selected — the model silently never renders and the console
+ * carries an `unknown city` warning nobody reads. Both entries here were found
+ * exactly that way.
+ *
+ * `matchIn` covers a city GeoNames files under one country and Diyanet under
+ * another. `ilceID` pins the district outright, for the case where the two
+ * sources' spellings are too far apart to match.
+ */
+interface RequiredCity {
+  /** GeoNames ascii name. */
+  name: string
+  /** The ISO2 GeoNames files it under. */
+  geoIso2: string
+  /** Whose districts to match against, when that differs. */
+  matchIn?: string
+  /** Pinned district, when name matching cannot bridge the spellings. */
+  ilceID?: string
+  why: string
+}
+
+const REQUIRED_CITIES: RequiredCity[] = [
+  {
+    name: 'Jerusalem',
+    geoIso2: 'IL',
+    matchIn: 'PS',
+    why: 'Al-Aqsa has a 3D model; Diyanet lists it as KUDUS under FILISTIN',
+  },
+  {
+    name: 'Samarkand',
+    geoIso2: 'UZ',
+    ilceID: '15762',
+    why: 'Bibi-Khanym has a 3D model; Diyanet spells it SEMERKAND, which no GeoNames alternate name reaches',
+  },
+]
+
 const perCountryArg = process.argv.indexOf('--per')
 const PER_COUNTRY = perCountryArg > -1 ? Number(process.argv[perCountryArg + 1]) : 5
 
@@ -170,6 +210,45 @@ async function main() {
         d: [district.nameEn || district.name],
       })
     }
+  }
+
+  // Pull in the cities something else on the globe depends on, which the
+  // population cut would otherwise drop. Runs before the ilceID dedup, so a
+  // required city competing with a larger one for a district still loses
+  // honestly rather than producing two dots on one timetable.
+  for (const req of REQUIRED_CITIES) {
+    const city = geo.find((c) => c.ascii === req.name && c.iso2 === req.geoIso2)
+    if (!city) throw new Error(`required city ${req.name} (${req.geoIso2}) is not in GeoNames`)
+
+    const hostIso2 = req.matchIn ?? req.geoIso2
+    const entry = byIso2.get(hostIso2)
+    if (!entry) throw new Error(`required city ${req.name} wants ${hostIso2}, which has no Diyanet country`)
+
+    const district = req.ilceID
+      ? entry.districts.find((d) => d.ilceID === req.ilceID)
+      : matchDistrict(city, entry.districts)
+    if (!district) {
+      throw new Error(
+        `required city ${req.name} matched no district in ${hostIso2} — ${req.why}`,
+      )
+    }
+
+    if (selected.some((c) => c.ilceID === district.ilceID)) continue
+    selected.push({
+      n: city.ascii,
+      la: Number(city.lat.toFixed(4)),
+      lo: Number(city.lon.toFixed(4)),
+      tz: city.tz,
+      iso2: hostIso2,
+      country: entry.country.name,
+      // Ranked above the population cut so the dedup below never discards it.
+      pop: city.pop,
+      ilceID: district.ilceID,
+      ilceUrl: district.url,
+      u: Number(entry.country.countryId),
+      p: entry.stateOf.get(district.ilceID) ?? '',
+      d: [district.nameEn || district.name],
+    })
   }
 
   // A district serving two selected cities would fetch the same page twice and

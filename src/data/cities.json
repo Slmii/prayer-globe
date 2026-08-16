@@ -5632,6 +5632,22 @@
     ]
   },
   {
+    "n": "Jerusalem",
+    "la": 31.769,
+    "lo": 35.2163,
+    "tz": "Asia/Jerusalem",
+    "iso2": "PS",
+    "country": "FILISTIN",
+    "pop": 971800,
+    "ilceID": "17923",
+    "ilceUrl": "/en-US/17923/prayer-time-for-kudus",
+    "u": 204,
+    "p": "FILISTIN",
+    "d": [
+      "KUDUS"
+    ]
+  },
+  {
     "n": "Johannesburg",
     "la": -26.2023,
     "lo": 28.0436,
@@ -11181,6 +11197,22 @@
     "p": "AVUSTURYA",
     "d": [
       "SALZBURG"
+    ]
+  },
+  {
+    "n": "Samarkand",
+    "la": 39.6546,
+    "lo": 66.9644,
+    "tz": "Asia/Samarkand",
+    "iso2": "UZ",
+    "country": "UZBEKISTAN",
+    "pop": 595200,
+    "ilceID": "15762",
+    "ilceUrl": "/en-US/15762/prayer-time-for-semerkand",
+    "u": 131,
+    "p": "OZBEKISTAN",
+    "d": [
+      "SEMERKAND"
     ]
   },
   {
