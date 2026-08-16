@@ -12,6 +12,7 @@
     "prayer:fetch": "node --experimental-strip-types scripts/prayer-data/fetch-times.ts",
     "prayer:select": "node --experimental-strip-types scripts/prayer-data/select-cities.ts",
     "prayer:check": "node --experimental-strip-types scripts/prayer-data/check-coverage.ts",
+    "prayer:phases": "node --experimental-strip-types scripts/build-phases.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },

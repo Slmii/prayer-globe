@@ -4,6 +4,7 @@ import { resolveDistrict, getTimetable, buildTimetable, HttpError } from '../lib
 import type { ResolvedDistrict, TimetableDay } from '../lib/diyanet'
 import type { City } from '../lib/cities'
 import { loadIndex, loadTimetable } from '../lib/snapshot'
+import { loadPhases } from '../lib/phases'
 
 /**
  * Retrying a 429 just deepens the hole — the limiter is counting attempts, not
@@ -28,6 +29,22 @@ export function useWorldGeo() {
     },
     staleTime: Infinity,
     gcTime: Infinity,
+  })
+}
+
+/**
+ * Every city's prayer boundaries, for colouring the globe and counting the
+ * tally. One file, fetched once, ~110 KB gzipped — the alternative is 723
+ * requests per tick. Absent until `npm run prayer:phases` has been run, in which
+ * case both fall back to the solar model.
+ */
+export function usePhases() {
+  return useQuery({
+    queryKey: ['phases'],
+    queryFn: loadPhases,
+    staleTime: Infinity,
+    gcTime: Infinity,
+    retry: false,
   })
 }
 

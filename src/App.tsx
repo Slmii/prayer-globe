@@ -3,10 +3,9 @@ import Globe from './components/Globe'
 import type { GlobeHandle } from './components/Globe'
 import SidePanel from './components/SidePanel'
 import Legend from './components/Legend'
-import CitySearch from './components/CitySearch'
 import { CITIES } from './lib/cities'
 import type { City } from './lib/cities'
-import { useWorldGeo, usePrayerTimes } from './hooks/queries'
+import { useWorldGeo, usePrayerTimes, usePhases } from './hooks/queries'
 import { useClock, useSettledValue, SCRUB_MIN, SCRUB_MAX } from './hooks/util'
 import { buildReadout, citiesInPhase } from './lib/readout'
 import { pad } from './lib/astro'
@@ -57,6 +56,7 @@ export default function App() {
 
   // The city now only changes on a deliberate action, so there is no request
   // storm to guard against — a short settle is enough to coalesce rapid clicks.
+  const phases = usePhases().data ?? null
   const queryCity = useSettledValue(activeCity, true, 400)
   const times = usePrayerTimes(queryCity)
   const settling = queryCity.n !== activeCity.n
@@ -66,8 +66,8 @@ export default function App() {
   const days = !settling && times.days?.length ? times.days : null
 
   const readout = useMemo(
-    () => buildReadout({ city: activeCity, nowMs, hover, centerLng: view.lng, days }),
-    [activeCity, nowMs, hover, view.lng, days],
+    () => buildReadout({ city: activeCity, nowMs, hover, centerLng: view.lng, days, phases }),
+    [activeCity, nowMs, hover, view.lng, days, phases],
   )
 
   const selectCity = useCallback((c: City, fly: boolean) => {
@@ -99,7 +99,7 @@ export default function App() {
    */
   const onPickPhase = useCallback(
     (phase: number) => {
-      const { cities, centre } = citiesInPhase(getNowMs(), phase)
+      const { cities, centre } = citiesInPhase(getNowMs(), phase, phases)
       if (!cities.length || !centre) return
       setSpin(false)
       globe.current?.flyTo(centre.lon, centre.lat, 1.5, 2200)
@@ -161,6 +161,7 @@ export default function App() {
           showPaths={showPaths}
           showOrrery={showOrrery}
           highlightPhase={highlightPhase}
+        phases={phases}
           onHover={setHover}
           onView={onView}
           onCitySelect={onCitySelect}
@@ -249,7 +250,7 @@ export default function App() {
             </button>
           </div>
 
-          <CitySearch onSelect={(c) => selectCity(c, true)} />
+          {/* City search removed for now — cities are picked on the globe. */}
         </div>
 
         <div className="pointer">

@@ -22,6 +22,8 @@ import { CITIES } from './cities'
 import type { City } from './cities'
 import { dayFor, lookup } from './diyanet'
 import type { TimetableDay } from './diyanet'
+import { phaseOf } from './phases'
+import type { PhaseTable } from './phases'
 
 export interface TimeRow {
   label: string
@@ -133,6 +135,29 @@ const ROW_STYLE = (on: boolean, phase: number) => ({
   dim: on ? PHASES[phase].c : 'rgba(233,233,237,.35)',
 })
 
+/**
+ * One city's prayer, preferring Diyanet and falling back to the sun.
+ *
+ * The fallback is not decoration: the published window is finite, so scrubbing
+ * past its end has to land somewhere, and a geometric estimate is a much better
+ * answer there than a stale one.
+ */
+export function cityPhase(
+  c: City,
+  nowMs: number,
+  phases: PhaseTable | null,
+  utcH: number,
+  eot: number,
+  dec: number,
+): number {
+  if (phases) {
+    const p = phaseOf(phases, c.ilceID, nowMs)
+    if (p != null) return p
+  }
+  const st = (((utcH + c.lo / 15 + eot / 60) % 24) + 24) % 24
+  return phaseAt(c.la, st, dec)
+}
+
 export interface ReadoutInput {
   city: City
   nowMs: number
@@ -140,9 +165,18 @@ export interface ReadoutInput {
   centerLng: number
   /** Diyanet timetable for `city`, when loaded and current. */
   days: TimetableDay[] | null
+  /** Every city's Diyanet boundaries, for the tally. Null until loaded. */
+  phases: PhaseTable | null
 }
 
-export function buildReadout({ city, nowMs, hover, centerLng, days }: ReadoutInput): Readout {
+export function buildReadout({
+  city,
+  nowMs,
+  hover,
+  centerLng,
+  days,
+  phases,
+}: ReadoutInput): Readout {
   const date = new Date(nowMs)
   const sky = skyState(date)
   const { dec, eot, utcH } = sky
@@ -205,8 +239,8 @@ export function buildReadout({ city, nowMs, hover, centerLng, days }: ReadoutInp
     nextLabel = next.label
   }
 
-  // How many of the 143 cities are in each phase right now. Always local — this
-  // is a whole-earth sweep and cannot be 143 API calls per frame.
+  // How many cities are in each phase right now — a whole-earth sweep, so it
+  // reads the precomputed Diyanet boundaries rather than making 723 requests.
   const countIdx: Record<number, number> = { 0: 0, 2: 1, 3: 2, 4: 3, 5: 4 }
   const counts: CountChip[] = [0, 2, 3, 4, 5].map((i) => ({
     label: PHASES[i].tr,
@@ -217,8 +251,7 @@ export function buildReadout({ city, nowMs, hover, centerLng, days }: ReadoutInp
     title: '',
   }))
   for (const c of CITIES) {
-    const st = (((utcH + c.lo / 15 + eot / 60) % 24) + 24) % 24
-    const p = phaseAt(c.la, st, dec)
+    const p = cityPhase(c, nowMs, phases, utcH, eot, dec)
     const slot = countIdx[p]
     if (slot !== undefined) counts[slot].n++
   }
@@ -313,12 +346,9 @@ export function buildReadout({ city, nowMs, hover, centerLng, days }: ReadoutInp
  * Computed on demand rather than carried in the readout: it is the same sweep
  * the counts already do, and only a click ever needs the names.
  */
-export function citiesInPhase(nowMs: number, phase: number) {
+export function citiesInPhase(nowMs: number, phase: number, phases: PhaseTable | null) {
   const { dec, eot, utcH } = skyState(new Date(nowMs))
-  const cities = CITIES.filter((c) => {
-    const st = (((utcH + c.lo / 15 + eot / 60) % 24) + 24) % 24
-    return phaseAt(c.la, st, dec) === phase
-  })
+  const cities = CITIES.filter((c) => cityPhase(c, nowMs, phases, utcH, eot, dec) === phase)
 
   // Averaging longitudes directly would fail across the antimeridian, so take
   // the mean of the direction vectors and read the centre back off that.

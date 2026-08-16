@@ -9,6 +9,8 @@ import { createCosmos } from './cosmos'
 import { createOrb } from './orb'
 import type { Orb } from './orb'
 import type { PlanetLabel } from './cosmos'
+import { blendOf } from '../lib/phases'
+import type { PhaseTable } from '../lib/phases'
 import { MOSQUES } from '../lib/mosques'
 import {
   D,
@@ -91,6 +93,8 @@ interface GlobeProps {
   showOrrery: boolean
   /** Pulse every city currently in this prayer phase, or null for none. */
   highlightPhase: number | null
+  /** Every city's Diyanet boundaries, for dot colour. Null until loaded. */
+  phases: PhaseTable | null
   onHover(p: { lat: number; lng: number } | null): void
   onView(v: { lng: number; lat: number; zoom: number }): void
   /** A city dot was clicked, by name. */
@@ -389,7 +393,8 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
     const map = mapRef.current
     if (!map || !readyRef.current) return
     const { getNowMs, activeCityName } = propsRef.current
-    const { dec, eot, utcH } = skyState(new Date(getNowMs()))
+    const nowMs = getNowMs()
+    const { dec, eot, utcH } = skyState(new Date(nowMs))
 
     const cen = map.getCenter()
     const zoom = map.getZoom()
@@ -403,8 +408,12 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
     cities?.setData({
       type: 'FeatureCollection',
       features: CITIES.filter((c) => visible(c.la, c.lo)).map((c) => {
+        // Diyanet's own boundaries where we have them; the solar model is the
+        // fallback for a scrub past the published window.
+        const table = propsRef.current.phases
         const st = (((utcH + c.lo / 15 + eot / 60) % 24) + 24) % 24
-        const blend = phaseBlend(c.la, st, dec)
+        const blend =
+          (table && blendOf(table, c.ilceID, nowMs)) ?? phaseBlend(c.la, st, dec)
         return {
           type: 'Feature',
           // `m` marks a site drawn as a mosque; its dot is hidden but the

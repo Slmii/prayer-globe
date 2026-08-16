@@ -246,6 +246,9 @@ body {
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
+  /* Belt and braces against the row collapsing: the hijri text is 13px/1, so
+     the bar holds that height even if both sides were ever empty at once. */
+  min-height: 13px;
 }
 
 .datebar-greg {
@@ -254,8 +257,22 @@ body {
 }
 
 .datebar-hijri {
+  position: relative;
   font: 400 13px/1 Amiri, serif;
   color: var(--accent);
+}
+
+/* Taken out of flow so the shimmer cannot move the text it stands in for. */
+.datebar-hijri .skel {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Hidden but still occupying its space — `display: none` would defeat the point. */
+.is-hidden {
+  visibility: hidden;
 }
 
 /* ---------- the day as a dome ---------- */
@@ -1732,4 +1749,248 @@ body {
   .now-ar {
     font-size: 26px;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Solar system viewer — the design's `Solar System 3D.html`.
+
+   Transcribed from that page's own <style> block: the bottom-docked HUD, the
+   pill rail of bodies, and the fact plate. Ids became classes so the page can
+   live alongside the globe without fighting it for `#rail` and `#plate`.
+   --------------------------------------------------------------------------- */
+
+.ss {
+  position: fixed;
+  inset: 0;
+  background: #05070d;
+  overflow: hidden;
+}
+
+.ss-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+}
+
+.ss-note {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  margin: 0;
+  max-width: 60%;
+  font: 400 12px/1.5 var(--ui, system-ui), sans-serif;
+  color: rgba(233, 233, 237, 0.34);
+  user-select: none;
+  pointer-events: none;
+}
+
+.ss-back {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  padding: 9px 15px;
+  border-radius: 999px;
+  font: 500 11px/1 ui-monospace, Menlo, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(233, 233, 237, 0.66);
+  background: linear-gradient(180deg, rgba(24, 26, 40, 0.82), rgba(8, 9, 14, 0.88));
+  border: 1px solid rgba(150, 138, 224, 0.26);
+  backdrop-filter: blur(14px);
+  transition:
+    background 180ms ease,
+    color 180ms ease;
+}
+
+.ss-back:hover {
+  background: rgba(150, 138, 224, 0.22);
+  color: #f2f1ff;
+}
+
+/* The stage's own export toolbar, kept where the design put it. */
+.ss-tools {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(12, 20, 30, 0.55);
+  border: 1px solid rgba(216, 176, 74, 0.32);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px) saturate(1.3);
+}
+
+.ss-tools button {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #f0e6d2;
+  font: 500 12px/1 ui-monospace, Menlo, monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 18px;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.ss-tools button + button {
+  box-shadow: inset 1px 0 0 rgba(240, 230, 210, 0.14);
+}
+
+.ss-tools button:hover {
+  background: rgba(216, 176, 74, 0.16);
+  color: #fff8e8;
+}
+
+.ss-tools button:active {
+  background: rgba(216, 176, 74, 0.28);
+}
+
+.ss-tools button[disabled] {
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.ss-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d8b04a;
+  box-shadow: 0 0 8px rgba(216, 176, 74, 0.9);
+  flex: none;
+}
+
+.ss-hud {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 22px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  pointer-events: none;
+}
+
+.ss-hud > * {
+  pointer-events: auto;
+}
+
+.ss-rail {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 3px;
+  padding: 5px;
+  max-width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(24, 26, 40, 0.82), rgba(8, 9, 14, 0.88));
+  border: 1px solid rgba(150, 138, 224, 0.26);
+  box-shadow:
+    0 16px 44px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(210, 206, 253, 0.12);
+  backdrop-filter: blur(16px) saturate(1.4);
+}
+
+.ss-rail button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font: 500 11px/1 var(--ui, system-ui), sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(233, 233, 237, 0.66);
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.ss-rail button:hover {
+  background: rgba(150, 138, 224, 0.18);
+  color: #f2f1ff;
+  transform: translateY(-1px);
+}
+
+.ss-rail button[aria-pressed='true'] {
+  background: rgba(150, 138, 224, 0.26);
+  color: #fff;
+}
+
+.ss-swatch {
+  width: 11px;
+  height: 11px;
+  flex: none;
+  border-radius: 50%;
+  box-shadow: inset -2px -2px 3px rgba(0, 0, 0, 0.45);
+}
+
+.ss-plate {
+  padding: 11px 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(24, 26, 40, 0.8), rgba(8, 9, 14, 0.86));
+  border: 1px solid rgba(233, 233, 237, 0.12);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(14px);
+}
+
+.ss-plate h1 {
+  margin: 0;
+  font: 500 16px/1 var(--ui, system-ui), sans-serif;
+  letter-spacing: 0.02em;
+  color: #f5f4ff;
+}
+
+.ss-plate dl {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ss-fact {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.ss-plate dt {
+  font: 400 9.5px/1.2 ui-monospace, Menlo, monospace;
+  letter-spacing: 0.12em;
+  color: rgba(233, 233, 237, 0.4);
+  text-transform: uppercase;
+}
+
+.ss-plate dd {
+  margin: 0;
+  font: 400 11.5px/1.2 ui-monospace, Menlo, monospace;
+  color: #e9e9ed;
 }

@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
+import { readFileSync, existsSync } from 'node:fs'
 import { offsetMinutesFor, toVakitRows } from './snapshot'
+import type { SnapshotFile } from './snapshot'
 import { buildTimetable } from './diyanet'
 
 describe('offsetMinutesFor', () => {
@@ -58,5 +60,99 @@ describe('toVakitRows', () => {
     // 06:37 local at +01:00 is 05:37 UTC.
     expect(new Date(days[0].utc.fajr!).toISOString()).toBe('2027-01-01T05:37:00.000Z')
     expect(days[0].hijri).toBe('23 Recep 1448')
+  })
+})
+
+/**
+ * Everything above works on rows written by hand. This works on the files the
+ * app actually ships.
+ *
+ * The two halves of this dataset are produced by different code at different
+ * times — a Node crawler writes the JSON, the browser reads it — and the only
+ * thing tying them together is an unwritten agreement about field order and
+ * what `tz` means. A crawler that reordered the array, or tagged a city with the
+ * wrong zone, would sail past every synthetic test here and simply show the
+ * wrong prayer times. So this reads the real snapshots and checks the whole
+ * chain end to end: published wall clock -> UTC instant -> back to wall clock in
+ * that city's own timezone.
+ */
+describe('the shipped snapshots', () => {
+  const load = (ilceID: string): SnapshotFile =>
+    JSON.parse(readFileSync(`public/times/${ilceID}.json`, 'utf8')) as SnapshotFile
+
+  /** What a clock in `tz` reads at instant `ms`. */
+  const wallClock = (ms: number, tz: string) =>
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone: tz,
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).format(new Date(ms))
+
+  // Chosen for the offsets that break naive conversion: DST in both
+  // hemispheres, a 45-minute zone, a zone that never shifts, and cities far
+  // enough west that the UTC date differs from the local one at fajr.
+  const CASES: [string, string][] = [
+    ['Berlin', 'Europe/Berlin'],
+    ['Kathmandu', 'Asia/Kathmandu'],
+    ['Adelaide', 'Australia/Adelaide'],
+    ['Reykjavik', 'Atlantic/Reykjavik'],
+    ['Los Angeles', 'America/Los_Angeles'],
+    ['Alofi', 'Pacific/Niue'],
+  ]
+
+  const index = JSON.parse(readFileSync('public/times/index.json', 'utf8')) as Record<
+    string,
+    { ilceID: string }
+  >
+
+  for (const [city, tz] of CASES) {
+    it(`round-trips ${city} through ${tz}`, () => {
+      const entry = index[city]
+      expect(entry, `${city} missing from index.json`).toBeTruthy()
+
+      const file = load(entry.ilceID)
+      expect(file.tz).toBe(tz)
+
+      const days = buildTimetable(toVakitRows(file), 0)
+      expect(days.length).toBeGreaterThan(300)
+
+      // Sample across the year so both sides of any DST switch are covered.
+      for (let i = 0; i < days.length; i += 17) {
+        const day = days[i]
+        const date = `${day.y}-${String(day.mo).padStart(2, '0')}-${String(day.d).padStart(2, '0')}`
+        const published = file.days[date]
+        expect(published, `${city} has no published row for ${date}`).toBeTruthy()
+
+        const order = ['fajr', 'rise', 'dhuhr', 'asr', 'set', 'isha'] as const
+        order.forEach((key, k) => {
+          const ms = day.utc[key]
+          expect(ms, `${city} ${date} ${key} has no instant`).not.toBeNull()
+          expect(wallClock(ms as number, tz), `${city} ${date} ${key}`).toBe(published[k])
+        })
+      }
+    })
+  }
+
+  it('gives every city a snapshot whose id matches the index', () => {
+    const cities = JSON.parse(readFileSync('src/data/cities.json', 'utf8')) as {
+      n: string
+      ilceID: string
+    }[]
+    for (const c of cities) {
+      expect(index[c.n]?.ilceID, `${c.n} is not in index.json`).toBe(c.ilceID)
+      expect(existsSync(`public/times/${c.ilceID}.json`), `${c.n} has no snapshot file`).toBe(true)
+    }
+  })
+
+  it('keeps the prayers in ascending order through each day', () => {
+    const file = load(index.Istanbul.ilceID)
+    const days = buildTimetable(toVakitRows(file), 0)
+    for (const day of days.slice(0, 120)) {
+      const seq = [day.utc.fajr, day.utc.rise, day.utc.dhuhr, day.utc.asr, day.utc.set, day.utc.isha]
+      for (let i = 1; i < seq.length; i++) {
+        expect(seq[i], `${day.gregorian} step ${i}`).toBeGreaterThan(seq[i - 1] as number)
+      }
+    }
   })
 })

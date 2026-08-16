@@ -161,13 +161,17 @@ function DayArc({
   )
 }
 
-/** Live/computed badge for the prayer table. */
+/** Where the prayer table came from. */
 function SourceBadge({ readout, times, querying }: SidePanelProps) {
   if (readout.source === 'diyanet') {
+    // Not "LIVE" any more: these are Diyanet's own published times, but read
+    // from the snapshot in public/times/ rather than fetched per visit. Saying
+    // live would claim a freshness the app no longer has — and the times are
+    // Diyanet's regardless, which is the part that matters.
     return (
       <div className="src src-live">
         <span className="src-dot" />
-        <span className="src-label">DIYANET · LIVE</span>
+        <span className="src-label">DIYANET · PUBLISHED</span>
         {times.district && <span className="src-note">{times.district.districtName}</span>}
       </div>
     )
@@ -220,7 +224,20 @@ export default function SidePanel(props: SidePanelProps) {
 
       <div className="datebar">
         <span className="datebar-greg">{a.dateLine}</span>
-        <span className="datebar-hijri">{a.hijri}</span>
+        {/*
+          The hijri date is the one value that arrives with Diyanet rather than
+          being derived, so between cities it is briefly empty. Left alone that
+          collapsed its line box and lifted the whole panel by a line.
+
+          The text therefore always stays in flow — hidden, not removed, and with
+          a non-breaking space when Diyanet has no hijri at all — and the loading
+          shimmer is laid over it. Swapping the text *for* a skeleton would have
+          reintroduced the same jump: `.skel` is 10px against this line's 13px.
+        */}
+        <span className="datebar-hijri">
+          {pending && <Skeleton w={104} />}
+          <span className={pending ? 'is-hidden' : undefined}>{a.hijri || ' '}</span>
+        </span>
       </div>
 
       <div className="rule" />
