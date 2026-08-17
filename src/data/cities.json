@@ -10515,6 +10515,21 @@
     ]
   },
   {
+    "n": "Samarra'",
+    "la": 34.1959,
+    "lo": 43.8857,
+    "tz": "Asia/Baghdad",
+    "iso2": "IQ",
+    "country": "IRAQ",
+    "pop": 158508,
+    "ilceID": "14169",
+    "ilceUrl": "/en-US/14169/prayer-time-for-samarra",
+    "p": "IRAK",
+    "d": [
+      "SAMARRA"
+    ]
+  },
+  {
     "n": "San Cristobal",
     "la": 18.4171,
     "lo": -70.1068,
@@ -13032,6 +13047,21 @@
     "p": "LAOS",
     "d": [
       "XAM NUA"
+    ]
+  },
+  {
+    "n": "Xi'an",
+    "la": 34.2583,
+    "lo": 108.9286,
+    "tz": "Asia/Shanghai",
+    "iso2": "CN",
+    "country": "CHINA",
+    "pop": 9600000,
+    "ilceID": "12368",
+    "ilceUrl": "/en-US/12368/prayer-time-for-xian-shaanxi",
+    "p": "CIN",
+    "d": [
+      "XI'AN (SHAANXI)"
     ]
   },
   {

@@ -1,560 +1,606 @@
 :root {
-  --bg: #0c0e14;
-  --panel-a: #171a2a;
-  --panel-b: #101220;
-  --ink: #e9e9ed;
-  --ink-bright: #f5f4ff;
-  --accent: #b5abfc;
-  --accent-mid: #968ae0;
-  --accent-soft: #d2cefd;
-  --accent-deep: #796cbf;
-  --dim: #cfd3e5;
-  --line: rgba(233, 233, 237, 0.1);
-  --glass: rgba(12, 14, 20, 0.78);
-  --mono: ui-monospace, Menlo, monospace;
+	--bg: #0c0e14;
+	--panel-a: #171a2a;
+	--panel-b: #101220;
+	--ink: #e9e9ed;
+	--ink-bright: #f5f4ff;
+	--accent: #b5abfc;
+	--accent-mid: #968ae0;
+	--accent-soft: #d2cefd;
+	--accent-deep: #796cbf;
+	--dim: #cfd3e5;
+	--line: rgba(233, 233, 237, 0.1);
+	--glass: rgba(12, 14, 20, 0.78);
+	--mono: ui-monospace, Menlo, monospace;
 }
 
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 html,
 body,
 #root {
-  height: 100%;
+	height: 100%;
 }
 
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: Inter, system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
+	margin: 0;
+	background: var(--bg);
+	color: var(--ink);
+	font-family: Inter, system-ui, sans-serif;
+	-webkit-font-smoothing: antialiased;
 }
 
 .app {
-  display: grid;
-  grid-template-columns: 456px 1fr;
-  height: 100%;
-  overflow: hidden;
+	display: grid;
+	grid-template-columns: 456px 1fr;
+	height: 100%;
+	overflow: hidden;
 }
 
 /* ---------- left rail ---------- */
 
 .panel {
-  position: relative;
-  z-index: 2;
-  padding: 28px 30px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  border-right: 1px solid rgba(233, 233, 237, 0.08);
-  background: linear-gradient(180deg, #171a2a, #0f1120);
-  overflow-y: auto;
+	position: relative;
+	z-index: 2;
+	/* Vertical scrolling only. A tooltip that overflowed sideways used to add a
+     horizontal scrollbar; `clip` refuses that outright. It is a backstop, not a
+     licence — an overflowing tip is still clipped, so tips near the edges want
+     `data-tip-start` / `data-tip-end` to fit in the first place. */
+	overflow-x: clip;
+	padding: 28px 30px 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	border-right: 1px solid rgba(233, 233, 237, 0.08);
+	background: linear-gradient(180deg, #171a2a, #0f1120);
+	overflow-y: auto;
 }
 
 .panel-head {
-  display: flex;
-  align-items: center;
-  gap: 11px;
+	display: flex;
+	align-items: center;
+	gap: 11px;
 }
 
 .mark {
-  position: relative;
-  width: 15px;
-  height: 15px;
-  flex: none;
+	position: relative;
+	width: 15px;
+	height: 15px;
+	flex: none;
 }
 
 .mark-sq {
-  position: absolute;
-  inset: 0;
-  border: 1px solid var(--accent-mid);
+	position: absolute;
+	inset: 0;
+	border: 1px solid var(--accent-mid);
 }
 
 .mark-rot {
-  border-color: rgba(150, 138, 224, 0.55);
-  transform: rotate(45deg);
+	border-color: rgba(150, 138, 224, 0.55);
+	transform: rotate(45deg);
 }
 
 .wordmark {
-  font: 500 12px/1 Inter, sans-serif;
-  letter-spacing: 0.17em;
-  text-transform: uppercase;
-  color: var(--ink-bright);
+	font: 500 12px/1 Inter, sans-serif;
+	letter-spacing: 0.17em;
+	text-transform: uppercase;
+	color: var(--ink-bright);
 }
 
 .method {
-  margin-left: auto;
-  font: 400 10.5px/1 var(--mono);
-  letter-spacing: 0.06em;
-  color: rgba(233, 233, 237, 0.4);
+	margin-left: auto;
+	font: 400 10.5px/1 var(--mono);
+	letter-spacing: 0.06em;
+	color: rgba(233, 233, 237, 0.4);
 }
 
 .rule {
-  height: 1px;
-  background: linear-gradient(90deg, rgba(233, 233, 237, 0.22), transparent);
+	height: 1px;
+	background: linear-gradient(90deg, rgba(233, 233, 237, 0.22), transparent);
 }
 
 .ar-title {
-  font: 400 38px/1.35 Amiri, serif;
-  color: var(--accent-soft);
+	font: 400 38px/1.35 Amiri, serif;
+	color: var(--accent-soft);
 }
 
 .lede {
-  margin: -12px 0 0;
-  font: 400 12.5px/1.6 Inter, sans-serif;
-  color: rgba(233, 233, 237, 0.5);
-  max-width: 330px;
-  text-wrap: pretty;
+	margin: -12px 0 0;
+	font: 400 12.5px/1.6 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.5);
+	max-width: 330px;
+	text-wrap: pretty;
 }
 
 .now-head {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 12px;
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+	margin-bottom: 12px;
 }
 
 .now-mode {
-  font: 400 10.5px/1 var(--mono);
-  letter-spacing: 0.1em;
-  color: rgba(233, 233, 237, 0.42);
+	font: 400 10.5px/1 var(--mono);
+	letter-spacing: 0.1em;
+	color: rgba(233, 233, 237, 0.42);
 }
 
 .now-hint {
-  font: 400 10.5px/1 Inter, sans-serif;
-  color: rgba(233, 233, 237, 0.32);
+	font: 400 10.5px/1 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.32);
 }
 
 .now-name {
-  display: flex;
-  align-items: flex-end;
-  gap: 16px;
+	display: flex;
+	align-items: flex-end;
+	gap: 16px;
 }
 
 .now-prayer {
-  font: 500 62px/0.86 Inter, sans-serif;
-  letter-spacing: -0.032em;
-  color: var(--ink-bright);
+	font: 500 62px/0.86 Inter, sans-serif;
+	letter-spacing: -0.032em;
+	color: var(--ink-bright);
 }
 
 .now-ar {
-  font: 400 36px/1 Amiri, serif;
-  color: var(--accent);
-  padding-bottom: 2px;
+	font: 400 36px/1 Amiri, serif;
+	color: var(--accent);
+	padding-bottom: 2px;
 }
 
 .city-chip {
-  margin-top: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 9px;
-  background: rgba(233, 233, 237, 0.045);
-  box-shadow: 0 0 0 1px rgba(233, 233, 237, 0.14);
-  transition:
-    box-shadow 0.18s ease,
-    background 0.18s ease;
+	margin-top: 14px;
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	padding: 8px 12px;
+	border-radius: 9px;
+	background: rgba(233, 233, 237, 0.045);
+	box-shadow: 0 0 0 1px rgba(233, 233, 237, 0.14);
+	transition: box-shadow 0.18s ease, background 0.18s ease;
 }
 
 .city-chip-on {
-  background: rgba(150, 138, 224, 0.18);
-  box-shadow:
-    0 0 0 1px rgba(181, 171, 252, 0.9),
-    0 0 22px 2px rgba(150, 138, 224, 0.35);
+	background: rgba(150, 138, 224, 0.18);
+	box-shadow: 0 0 0 1px rgba(181, 171, 252, 0.9), 0 0 22px 2px rgba(150, 138, 224, 0.35);
 }
 
 .city-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: rgba(233, 233, 237, 0.3);
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: rgba(233, 233, 237, 0.3);
 }
 
 .city-chip-on .city-dot {
-  background: var(--accent);
+	background: var(--accent);
 }
 
 .city-name {
-  font: 500 20px/1 Inter, sans-serif;
-  color: var(--ink-bright);
+	font: 500 20px/1 Inter, sans-serif;
+	color: var(--ink-bright);
 }
 
 .city-coord {
-  font: 400 12px/1 var(--mono);
-  color: rgba(233, 233, 237, 0.5);
+	font: 400 12px/1 var(--mono);
+	color: rgba(233, 233, 237, 0.5);
 }
 
 .meta {
-  margin-top: 9px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 14px;
-  align-items: center;
+	margin-top: 9px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 14px;
+	align-items: center;
 }
 
 .meta-clock {
-  font: 400 14.5px/1 var(--mono);
-  color: var(--ink-bright);
+	font: 400 14.5px/1 var(--mono);
+	color: var(--ink-bright);
 }
 
 .meta-sep {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: rgba(233, 233, 237, 0.3);
+	width: 4px;
+	height: 4px;
+	border-radius: 50%;
+	background: rgba(233, 233, 237, 0.3);
 }
 
 .meta-next {
-  font: 400 13.5px/1 var(--mono);
-  color: var(--accent-soft);
+	font: 400 13.5px/1 var(--mono);
+	color: var(--accent-soft);
 }
 
 .meta-qibla {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font: 400 12.5px/1 var(--mono);
-  color: rgba(233, 233, 237, 0.62);
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font: 400 12.5px/1 var(--mono);
+	color: rgba(233, 233, 237, 0.62);
 }
 
 .compass {
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-  border: 1px solid rgba(150, 138, 224, 0.5);
-  border-radius: 50%;
-  position: relative;
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	border: 1px solid rgba(150, 138, 224, 0.5);
+	border-radius: 50%;
+	position: relative;
 }
 
 .compass-needle {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 1.5px;
-  height: 6px;
-  background: var(--accent);
-  transform-origin: bottom center;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 1.5px;
+	height: 6px;
+	background: var(--accent);
+	transform-origin: bottom center;
 }
 
 /* ---------- date bar ---------- */
 
 .datebar {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  /* Belt and braces against the row collapsing: the hijri text is 13px/1, so
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	/* Belt and braces against the row collapsing: the hijri text is 13px/1, so
      the bar holds that height even if both sides were ever empty at once. */
-  min-height: 13px;
+	min-height: 13px;
 }
 
 .datebar-greg {
-  font: 400 12.5px/1 Inter, sans-serif;
-  color: rgba(233, 233, 237, 0.72);
+	font: 400 12.5px/1 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.72);
 }
 
 .datebar-hijri {
-  position: relative;
-  font: 400 13px/1 Amiri, serif;
-  color: var(--accent);
+	position: relative;
+	font: 400 13px/1 Amiri, serif;
+	color: var(--accent);
 }
 
 /* Taken out of flow so the shimmer cannot move the text it stands in for. */
 .datebar-hijri .skel {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
 }
 
 /* Hidden but still occupying its space — `display: none` would defeat the point. */
 .is-hidden {
-  visibility: hidden;
+	visibility: hidden;
 }
 
 /* ---------- the day as a dome ---------- */
 
 .arc {
-  position: relative;
-  height: 198px;
-  flex: none;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+	position: relative;
+	height: 198px;
+	flex: none;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
 }
 
 .arc-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	overflow: visible;
 }
 
 .arc-track {
-  fill: none;
-  stroke: rgba(233, 233, 237, 0.1);
-  stroke-width: 14;
-  stroke-linecap: round;
+	fill: none;
+	stroke: rgba(233, 233, 237, 0.1);
+	stroke-width: 14;
+	stroke-linecap: round;
 }
 
 .arc-band {
-  fill: none;
-  stroke: url(#pgArc);
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  opacity: 0.85;
+	fill: none;
+	stroke: url(#pgArc);
+	stroke-width: 2.5;
+	stroke-linecap: round;
+	opacity: 0.85;
 }
 
 /* While the timetable is in flight a highlight travels the arc, so the shape
    still reads as live without asserting positions we do not yet know. */
 .arc-pending .arc-band {
-  stroke-dasharray: 70 400;
-  animation: pg-arc-sweep 1.3s linear infinite;
+	stroke-dasharray: 70 400;
+	animation: pg-arc-sweep 1.3s linear infinite;
 }
 
 @keyframes pg-arc-sweep {
-  from {
-    stroke-dashoffset: 470;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
+	from {
+		stroke-dashoffset: 470;
+	}
+	to {
+		stroke-dashoffset: 0;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .arc-pending .arc-band {
-    animation: none;
-  }
+	.arc-pending .arc-band {
+		animation: none;
+	}
 }
 
 .arc-pending .arc-prayer,
 .arc-pending .arc-ar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .arc-pending .arc-prayer {
-  height: 44px;
+	height: 44px;
 }
 
 .arc-pending .arc-ar {
-  height: 29px;
+	height: 29px;
 }
 
 .arc-horizon {
-  stroke: rgba(233, 233, 237, 0.14);
-  stroke-width: 1;
-  stroke-dasharray: 3 5;
+	stroke: rgba(233, 233, 237, 0.14);
+	stroke-width: 1;
+	stroke-dasharray: 3 5;
 }
 
 .arc-mark {
-  stroke-width: 1.5;
-  transition:
-    r 300ms ease,
-    fill 300ms ease;
+	stroke-width: 1.5;
+	transition: r 300ms ease, fill 300ms ease;
 }
 
 /* Matched to the panel's tick so the dot glides continuously instead of
    stepping; linear, because the underlying motion is linear. */
 .arc-now-g {
-  transition:
-    transform 200ms linear,
-    opacity 240ms ease;
-  animation: pg-arc-in 380ms ease;
+	/* The transform composes from the viewBox origin — `translate(centre) rotate()
+	   translate(-r)` — so the origin has to be that corner and not the element's
+	   own middle. SVG already defaults this way where CSS does not, and a pure
+	   translation would not have cared either way; stated here because the
+	   rotation depends on it. */
+	transform-box: view-box;
+	transform-origin: 0 0;
+	transition: transform 200ms linear, opacity 240ms ease;
+	animation: pg-arc-in 380ms ease;
 }
 
 .arc-now-leaving {
-  opacity: 0;
+	opacity: 0;
 }
 
 @keyframes pg-arc-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .arc-now-g {
-    transition: none;
-    animation: none;
-  }
+	.arc-now-g {
+		transition: none;
+		animation: none;
+	}
 }
 
 .arc-now {
-  fill: var(--accent);
+	fill: var(--accent);
 }
 
 .arc-now-ring {
-  fill: none;
-  stroke: rgba(181, 171, 252, 0.4);
-  stroke-width: 1.5;
+	fill: none;
+	stroke: rgba(181, 171, 252, 0.4);
+	stroke-width: 1.5;
 }
 
 .arc-centre {
-  position: relative;
-  text-align: center;
-  padding-bottom: 2px;
+	position: relative;
+	text-align: center;
+	padding-bottom: 2px;
 }
 
 .arc-prayer {
-  font: 500 44px/1 Inter, sans-serif;
-  letter-spacing: -0.03em;
-  color: var(--ink-bright);
+	font: 500 44px/1 Inter, sans-serif;
+	letter-spacing: -0.03em;
+	color: var(--ink-bright);
 }
 
 .arc-ar {
-  font: 400 24px/1.2 Amiri, serif;
-  color: var(--accent);
+	font: 400 24px/1.2 Amiri, serif;
+	color: var(--accent);
 }
 
 .arc-foot {
-  position: absolute;
-  bottom: -2px;
-  font: 400 9.5px/1 var(--mono);
-  letter-spacing: 0.1em;
-  color: rgba(233, 233, 237, 0.3);
+	position: absolute;
+	bottom: -2px;
+	font: 400 9.5px/1 var(--mono);
+	letter-spacing: 0.1em;
+	color: rgba(233, 233, 237, 0.3);
 }
 
 .arc-foot-l {
-  left: 0;
+	left: 0;
 }
 
 .arc-foot-r {
-  right: 0;
+	right: 0;
 }
 
 /* ---------- city card ---------- */
 
+/* The selected city, lit.
+   The card was a flat violet panel with a hairline round it, which read as one
+   more row rather than as the thing the whole panel is about. The glow is two
+   parts: a soft bloom thrown outward from the ring, and a light inside the card
+   falling from its top-left corner — so the surface has a direction rather than
+   an even wash. Both lift under the pointer, which is what makes it feel lit
+   rather than painted. */
 .city-card {
-  display: flex;
-  align-items: flex-end;
-  gap: 14px;
-  padding: 10px 12px;
-  border-radius: 11px;
-  background: rgba(150, 138, 224, 0.14);
-  box-shadow: 0 0 0 1px rgba(181, 171, 252, 0.5);
+	position: relative;
+	display: flex;
+	/* Never shrink. The panel is a flex column that scrolls, and every other row
+	   in it already refuses to shrink — this one did not, so once the column
+	   overflowed it was squeezed from 66px to 20px and its name, clock and
+	   countdown spilled out over the row below. That went unnoticed only because
+	   the overflow was visible: the text still painted, just outside its own
+	   card. It is the one row the panel is about, so it keeps its height and the
+	   column scrolls instead. */
+	flex: none;
+	align-items: flex-end;
+	padding: 10px 12px;
+	border-radius: 11px;
+	overflow: hidden;
+	background: rgba(150, 138, 224, 0.14);
+	box-shadow: 0 0 0 1px rgba(181, 171, 252, 0.5), 0 0 22px -6px rgba(181, 171, 252, 0.4);
+	transition: box-shadow 220ms ease, background 220ms ease;
+}
+
+.city-card::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(72% 130% at 14% -10%, rgba(181, 171, 252, 0.3), transparent 68%);
+	opacity: 0.85;
+	transition: opacity 220ms ease;
+	pointer-events: none;
+}
+
+.city-card:hover {
+	background: rgba(150, 138, 224, 0.19);
+	box-shadow: 0 0 0 1px rgba(181, 171, 252, 0.75), 0 0 34px -4px rgba(181, 171, 252, 0.55);
+}
+
+.city-card:hover::before {
+	opacity: 1;
+}
+
+/* Above the wash, or the gradient would sit over the name and the clock. */
+.city-card-main,
+.city-card-time {
+	position: relative;
 }
 
 .city-card-main {
-  flex: 1;
-  min-width: 0;
+	flex: 1;
+	min-width: 0;
 }
 
 .city-card-name {
-  display: flex;
-  align-items: center;
-  gap: 9px;
+	display: flex;
+	align-items: center;
+	gap: 9px;
 }
 
 .city-card-sub {
-  padding-top: 8px;
-  font: 400 11px/1 var(--mono);
-  color: rgba(233, 233, 237, 0.45);
+	padding-top: 8px;
+	font: 400 11px/1 var(--mono);
+	color: rgba(233, 233, 237, 0.45);
 }
 
 .city-card-time {
-  text-align: right;
-  flex: none;
+	text-align: right;
+	flex: none;
 }
 
 .city-clock {
-  font: 400 26px/1 var(--mono);
-  color: var(--ink-bright);
+	font: 400 26px/1 var(--mono);
+	color: var(--ink-bright);
 }
 
 .city-next {
-  padding-top: 8px;
-  font: 400 11px/1 Inter, sans-serif;
-  color: #c9c1ff;
+	padding-top: 8px;
+	font: 400 11px/1 Inter, sans-serif;
+	color: #c9c1ff;
 }
 
 /* Tabular figures so the ticking seconds do not jiggle the line. */
 .city-countdown {
-  font: 500 11px/1 var(--mono);
-  font-variant-numeric: tabular-nums;
-  color: var(--ink-bright);
+	font: 500 11px/1 var(--mono);
+	font-variant-numeric: tabular-nums;
+	color: var(--ink-bright);
 }
 
 /* ---------- prayer cards ---------- */
 
 .times-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  align-content: start;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 8px;
+	align-content: start;
 }
 
 .time-card {
-  padding: 12px 14px;
-  border-radius: 11px;
-  background: rgba(233, 233, 237, 0.035);
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  transition: background 180ms ease;
+	padding: 12px 14px;
+	border-radius: 11px;
+	background: rgba(233, 233, 237, 0.035);
+	display: flex;
+	flex-direction: column;
+	gap: 9px;
+	transition: background 180ms ease;
 }
 
 .time-card:hover {
-  background: rgba(233, 233, 237, 0.085);
+	background: rgba(233, 233, 237, 0.085);
 }
 
 .time-card-on {
-  background: rgba(150, 138, 224, 0.17);
-  box-shadow: 0 0 0 1px rgba(181, 171, 252, 0.45);
+	background: rgba(150, 138, 224, 0.17);
+	box-shadow: 0 0 0 1px rgba(181, 171, 252, 0.45);
 }
 
 .time-card-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
 }
 
 .time-card-dot {
-  width: 6px;
-  height: 6px;
-  flex: none;
-  border-radius: 50%;
+	width: 6px;
+	height: 6px;
+	flex: none;
+	border-radius: 50%;
 }
 
 .time-card-label {
-  font: 500 11px/1 Inter, sans-serif;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+	font: 500 11px/1 Inter, sans-serif;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
 }
 
 .time-card-ar {
-  margin-left: auto;
-  font: 400 13px/1 Amiri, serif;
+	margin-left: auto;
+	font: 400 13px/1 Amiri, serif;
 }
 
 .time-card-val {
-  font: 400 17px/1 var(--mono);
+	font: 400 17px/1 var(--mono);
 }
 
 .time-card-on .time-card-val {
-  font-size: 21px;
+	font-size: 21px;
 }
 
 /* ---------- cities by prayer ---------- */
 
 .tally {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
 }
 
 .tally-bar {
-  display: flex;
-  gap: 5px;
-  align-items: center;
+	display: flex;
+	gap: 5px;
+	align-items: center;
 }
 
 /* The band itself is only 4px tall, so the cell is taller to make it
@@ -563,1101 +609,1186 @@ body {
    the bottom of the panel, and any change here would shove the sun and moon
    cards up. */
 .tally-cell {
-  position: relative;
-  display: flex;
-  align-items: center;
-  height: 18px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  transition: flex 400ms ease;
+	position: relative;
+	display: flex;
+	align-items: center;
+	height: 18px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+	transition: flex 400ms ease;
 }
 
 .tally-cell:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 3px;
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+	border-radius: 3px;
 }
 
 .tally-seg {
-  display: block;
-  width: 100%;
-  height: 4px;
-  border-radius: 2px;
-  transition:
-    height 160ms ease,
-    filter 160ms ease;
+	display: block;
+	width: 100%;
+	height: 4px;
+	border-radius: 2px;
+	transition: height 160ms ease, filter 160ms ease;
 }
 
 .tally-cell-on .tally-seg {
-  height: 9px;
-  filter: brightness(1.3);
+	height: 9px;
+	filter: brightness(1.3);
 }
 
 .tally-tip {
-  position: absolute;
-  bottom: calc(100% - 2px);
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 9px;
-  border-radius: 7px;
-  white-space: nowrap;
-  background: rgba(12, 14, 20, 0.95);
-  border: 1px solid rgba(181, 171, 252, 0.45);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
-  z-index: 4;
+	position: absolute;
+	bottom: calc(100% - 2px);
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	padding: 5px 9px;
+	border-radius: 7px;
+	white-space: nowrap;
+	background: rgba(12, 14, 20, 0.95);
+	border: 1px solid rgba(181, 171, 252, 0.45);
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+	z-index: 4;
 }
 
 /* The panel clips horizontally, so the end bands anchor to their own edge. */
 .tally-tip-first {
-  left: 0;
-  transform: none;
+	left: 0;
+	transform: none;
 }
 
 .tally-tip-last {
-  left: auto;
-  right: 0;
-  transform: none;
+	left: auto;
+	right: 0;
+	transform: none;
 }
 
 .tally-tip-dot {
-  width: 6px;
-  height: 6px;
-  flex: none;
-  border-radius: 50%;
+	width: 6px;
+	height: 6px;
+	flex: none;
+	border-radius: 50%;
 }
 
 .tally-tip-name {
-  font: 500 11px/1 Inter, sans-serif;
-  color: var(--ink-bright);
+	font: 500 11px/1 Inter, sans-serif;
+	color: var(--ink-bright);
 }
 
 .tally-tip-n {
-  font: 400 10px/1 var(--mono);
-  color: rgba(233, 233, 237, 0.55);
+	font: 400 10px/1 var(--mono);
+	color: rgba(233, 233, 237, 0.55);
 }
 
 .tally-foot {
-  display: flex;
-  justify-content: space-between;
-  font: 400 9.5px/1 var(--mono);
-  letter-spacing: 0.1em;
-  color: rgba(233, 233, 237, 0.32);
+	display: flex;
+	justify-content: space-between;
+	font: 400 9.5px/1 var(--mono);
+	letter-spacing: 0.1em;
+	color: rgba(233, 233, 237, 0.32);
+}
+
+/* The credit. Quieter than the tally above it — it is the last thing in the
+   panel and should be the last thing read. */
+.credit {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 7px;
+	padding-top: 14px;
+	border-top: 1px solid rgba(233, 233, 237, 0.06);
+	font: 400 9.5px/1 var(--mono);
+	letter-spacing: 0.08em;
+	color: rgba(233, 233, 237, 0.28);
+}
+
+/* The wordmark is white in the file, which is why it can sit on this panel at
+   all. Held back to the weight of the line it sits in, and brought up to full
+   strength on hover for anyone who wants to actually look at it. */
+.credit-link {
+	display: flex;
+	align-items: center;
+	border-radius: 4px;
+}
+
+.credit-link:focus-visible {
+	outline: 1px solid rgba(181, 171, 252, 0.75);
+	outline-offset: 3px;
+}
+
+.credit-logo {
+	display: block;
+	height: 15px;
+	width: auto;
+	opacity: 0.55;
+	transition: opacity 180ms ease;
+}
+
+.credit-link:hover .credit-logo,
+.credit-link:focus-visible .credit-logo {
+	opacity: 1;
 }
 
 /* ---------- data-source badge ---------- */
 
 .src {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 7px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--line);
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 7px 10px;
+	border-radius: 8px;
+	border: 1px solid var(--line);
 }
 
 .src-live {
-  border-color: rgba(150, 138, 224, 0.45);
-  background: rgba(150, 138, 224, 0.08);
+	border-color: rgba(150, 138, 224, 0.45);
+	background: rgba(150, 138, 224, 0.08);
 }
 
 .src-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 8px 2px rgba(150, 138, 224, 0.5);
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--accent);
+	box-shadow: 0 0 8px 2px rgba(150, 138, 224, 0.5);
 }
 
 .src-dot-idle {
-  background: rgba(233, 233, 237, 0.35);
-  box-shadow: none;
+	background: rgba(233, 233, 237, 0.35);
+	box-shadow: none;
 }
 
 .src-warn {
-  border-color: rgba(224, 168, 138, 0.45);
-  background: rgba(224, 168, 138, 0.08);
+	border-color: rgba(224, 168, 138, 0.45);
+	background: rgba(224, 168, 138, 0.08);
 }
 
 .src-dot-warn {
-  background: #e0a88a;
-  box-shadow: 0 0 8px 2px rgba(224, 168, 138, 0.45);
+	background: #e0a88a;
+	box-shadow: 0 0 8px 2px rgba(224, 168, 138, 0.45);
 }
 
 .src-warn .src-label {
-  color: #e8c0a8;
+	color: #e8c0a8;
 }
 
 .src-label {
-  font: 500 10px/1 var(--mono);
-  letter-spacing: 0.1em;
-  color: rgba(233, 233, 237, 0.75);
+	font: 500 10px/1 var(--mono);
+	letter-spacing: 0.1em;
+	color: rgba(233, 233, 237, 0.75);
 }
 
 .src-live .src-label {
-  color: var(--accent-soft);
+	color: var(--accent-soft);
 }
 
 .src-note {
-  font: 400 10.5px/1 Inter, sans-serif;
-  color: rgba(233, 233, 237, 0.42);
+	font: 400 10.5px/1 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.42);
 }
 
 /* Stand-in while a city's timetable is on its way. */
 .skel {
-  display: inline-block;
-  height: 10px;
-  border-radius: 3px;
-  vertical-align: middle;
-  background: linear-gradient(
-    90deg,
-    rgba(233, 233, 237, 0.06),
-    rgba(181, 171, 252, 0.22),
-    rgba(233, 233, 237, 0.06)
-  );
-  background-size: 200% 100%;
-  animation: pg-shimmer 1.2s linear infinite;
+	display: inline-block;
+	height: 10px;
+	border-radius: 3px;
+	vertical-align: middle;
+	background: linear-gradient(90deg, rgba(233, 233, 237, 0.06), rgba(181, 171, 252, 0.22), rgba(233, 233, 237, 0.06));
+	background-size: 200% 100%;
+	animation: pg-shimmer 1.2s linear infinite;
 }
 
 @keyframes pg-shimmer {
-  to {
-    background-position: -200% 0;
-  }
+	to {
+		background-position: -200% 0;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .skel {
-    animation: none;
-  }
+	.skel {
+		animation: none;
+	}
 }
 
 /* ---------- prayer table ---------- */
 
 .times {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
 }
 
 .time-row {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 11px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border-left: 2px solid transparent;
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: 11px;
+	padding: 8px 12px;
+	border-radius: 8px;
+	border-left: 2px solid transparent;
 }
 
 .time-ar {
-  font: 400 15px/1 Amiri, serif;
+	font: 400 15px/1 Amiri, serif;
 }
 
 .time-label {
-  font: 500 13px/1 Inter, sans-serif;
+	font: 500 13px/1 Inter, sans-serif;
 }
 
 .time-val {
-  font: 400 13.5px/1 var(--mono);
+	font: 400 13.5px/1 var(--mono);
 }
 
 /* ---------- sunrise / sunset from coordinates ---------- */
 
 .solar {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 9px;
-  border: 1px solid var(--line);
-  background: linear-gradient(
-    100deg,
-    rgba(255, 198, 92, 0.05),
-    rgba(181, 171, 252, 0.05) 70%,
-    transparent
-  );
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 10px 12px;
+	border-radius: 9px;
+	border: 1px solid var(--line);
+	background: linear-gradient(100deg, rgba(255, 198, 92, 0.05), rgba(181, 171, 252, 0.05) 70%, transparent);
 }
 
 .solar-head {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
 }
 
 .solar-title {
-  font: 400 9.5px/1 var(--mono);
-  letter-spacing: 0.11em;
-  color: rgba(233, 233, 237, 0.45);
+	font: 400 9.5px/1 var(--mono);
+	letter-spacing: 0.11em;
+	color: rgba(233, 233, 237, 0.45);
 }
 
 .solar-note {
-  margin-left: auto;
-  font: 400 9.5px/1 var(--mono);
-  color: rgba(233, 233, 237, 0.3);
+	margin-left: auto;
+	font: 400 9.5px/1 var(--mono);
+	color: rgba(233, 233, 237, 0.3);
 }
 
 .solar-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
 }
 
 .solar-cell {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
 }
 
+/* The icon inherits its colour from here rather than carrying one itself, which
+   is why the rise and set marks differ by a single declaration. */
 .solar-mark {
-  width: 20px;
-  height: 14px;
-  flex: none;
-  fill: none;
-  stroke-width: 1.3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+	display: flex;
+	align-items: center;
+	flex: none;
 }
 
-.solar-horizon {
-  stroke: rgba(233, 233, 237, 0.35);
+.solar-mark-rise {
+	color: #ffc65c;
 }
 
-.solar-disc-rise {
-  stroke: #ffc65c;
-}
-
-.solar-arrow-rise {
-  stroke: #ffc65c;
-}
-
-.solar-disc-set {
-  stroke: var(--accent);
-}
-
-.solar-arrow-set {
-  stroke: var(--accent);
+.solar-mark-set {
+	color: var(--accent);
 }
 
 .solar-label {
-  font: 500 11.5px/1 Inter, sans-serif;
-  color: rgba(233, 233, 237, 0.7);
+	font: 500 11.5px/1 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.7);
 }
 
 .solar-time {
-  margin-left: auto;
-  font: 400 13px/1 var(--mono);
-  color: var(--ink-bright);
+	margin-left: auto;
+	font: 400 13px/1 var(--mono);
+	color: var(--ink-bright);
 }
 
 /* ---------- panel footer ---------- */
 
 .panel-foot {
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+	margin-top: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 }
 
 .bodies {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
 }
 
 .body-card {
-  padding: 11px 12px;
-  text-align: left;
-  font: inherit;
-  color: inherit;
-  border: 1px solid rgba(233, 233, 237, 0.11);
-  border-radius: 9px;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
+	padding: 11px 12px;
+	text-align: left;
+	font: inherit;
+	color: inherit;
+	border: 1px solid rgba(233, 233, 237, 0.11);
+	border-radius: 9px;
+	display: flex;
+	flex-direction: column;
+	gap: 7px;
 }
 
 .body-card-go {
-  background: transparent;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
+	background: transparent;
+	cursor: pointer;
+	transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .body-card-go:hover {
-  border-color: var(--accent-deep);
-  background: rgba(150, 138, 224, 0.08);
+	border-color: var(--accent-deep);
+	background: rgba(150, 138, 224, 0.08);
 }
 
 .body-card-go:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
 }
 
 .body-head {
-  display: flex;
-  align-items: center;
-  gap: 7px;
+	display: flex;
+	align-items: center;
+	gap: 7px;
 }
 
-/* Miniatures of the globe's sun and moon glyphs. */
+/* The sun and moon beside their coordinates. Both were hand-built from nested
+   spans and gradients — a conic-gradient corona for the sun, and for the moon a
+   dark disc slid across a lit one to draw the phase. They are icons now, and
+   each takes its colour from the class below. The moon's exact phase is no
+   longer drawn; the illuminated percentage next to it still says it in words. */
 .body-icon {
-  position: relative;
-  width: 15px;
-  height: 15px;
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: none;
 }
 
-.body-icon-disc {
-  position: relative;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
+.body-icon-sun {
+	color: #ffc65c;
 }
 
-.body-icon-sun .body-icon-disc {
-  background: radial-gradient(circle at 38% 34%, #fffdf4 0%, #ffe9a8 46%, #ffc65c 78%, #f0a63a 100%);
-  box-shadow: 0 0 8px 2px rgba(255, 203, 102, 0.5);
-}
-
-.body-icon-rays {
-  position: absolute;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    rgba(255, 232, 170, 0.75) 0deg 8deg,
-    transparent 8deg 45deg,
-    rgba(255, 232, 170, 0.75) 45deg 53deg,
-    transparent 53deg 90deg,
-    rgba(255, 232, 170, 0.75) 90deg 98deg,
-    transparent 98deg 135deg,
-    rgba(255, 232, 170, 0.75) 135deg 143deg,
-    transparent 143deg 180deg,
-    rgba(255, 232, 170, 0.75) 180deg 188deg,
-    transparent 188deg 225deg,
-    rgba(255, 232, 170, 0.75) 225deg 233deg,
-    transparent 233deg 270deg,
-    rgba(255, 232, 170, 0.75) 270deg 278deg,
-    transparent 278deg 315deg,
-    rgba(255, 232, 170, 0.75) 315deg 323deg,
-    transparent 323deg 360deg
-  );
-  -webkit-mask: radial-gradient(circle, transparent 0 38%, #000 44% 64%, transparent 70%);
-  mask: radial-gradient(circle, transparent 0 38%, #000 44% 64%, transparent 70%);
-}
-
-.body-icon-moon .body-icon-disc {
-  background: radial-gradient(circle at 36% 32%, #fdfdff 0%, #e2e6f4 52%, #b9c0d8 100%);
-  box-shadow: 0 0 7px 1px rgba(214, 220, 240, 0.3);
-  overflow: hidden;
-}
-
-.body-icon-shadow {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: #161826;
-  transition: transform 0.6s ease;
+.body-icon-moon {
+	color: #d6dcf0;
 }
 
 .body-title {
-  font: 400 10px/1 var(--mono);
-  letter-spacing: 0.1em;
-  color: rgba(233, 233, 237, 0.45);
+	font: 400 10px/1 var(--mono);
+	letter-spacing: 0.1em;
+	color: rgba(233, 233, 237, 0.45);
 }
 
 .body-val {
-  font: 400 12px/1 var(--mono);
-  color: var(--ink);
+	font: 400 12px/1 var(--mono);
+	color: var(--ink);
 }
 
 .counts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
 }
 
 .count {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 9px;
-  border-radius: 999px;
-  border: 1px solid rgba(233, 233, 237, 0.13);
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	padding: 5px 9px;
+	border-radius: 999px;
+	border: 1px solid rgba(233, 233, 237, 0.13);
 }
 
 .count-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
 }
 
 .count-label {
-  font: 400 11.5px/1 Inter, sans-serif;
-  color: rgba(233, 233, 237, 0.7);
+	font: 400 11.5px/1 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.7);
 }
 
 .count-n {
-  font: 500 11.5px/1 var(--mono);
-  color: var(--ink);
+	font: 500 11.5px/1 var(--mono);
+	color: var(--ink);
 }
 
 /* ---------- map stage ---------- */
 
 .stage {
-  position: relative;
-  min-width: 0;
+	position: relative;
+	min-width: 0;
 }
 
 .globe-host {
-  position: absolute;
-  inset: 0;
-  background: var(--bg);
+	position: absolute;
+	inset: 0;
+	background: var(--bg);
 }
 
 /* Stars, orbits and planets. Sits over the map so orbits can cross the globe;
    an invisible depth sphere inside it hides the half that is genuinely behind. */
 .sky-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  transition: opacity 0.45s ease;
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	transition: opacity 0.45s ease;
 }
 
 /* Sun and moon are positioned here in screen space rather than as map markers,
    so they can orbit outside the globe when they are behind the earth. */
 .bodies-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  overflow: hidden;
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+	overflow: hidden;
 }
 
 .bodies-layer > div {
-  position: absolute;
-  left: 0;
-  top: 0;
-  transition: opacity 0.4s ease;
+	position: absolute;
+	left: 0;
+	top: 0;
+	transition: opacity 0.4s ease;
 }
 
+/* ---------- the console strip ---------- */
+
+/* `right` reserves the corner for the map's own controls. The strip is one bar
+   rather than a row of pills, so it wraps as a whole; on a narrow window the
+   segments run onto a second line and keep their dividers. */
 .controls {
-  position: absolute;
-  left: 26px;
-  right: 76px;
-  top: 24px;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 8px;
-  z-index: 2;
+	position: absolute;
+	left: 26px;
+	right: 92px;
+	top: 24px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	z-index: 2;
 }
 
-/* Glass pill toolbar: toggles carry a live status dot, actions are plain. */
-.pill {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  padding: 5px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(24, 26, 40, 0.82), rgba(8, 9, 14, 0.86));
-  border: 1px solid rgba(150, 138, 224, 0.26);
-  box-shadow:
-    0 14px 40px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(210, 206, 253, 0.12);
-  backdrop-filter: blur(16px) saturate(1.4);
+/* One bar, hairline-divided, with nothing floating beside it. The overflow clip
+   is what lets the segments square off against the rounded ends. */
+.console {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: stretch;
+	max-width: 100%;
+	border-radius: 6px;
+	background: rgba(10, 12, 18, 0.9);
+	border: 1px solid rgba(233, 233, 237, 0.14);
+	box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+	overflow: hidden;
+	backdrop-filter: blur(10px);
 }
 
-.pill-btn {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font: 500 11px/1 Inter, sans-serif;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: rgba(233, 233, 237, 0.72);
-  background: transparent;
-  border: 0;
-  border-radius: 999px;
-  padding: 10px 14px;
-  cursor: pointer;
-  transition:
-    background 180ms ease,
-    color 180ms ease,
-    transform 180ms ease;
+.con-btn {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	padding: 12px 15px;
+	border: 0;
+	background: transparent;
+	color: rgba(233, 233, 237, 0.6);
+	font: 500 10.5px/1 var(--mono);
+	letter-spacing: 0.13em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: background 180ms ease, color 180ms ease;
 }
 
-.pill-btn-plain {
-  color: rgba(233, 233, 237, 0.62);
-  padding: 10px 13px;
+.con-btn:hover:not(:disabled) {
+	background: rgba(150, 138, 224, 0.16);
+	color: #efeeff;
 }
 
-.pill-btn:hover:not(:disabled) {
-  background: rgba(150, 138, 224, 0.18);
-  color: #efeeff;
-  transform: translateY(-1px);
+.con-btn:focus-visible {
+	outline: 1px solid rgba(181, 171, 252, 0.75);
+	outline-offset: -2px;
 }
 
-.pill-btn:active:not(:disabled) {
-  transform: translateY(0);
+.con-btn:disabled {
+	opacity: 0.38;
+	cursor: default;
 }
 
-.pill-btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+.con-btn-on {
+	background: rgba(150, 138, 224, 0.2);
+	color: #f5f4ff;
 }
 
-.pill-btn:disabled {
-  opacity: 0.36;
-  cursor: not-allowed;
+/* Each mode keeps the colour it draws with on the globe: qibla green, tracks
+   gold. The glyphs inside inherit it, so nothing has to be coloured twice. */
+.con-btn-qibla {
+	background: rgba(126, 224, 184, 0.16);
+	color: #d8f5e8;
 }
 
-.pill-btn-on {
-  color: #efeeff;
+.con-btn-path {
+	background: rgba(244, 197, 106, 0.16);
+	color: #f7e3b8;
 }
 
-.pill-dot {
-  position: relative;
-  width: 7px;
-  height: 7px;
-  flex: none;
-  border-radius: 50%;
-  background: rgba(233, 233, 237, 0.22);
+.con-div {
+	width: 1px;
+	background: rgba(233, 233, 237, 0.14);
 }
 
-.pill-live {
-  position: absolute;
-  inset: -1px;
-  border-radius: 50%;
-  animation: pg-beacon 1.6s ease-in-out infinite;
+/* Spin, as a switch you can see the state of without reading the label. */
+.con-switch {
+	position: relative;
+	width: 26px;
+	height: 13px;
+	flex: none;
+	border-radius: 2px;
+	background: rgba(233, 233, 237, 0.1);
+	transition: background 200ms ease;
 }
 
-.pill-live-spin {
-  background: #a99bff;
-  box-shadow: 0 0 10px 2px rgba(169, 155, 255, 0.85);
+.con-switch-on {
+	background: rgba(169, 155, 255, 0.42);
 }
 
-.pill-live-play {
-  background: #f4c56a;
-  box-shadow: 0 0 10px 2px rgba(244, 197, 106, 0.85);
+.con-switch-knob {
+	position: absolute;
+	top: 1.5px;
+	left: 2px;
+	width: 11px;
+	height: 10px;
+	border-radius: 1px;
+	background: rgba(233, 233, 237, 0.34);
+	transition: left 200ms cubic-bezier(0.2, 0.8, 0.2, 1), background 200ms ease;
 }
 
-.pill-live-sky {
-  background: #8fd3ff;
-  box-shadow: 0 0 10px 2px rgba(143, 211, 255, 0.8);
-  animation: none;
+.con-switch-on .con-switch-knob {
+	left: 13px;
+	background: #a99bff;
 }
 
-.pill-live-path {
-  background: #ffc65c;
-  box-shadow: 0 0 10px 2px rgba(255, 198, 92, 0.8);
-  animation: none;
+.con-play {
+	width: 0;
+	height: 0;
+	flex: none;
+	border-left: 8px solid rgba(233, 233, 237, 0.4);
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	transition: border-color 180ms ease;
 }
 
-@keyframes pg-beacon {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.45;
-    transform: scale(0.72);
-  }
+.con-play-on {
+	border-left-color: #f4c56a;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .pill-live {
-    animation: none;
-  }
+.con-sky {
+	width: 9px;
+	height: 9px;
+	flex: none;
+	border-radius: 50%;
+	background: rgba(233, 233, 237, 0.22);
+	transition: background 180ms ease, box-shadow 180ms ease;
 }
 
-.pill-sep {
-  width: 1px;
-  align-self: stretch;
-  margin: 4px 6px;
-  background: linear-gradient(180deg, transparent, rgba(210, 206, 253, 0.3), transparent);
+.con-sky-on {
+	background: #8fd7ff;
+	box-shadow: 0 0 8px 1px rgba(143, 215, 255, 0.7);
+}
+
+/* A compass ring with the needle held at the design's 38°. */
+.con-qibla {
+	position: relative;
+	width: 11px;
+	height: 11px;
+	flex: none;
+	border-radius: 50%;
+	border: 1.5px solid currentColor;
+}
+
+.con-qibla-needle {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 1.5px;
+	height: 6px;
+	background: currentColor;
+	transform: translate(-50%, -100%) rotate(38deg);
+	transform-origin: bottom center;
+}
+
+.con-arc {
+	flex: none;
+}
+
+/* The run lengths, every one on show. Keyed off the label alone — the unit is
+   the same for all five, so repeating "days" five times says nothing. */
+.con-keys {
+	display: flex;
+	align-items: stretch;
+}
+
+.con-key {
+	min-width: 34px;
+	padding: 12px 4px;
+	border: 0;
+	border-left: 1px solid rgba(233, 233, 237, 0.1);
+	background: transparent;
+	color: rgba(233, 233, 237, 0.5);
+	font: 500 10.5px/1 var(--mono);
+	cursor: pointer;
+	transition: background 180ms ease, color 180ms ease;
+}
+
+.con-key:hover {
+	background: rgba(150, 138, 224, 0.22);
+	color: #efeeff;
+}
+
+.con-key-on {
+	background: rgba(150, 138, 224, 0.3);
+	color: #f5f4ff;
+}
+
+/* What the strip is set to, in words, because five highlights cannot say it. */
+.con-status {
+	padding-top: 12px;
+	font: 400 10.5px/1 var(--mono);
+	letter-spacing: 0.1em;
+	color: rgba(233, 233, 237, 0.4);
+	white-space: nowrap;
 }
 
 .btn {
-  font: 500 11.5px/1 Inter, sans-serif;
-  letter-spacing: 0.04em;
-  color: rgba(233, 233, 237, 0.7);
-  background: rgba(12, 14, 20, 0.72);
-  border: 1px solid rgba(233, 233, 237, 0.16);
-  border-radius: 8px;
-  padding: 9px 13px;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease,
-    background 0.15s ease;
+	font: 500 11.5px/1 Inter, sans-serif;
+	letter-spacing: 0.04em;
+	color: rgba(233, 233, 237, 0.7);
+	background: rgba(12, 14, 20, 0.72);
+	border: 1px solid rgba(233, 233, 237, 0.16);
+	border-radius: 8px;
+	padding: 9px 13px;
+	cursor: pointer;
+	transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
 }
 
 .btn {
-  white-space: nowrap;
-  flex: none;
+	white-space: nowrap;
+	flex: none;
 }
 
 .btn:hover:not(:disabled) {
-  border-color: var(--accent-deep);
-  color: var(--accent-soft);
+	border-color: var(--accent-deep);
+	color: var(--accent-soft);
 }
 
 .btn:disabled {
-  opacity: 0.38;
-  cursor: not-allowed;
+	opacity: 0.38;
+	cursor: not-allowed;
 }
 
 .btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
 }
 
 .btn-primary {
-  color: var(--accent-soft);
-  border-color: var(--accent-deep);
+	color: var(--accent-soft);
+	border-color: var(--accent-deep);
 }
 
 .btn-primary:hover {
-  background: rgba(150, 138, 224, 0.2);
+	background: rgba(150, 138, 224, 0.2);
 }
 
 /* ---------- solar system ---------- */
 
 .orrery {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
 }
 
 .orrery-svg {
-  display: block;
-  transition: opacity 0.5s ease;
+	display: block;
+	transition: opacity 0.5s ease;
 }
 
 .orrery-ring {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 0.6;
-  opacity: 0.16;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 0.6;
+	opacity: 0.16;
 }
 
 .orrery-body {
-  fill: currentColor;
+	fill: currentColor;
 }
 
 .orrery-name {
-  font: 500 8.5px ui-monospace, Menlo, monospace;
-  letter-spacing: 0.1em;
-  fill: currentColor;
-  opacity: 0.62;
-  text-transform: uppercase;
+	font: 500 8.5px ui-monospace, Menlo, monospace;
+	letter-spacing: 0.1em;
+	fill: currentColor;
+	opacity: 0.62;
+	text-transform: uppercase;
 }
 
 /* ---------- city search ---------- */
 
 .search {
-  position: relative;
+	position: relative;
 }
 
 .search-input {
-  width: 190px;
-  font: 500 11.5px/1 Inter, sans-serif;
-  letter-spacing: 0.04em;
-  color: var(--ink-bright);
-  background: rgba(12, 14, 20, 0.72);
-  border: 1px solid rgba(233, 233, 237, 0.16);
-  border-radius: 8px;
-  padding: 9px 12px;
-  transition:
-    border-color 0.15s ease,
-    width 0.2s ease;
+	width: 190px;
+	font: 500 11.5px/1 Inter, sans-serif;
+	letter-spacing: 0.04em;
+	color: var(--ink-bright);
+	background: rgba(12, 14, 20, 0.72);
+	border: 1px solid rgba(233, 233, 237, 0.16);
+	border-radius: 8px;
+	padding: 9px 12px;
+	transition: border-color 0.15s ease, width 0.2s ease;
 }
 
 .search-input::placeholder {
-  color: rgba(233, 233, 237, 0.42);
+	color: rgba(233, 233, 237, 0.42);
 }
 
 .search-input:hover {
-  border-color: var(--accent-deep);
+	border-color: var(--accent-deep);
 }
 
 .search-input:focus {
-  outline: none;
-  width: 230px;
-  border-color: var(--accent-mid);
-  box-shadow: 0 0 0 3px rgba(150, 138, 224, 0.16);
+	outline: none;
+	width: 230px;
+	border-color: var(--accent-mid);
+	box-shadow: 0 0 0 3px rgba(150, 138, 224, 0.16);
 }
 
 .search-list {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  z-index: 3;
-  min-width: 230px;
-  margin: 0;
-  padding: 4px;
-  list-style: none;
-  border-radius: 9px;
-  background: rgba(12, 14, 20, 0.94);
-  border: 1px solid rgba(233, 233, 237, 0.14);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(6px);
+	position: absolute;
+	top: calc(100% + 6px);
+	left: 0;
+	z-index: 3;
+	min-width: 230px;
+	margin: 0;
+	padding: 4px;
+	list-style: none;
+	border-radius: 9px;
+	background: rgba(12, 14, 20, 0.94);
+	border: 1px solid rgba(233, 233, 237, 0.14);
+	box-shadow: 0 14px 34px rgba(0, 0, 0, 0.6);
+	backdrop-filter: blur(6px);
 }
 
 .search-item {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  width: 100%;
-  padding: 7px 9px;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  cursor: pointer;
-  text-align: left;
+	display: flex;
+	align-items: baseline;
+	gap: 10px;
+	width: 100%;
+	padding: 7px 9px;
+	border: none;
+	border-radius: 6px;
+	background: transparent;
+	cursor: pointer;
+	text-align: left;
 }
 
 .search-item-on {
-  background: rgba(150, 138, 224, 0.2);
+	background: rgba(150, 138, 224, 0.2);
 }
 
 .search-name {
-  font: 500 12.5px/1 Inter, sans-serif;
-  color: var(--ink-bright);
+	font: 500 12.5px/1 Inter, sans-serif;
+	color: var(--ink-bright);
 }
 
 .search-coord {
-  margin-left: auto;
-  font: 400 10px/1 var(--mono);
-  color: rgba(233, 233, 237, 0.42);
+	margin-left: auto;
+	font: 400 10px/1 var(--mono);
+	color: rgba(233, 233, 237, 0.42);
 }
 
 /* Sits under the controls row: that row now spans the width, so the old
    top-right placement collided with the last button. */
+/* Stacked under the strip rather than pinned below it. The strip's height moves
+   — it wraps onto a second row on a narrow window — and a fixed offset here put
+   the coordinates straight through the status line whenever it did. */
 .pointer {
-  position: absolute;
-  left: 26px;
-  top: 88px;
-  text-align: left;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.pointer-title {
-  font: 400 10px/1 var(--mono);
-  letter-spacing: 0.09em;
-  color: rgba(233, 233, 237, 0.36);
+	padding-top: 14px;
+	text-align: left;
+	pointer-events: none;
 }
 
 .pointer-pos {
-  font: 500 16px/1.4 var(--mono);
-  color: var(--ink);
+	font: 500 16px/1.4 var(--mono);
+	color: var(--ink);
 }
 
 .pointer-note {
-  margin-top: 4px;
-  font: 400 10.5px/1.6 var(--mono);
-  color: rgba(233, 233, 237, 0.4);
+	margin-top: 4px;
+	font: 400 10.5px/1.6 var(--mono);
+	color: rgba(233, 233, 237, 0.4);
 }
 
 /* ---------- legend ---------- */
 
+/* Clears the time bar, which sits 22px off the bottom and stands 142px tall.
+   The two used to intersect: the bar grew a prayer name and a second line of
+   labels after this number was set, and nothing moved the legend up to match. */
 .legend {
-  position: absolute;
-  right: 26px;
-  bottom: 132px;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  padding: 13px 15px;
-  border-radius: 10px;
-  background: var(--glass);
-  border: 1px solid var(--line);
-  backdrop-filter: blur(6px);
+	position: absolute;
+	right: 26px;
+	bottom: 178px;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	gap: 9px;
+	padding: 13px 15px;
+	border-radius: 10px;
+	background: var(--glass);
+	border: 1px solid var(--line);
+	backdrop-filter: blur(6px);
 }
 
 .legend-title {
-  font: 400 10px/1 var(--mono);
-  letter-spacing: 0.11em;
-  color: rgba(233, 233, 237, 0.42);
+	font: 400 10px/1 var(--mono);
+	letter-spacing: 0.11em;
+	color: rgba(233, 233, 237, 0.42);
 }
 
 .legend-row {
-  display: flex;
-  align-items: center;
-  gap: 9px;
+	display: flex;
+	align-items: center;
+	gap: 9px;
 }
 
 .legend-label {
-  font: 500 11px/1 Inter, sans-serif;
-  color: rgba(233, 233, 237, 0.8);
+	font: 500 11px/1 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.8);
 }
 
 .legend-dawn {
-  color: #ffc65c;
+	color: #ffc65c;
 }
 
 .legend-accent {
-  color: var(--accent-soft);
+	color: var(--accent-soft);
 }
 
 .legend-angle {
-  font: 400 10px/1 var(--mono);
-  color: rgba(233, 233, 237, 0.45);
+	font: 400 10px/1 var(--mono);
+	color: rgba(233, 233, 237, 0.45);
 }
 
 .legend-swatch-night {
-  width: 30px;
-  height: 9px;
-  border-radius: 2px;
-  background: #05060c;
-  border: 1px solid rgba(233, 233, 237, 0.16);
+	width: 30px;
+	height: 9px;
+	border-radius: 2px;
+	background: #05060c;
+	border: 1px solid rgba(233, 233, 237, 0.16);
 }
 
 /* Static twin of the pulse markers on the globe. */
 .legend-swatch-pulse {
-  width: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	width: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .legend-swatch-pulse > span {
-  position: relative;
-  display: block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: 1.5px solid currentColor;
+	position: relative;
+	display: block;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	border: 1.5px solid currentColor;
 }
 
 .legend-swatch-pulse > span::after {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  border-radius: 50%;
-  background: currentColor;
+	content: '';
+	position: absolute;
+	inset: 3px;
+	border-radius: 50%;
+	background: currentColor;
 }
 
 .legend-pulse-sun {
-  color: #ffc65c;
+	color: #ffc65c;
 }
 
 .legend-pulse-moon {
-  color: var(--dim);
+	color: var(--dim);
 }
 
 .legend-note {
-  margin: 0;
-  max-width: 212px;
-  font: 400 10.5px/1.5 Inter, sans-serif;
-  color: rgba(233, 233, 237, 0.42);
-  text-wrap: pretty;
+	margin: 0;
+	max-width: 212px;
+	font: 400 10.5px/1.5 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.42);
+	text-wrap: pretty;
 }
 
 /* ---------- scrubber ---------- */
 
 .scrubber {
-  position: absolute;
-  left: 26px;
-  right: 26px;
-  bottom: 40px;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  padding: 14px 16px;
-  border-radius: 10px;
-  background: var(--glass);
-  border: 1px solid var(--line);
-  backdrop-filter: blur(6px);
+	position: absolute;
+	left: 26px;
+	right: 26px;
+	bottom: 40px;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	gap: 9px;
+	padding: 14px 16px;
+	border-radius: 10px;
+	background: var(--glass);
+	border: 1px solid var(--line);
+	backdrop-filter: blur(6px);
 }
 
 .scrub-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
 }
 
 .scrub-title {
-  font: 400 10.5px/1 var(--mono);
-  letter-spacing: 0.1em;
-  color: rgba(233, 233, 237, 0.45);
+	font: 400 10.5px/1 var(--mono);
+	letter-spacing: 0.1em;
+	color: rgba(233, 233, 237, 0.45);
 }
 
 .scrub-label {
-  font: 500 13px/1 var(--mono);
-  font-variant-numeric: tabular-nums;
-  color: var(--ink-bright);
+	font: 500 13px/1 var(--mono);
+	font-variant-numeric: tabular-nums;
+	color: var(--ink-bright);
 }
 
 .scrub-offset {
-  font: 400 11px/1 var(--mono);
-  color: var(--accent-soft);
+	font: 400 11px/1 var(--mono);
+	color: var(--accent-soft);
 }
 
 .scrub-note {
-  margin-left: auto;
-  font: 400 11px/1 Inter, sans-serif;
-  color: rgba(233, 233, 237, 0.4);
-  text-align: right;
+	margin-left: auto;
+	font: 400 11px/1 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.4);
+	text-align: right;
 }
 
 .scrubber input[type='range'] {
-  width: 100%;
-  accent-color: var(--accent-mid);
-  background: transparent;
+	width: 100%;
+	accent-color: var(--accent-mid);
+	background: transparent;
 }
 
 /* ---------- maplibre overrides ---------- */
 
 .maplibregl-ctrl-attrib {
-  font: 400 9.5px Inter, sans-serif !important;
-  background: rgba(12, 14, 20, 0.72) !important;
-  color: rgba(233, 233, 237, 0.5) !important;
+	font: 400 9.5px Inter, sans-serif !important;
+	background: rgba(12, 14, 20, 0.72) !important;
+	color: rgba(233, 233, 237, 0.5) !important;
 }
 
 .maplibregl-ctrl-attrib a {
-  color: rgba(233, 233, 237, 0.68) !important;
+	color: rgba(233, 233, 237, 0.68) !important;
 }
 
-.maplibregl-ctrl-group {
-  background: rgba(12, 14, 20, 0.78) !important;
-  border: 1px solid rgba(233, 233, 237, 0.14) !important;
-  border-radius: 8px !important;
-  box-shadow: none !important;
+/*
+ * MapLibre draws its + and − as dark background images meant for a white
+ * control, so this inverted them for a dark one. They are our own icons now,
+ * drawn in `currentColor` — and the filter was still running over them, lifting
+ * them off the ink everything else in the bar uses. Only the readout and the
+ * share icon looked right, because neither passes through here.
+ */
+.maplibregl-ctrl-group button span:not(.pg-ctrl-icon) {
+	filter: invert(1) brightness(1.7);
 }
 
-.maplibregl-ctrl-group button + button {
-  border-top: 1px solid rgba(233, 233, 237, 0.12) !important;
-}
-
-.maplibregl-ctrl-group button span {
-  filter: invert(1) brightness(1.7);
-}
-
-/* Marks the exact point the sun or moon stands over. */
+/*
+ * Marks the exact point the sun or moon stands over.
+ *
+ * Absolute, not relative. MapLibre places a marker with `transform` alone and
+ * assumes the element contributes nothing of its own to the layout — but a
+ * relatively positioned marker still takes a place in the flow of the marker
+ * container, and that offset is added to the transform. Every marker after the
+ * first was therefore displaced by the height of the ones before it: the moon by
+ * the sun, and the "you are here" mark by both, which at this zoom put it about
+ * eleven kilometres north of where it belonged. Same rule the sun and moon
+ * glyphs already follow in `glyph()`, for the same reason.
+ */
 .pg-pulse {
-  position: relative;
-  width: 12px;
-  height: 12px;
-  pointer-events: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 12px;
+	height: 12px;
+	pointer-events: none;
 }
 
 .pg-pulse-core {
-  position: absolute;
-  inset: 3px;
-  border-radius: 50%;
-  background: currentColor;
+	position: absolute;
+	inset: 3px;
+	border-radius: 50%;
+	background: currentColor;
 }
 
 .pg-pulse-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1.5px solid currentColor;
-  animation: pg-pulse 2.6s ease-out infinite;
+	position: absolute;
+	inset: 0;
+	border-radius: 50%;
+	border: 1.5px solid currentColor;
+	animation: pg-pulse 2.6s ease-out infinite;
+}
+
+/* "You are here", for the few seconds it is asked for. Green, because that is
+   the reader's own colour throughout — the pinned city wears it too — and it
+   pulses faster than the sun and moon so it reads as an arrival rather than as
+   another standing marker. */
+.pg-here {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 16px;
+	height: 16px;
+	color: #7ee0b8;
+	pointer-events: none;
+}
+
+/*
+ * The ring belongs to the arrival, and leaves with it.
+ *
+ * Ten seconds of pulse is the mark announcing itself; after that it would be a
+ * beacon competing with the sun and the moon for the eye, on a globe the reader
+ * is trying to look at. The ring used to stay behind at half opacity, which was
+ * one circle too many now that the located city has a dot of its own underneath
+ * — ring, dot and core stacked into a target. So it fades out with the pulse and
+ * what keeps the place is the dot alone.
+ */
+.pg-here-ring {
+	position: absolute;
+	inset: 0;
+	border-radius: 50%;
+	border: 1.5px solid currentColor;
+	opacity: 0;
+	transition: opacity 600ms ease;
+}
+
+.pg-here-pulsing .pg-here-ring {
+	opacity: 1;
+	animation: pg-pulse 1.4s ease-out infinite;
+}
+
+.pg-here-core {
+	position: absolute;
+	inset: 5px;
+	border-radius: 50%;
+	background: currentColor;
+	/* Dimmer once settled, so it reads as a place rather than an alert. */
+	box-shadow: 0 0 8px 2px rgba(126, 224, 184, 0.35);
+	transition: box-shadow 600ms ease;
+}
+
+.pg-here-pulsing .pg-here-core {
+	box-shadow: 0 0 12px 3px rgba(126, 224, 184, 0.6);
 }
 
 .pg-pulse-sun {
-  color: #ffc65c;
+	color: #ffc65c;
 }
 
 .pg-pulse-sun .pg-pulse-core {
-  box-shadow: 0 0 10px 3px rgba(255, 198, 92, 0.65);
+	box-shadow: 0 0 10px 3px rgba(255, 198, 92, 0.65);
 }
 
 .pg-pulse-moon {
-  color: #cfd3e5;
+	color: #cfd3e5;
 }
 
 .pg-pulse-moon .pg-pulse-core {
-  box-shadow: 0 0 8px 2px rgba(207, 211, 229, 0.5);
+	box-shadow: 0 0 8px 2px rgba(207, 211, 229, 0.5);
 }
 
 @keyframes pg-pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.85;
-  }
-  70% {
-    transform: scale(3.2);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(3.2);
-    opacity: 0;
-  }
+	0% {
+		transform: scale(1);
+		opacity: 0.85;
+	}
+	70% {
+		transform: scale(3.2);
+		opacity: 0;
+	}
+	100% {
+		transform: scale(3.2);
+		opacity: 0;
+	}
 }
 
 @keyframes pg-breathe {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.85;
-  }
-  50% {
-    transform: scale(1.16);
-    opacity: 1;
-  }
+	0%,
+	100% {
+		transform: scale(1);
+		opacity: 0.85;
+	}
+	50% {
+		transform: scale(1.16);
+		opacity: 1;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .globe-host [style*='animation'] {
-    animation: none !important;
-  }
+	.globe-host [style*='animation'] {
+		animation: none !important;
+	}
 }
 
 /* Planet name tags, positioned by the orrery layer. */
 .pg-planet {
-  position: absolute;
-  left: 0;
-  top: 0;
-  font: 500 8.5px ui-monospace, Menlo, monospace;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  opacity: 0.75;
-  text-shadow: 0 1px 6px rgba(6, 7, 11, 0.95);
-  transition: opacity 0.3s ease;
-  will-change: transform;
+	position: absolute;
+	left: 0;
+	top: 0;
+	font: 500 8.5px ui-monospace, Menlo, monospace;
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	opacity: 0.75;
+	text-shadow: 0 1px 6px rgba(6, 7, 11, 0.95);
+	transition: opacity 0.3s ease;
+	will-change: transform;
 }
 
 /* Name of the city under the pointer, when it is not the selected one. */
 .pg-tip {
-  position: absolute;
-  left: 0;
-  top: 0;
-  padding: 4px 8px;
-  border-radius: 6px;
-  white-space: nowrap;
-  font: 500 11px/1 Inter, sans-serif;
-  color: var(--ink-bright);
-  background: rgba(12, 14, 20, 0.92);
-  border: 1px solid rgba(181, 171, 252, 0.45);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
-  transition: opacity 0.14s ease;
-  will-change: transform;
+	position: absolute;
+	left: 0;
+	top: 0;
+	padding: 4px 8px;
+	border-radius: 6px;
+	white-space: nowrap;
+	font: 500 11px/1 Inter, sans-serif;
+	color: var(--ink-bright);
+	background: rgba(12, 14, 20, 0.92);
+	border: 1px solid rgba(181, 171, 252, 0.45);
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+	transition: opacity 0.14s ease;
+	will-change: transform;
 }
 
 /* ---------- tooltips ----------
@@ -1675,154 +1806,164 @@ body {
    already has its own richer tooltip, use `aria-label` and no `data-tip`, so
    the two do not stack. */
 
-[data-tip] {
-  position: relative;
+/*
+   The trigger keeps only its cursor affordance: the bubble itself is drawn by
+   `TipLayer` into a portal on the body, so nothing here positions it. The
+   `data-tip-above` / `-start` / `-end` attributes survive as hints — `-above`
+   is still read, and the alignment pair is now decided by measurement, since
+   the portal cannot be clipped and no longer needs an author to predict which
+   edge it would have hit.
+*/
+
+.tip {
+	position: fixed;
+	z-index: 60;
+	padding: 4px 8px;
+	border-radius: 6px;
+	border: 1px solid rgba(181, 171, 252, 0.45);
+	white-space: nowrap;
+	font: 500 11px/1.35 Inter, sans-serif;
+	letter-spacing: 0;
+	text-transform: none;
+	color: var(--ink-bright);
+	background: rgba(12, 14, 20, 0.92);
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+	backdrop-filter: blur(6px);
+	pointer-events: none;
 }
 
-[data-tip]::after {
-  content: attr(data-tip);
-  position: absolute;
-  z-index: 40;
-  top: calc(100% + 7px);
-  left: 50%;
-  transform: translate(-50%, -3px);
-  padding: 4px 8px;
-  border-radius: 6px;
-  white-space: nowrap;
-  font: 500 11px/1 Inter, sans-serif;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--ink-bright);
-  background: rgba(12, 14, 20, 0.92);
-  border: 1px solid rgba(181, 171, 252, 0.45);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    opacity 140ms ease,
-    transform 140ms ease;
+/* Measured off-screen before it is placed — same box, no paint. */
+.tip-probe {
+	left: -9999px;
+	top: -9999px;
+	visibility: hidden;
 }
 
-[data-tip]:hover::after,
-[data-tip]:focus-visible::after {
-  opacity: 1;
-  transform: translate(-50%, 0);
+.tip-on {
+	animation: pg-tip-in 140ms ease;
 }
 
-/* Right-aligned, for controls hard against the right edge — a centred tip on
-   the zoom buttons would hang off the viewport. */
-[data-tip][data-tip-end]::after {
-  left: auto;
-  right: 0;
-  transform: translate(0, -3px);
+@keyframes pg-tip-in {
+	from {
+		opacity: 0;
+		transform: translateY(-3px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
-[data-tip][data-tip-end]:hover::after,
-[data-tip][data-tip-end]:focus-visible::after {
-  transform: translate(0, 0);
+.tip-above.tip-on {
+	animation-name: pg-tip-in-above;
 }
 
-/* Above instead of below, for controls near the bottom of the screen. */
-[data-tip][data-tip-above]::after {
-  top: auto;
-  bottom: calc(100% + 7px);
-  transform: translate(-50%, 3px);
+@keyframes pg-tip-in-above {
+	from {
+		opacity: 0;
+		transform: translateY(3px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
-[data-tip][data-tip-above]:hover::after,
-[data-tip][data-tip-above]:focus-visible::after {
-  transform: translate(-50%, 0);
+@media (prefers-reduced-motion: reduce) {
+	.tip-on {
+		animation: none;
+	}
 }
 
 /* ---------- responsive ---------- */
 
 @media (max-width: 1180px) {
-  .app {
-    grid-template-columns: 380px 1fr;
-  }
+	.app {
+		grid-template-columns: 380px 1fr;
+	}
 
-  .panel {
-    padding: 24px 22px 20px;
-  }
+	.panel {
+		padding: 24px 22px 20px;
+	}
 
-  .now-prayer {
-    font-size: 48px;
-  }
+	.now-prayer {
+		font-size: 48px;
+	}
 
-  .ar-title {
-    font-size: 30px;
-  }
+	.ar-title {
+		font-size: 30px;
+	}
 
-  .legend {
-    bottom: 124px;
-    right: 18px;
-  }
+	.legend {
+		bottom: 124px;
+		right: 18px;
+	}
 }
 
 @media (max-width: 900px) {
-  .app {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    overflow: auto;
-  }
+	.app {
+		grid-template-columns: 1fr;
+		grid-template-rows: auto 1fr;
+		overflow: auto;
+	}
 
-  .panel {
-    border-right: none;
-    border-bottom: 1px solid var(--line);
-    overflow: visible;
-  }
+	.panel {
+		border-right: none;
+		border-bottom: 1px solid var(--line);
+		overflow: visible;
+	}
 
-  .panel-foot {
-    margin-top: 12px;
-  }
+	.panel-foot {
+		margin-top: 12px;
+	}
 
-  .stage {
-    min-height: 70vh;
-  }
+	.stage {
+		min-height: 70vh;
+	}
 
-  .legend {
-    display: none;
-  }
+	.legend {
+		display: none;
+	}
 
-  /* The stacked layout puts the map's own zoom controls where the pointer
+	/* The stacked layout puts the map's own zoom controls where the pointer
      readout used to sit, so move it to the free left edge. */
-  .pointer {
-    left: 14px;
-    right: auto;
-    top: 96px;
-    text-align: left;
-  }
+	.pointer {
+		left: 14px;
+		right: auto;
+		top: 96px;
+		text-align: left;
+	}
 }
 
 @media (max-width: 560px) {
-  .controls {
-    left: 14px;
-    right: 60px;
-    top: 14px;
-    flex-wrap: wrap;
-  }
+	.controls {
+		left: 14px;
+		right: 60px;
+		top: 14px;
+		flex-wrap: wrap;
+	}
 
-  .pointer {
-    top: 130px;
-  }
+	.pointer {
+		top: 130px;
+	}
 
-  .scrubber {
-    left: 14px;
-    right: 14px;
-    bottom: 20px;
-  }
+	.scrubber {
+		left: 14px;
+		right: 14px;
+		bottom: 20px;
+	}
 
-  .scrub-note {
-    display: none;
-  }
+	.scrub-note {
+		display: none;
+	}
 
-  .now-prayer {
-    font-size: 40px;
-  }
+	.now-prayer {
+		font-size: 40px;
+	}
 
-  .now-ar {
-    font-size: 26px;
-  }
+	.now-ar {
+		font-size: 26px;
+	}
 }
 
 /* ---------------------------------------------------------------------------
@@ -1834,259 +1975,2035 @@ body {
    --------------------------------------------------------------------------- */
 
 .ss {
-  position: fixed;
-  inset: 0;
-  background: #05070d;
-  overflow: hidden;
+	position: fixed;
+	inset: 0;
+	background: #05070d;
+	overflow: hidden;
 }
 
 .ss-canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  outline: none;
+	display: block;
+	width: 100%;
+	height: 100%;
+	outline: none;
 }
 
 .ss-note {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  margin: 0;
-  max-width: 60%;
-  font: 400 12px/1.5 var(--ui, system-ui), sans-serif;
-  color: rgba(233, 233, 237, 0.34);
-  user-select: none;
-  pointer-events: none;
+	position: absolute;
+	left: 16px;
+	bottom: 16px;
+	margin: 0;
+	max-width: 60%;
+	font: 400 12px/1.5 var(--ui, system-ui), sans-serif;
+	color: rgba(233, 233, 237, 0.34);
+	user-select: none;
+	pointer-events: none;
 }
 
 .ss-back {
-  position: absolute;
-  left: 18px;
-  top: 18px;
-  padding: 9px 15px;
-  border-radius: 999px;
-  font: 500 11px/1 ui-monospace, Menlo, monospace;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: rgba(233, 233, 237, 0.66);
-  background: linear-gradient(180deg, rgba(24, 26, 40, 0.82), rgba(8, 9, 14, 0.88));
-  border: 1px solid rgba(150, 138, 224, 0.26);
-  backdrop-filter: blur(14px);
-  transition:
-    background 180ms ease,
-    color 180ms ease;
+	position: absolute;
+	left: 18px;
+	top: 18px;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 9px 15px;
+	border-radius: 999px;
+	font: 500 11px/1 ui-monospace, Menlo, monospace;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: rgba(233, 233, 237, 0.66);
+	background: linear-gradient(180deg, rgba(24, 26, 40, 0.82), rgba(8, 9, 14, 0.88));
+	border: 1px solid rgba(150, 138, 224, 0.26);
+	backdrop-filter: blur(14px);
+	transition: background 180ms ease, color 180ms ease;
 }
 
 .ss-back:hover {
-  background: rgba(150, 138, 224, 0.22);
-  color: #f2f1ff;
+	background: rgba(150, 138, 224, 0.22);
+	color: #f2f1ff;
 }
 
 /* The stage's own export toolbar, kept where the design put it. */
 .ss-tools {
-  position: absolute;
-  top: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: stretch;
-  gap: 4px;
-  padding: 4px;
-  border-radius: 999px;
-  background: rgba(12, 20, 30, 0.55);
-  border: 1px solid rgba(216, 176, 74, 0.32);
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(14px) saturate(1.3);
+	position: absolute;
+	top: 18px;
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	align-items: stretch;
+	gap: 4px;
+	padding: 4px;
+	border-radius: 999px;
+	background: rgba(12, 20, 30, 0.55);
+	border: 1px solid rgba(216, 176, 74, 0.32);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+	backdrop-filter: blur(14px) saturate(1.3);
 }
 
 .ss-tools button {
-  appearance: none;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: #f0e6d2;
-  font: 500 12px/1 ui-monospace, Menlo, monospace;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 11px 18px;
-  cursor: pointer;
-  transition:
-    background 160ms ease,
-    color 160ms ease;
+	appearance: none;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: #f0e6d2;
+	font: 500 12px/1 ui-monospace, Menlo, monospace;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 11px 18px;
+	cursor: pointer;
+	transition: background 160ms ease, color 160ms ease;
 }
 
 .ss-tools button + button {
-  box-shadow: inset 1px 0 0 rgba(240, 230, 210, 0.14);
+	box-shadow: inset 1px 0 0 rgba(240, 230, 210, 0.14);
 }
 
 .ss-tools button:hover {
-  background: rgba(216, 176, 74, 0.16);
-  color: #fff8e8;
+	background: rgba(216, 176, 74, 0.16);
+	color: #fff8e8;
 }
 
 .ss-tools button:active {
-  background: rgba(216, 176, 74, 0.28);
+	background: rgba(216, 176, 74, 0.28);
 }
 
 .ss-tools button[disabled] {
-  opacity: 0.38;
-  pointer-events: none;
+	opacity: 0.38;
+	pointer-events: none;
 }
 
+/* Was a gold dot that stood for nothing; now holds the download icon, and keeps
+   the gold as the icon's own colour. */
 .ss-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #d8b04a;
-  box-shadow: 0 0 8px rgba(216, 176, 74, 0.9);
-  flex: none;
+	display: flex;
+	align-items: center;
+	flex: none;
+	color: #d8b04a;
 }
 
 .ss-hud {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 22px;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 0 20px;
-  pointer-events: none;
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 22px;
+	z-index: 10;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+	padding: 0 20px;
+	pointer-events: none;
 }
 
 .ss-hud > * {
-  pointer-events: auto;
+	pointer-events: auto;
 }
 
 .ss-rail {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: stretch;
-  gap: 3px;
-  padding: 5px;
-  max-width: 100%;
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(24, 26, 40, 0.82), rgba(8, 9, 14, 0.88));
-  border: 1px solid rgba(150, 138, 224, 0.26);
-  box-shadow:
-    0 16px 44px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(210, 206, 253, 0.12);
-  backdrop-filter: blur(16px) saturate(1.4);
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: stretch;
+	gap: 3px;
+	padding: 5px;
+	max-width: 100%;
+	border-radius: 999px;
+	background: linear-gradient(180deg, rgba(24, 26, 40, 0.82), rgba(8, 9, 14, 0.88));
+	border: 1px solid rgba(150, 138, 224, 0.26);
+	box-shadow: 0 16px 44px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(210, 206, 253, 0.12);
+	backdrop-filter: blur(16px) saturate(1.4);
 }
 
 .ss-rail button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 0;
-  background: transparent;
-  border-radius: 999px;
-  padding: 10px 15px;
-  cursor: pointer;
-  font: 500 11px/1 var(--ui, system-ui), sans-serif;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(233, 233, 237, 0.66);
-  transition:
-    background 180ms ease,
-    color 180ms ease,
-    transform 180ms ease;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	border: 0;
+	background: transparent;
+	border-radius: 999px;
+	padding: 10px 15px;
+	cursor: pointer;
+	font: 500 11px/1 var(--ui, system-ui), sans-serif;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: rgba(233, 233, 237, 0.66);
+	transition: background 180ms ease, color 180ms ease, transform 180ms ease;
 }
 
 .ss-rail button:hover {
-  background: rgba(150, 138, 224, 0.18);
-  color: #f2f1ff;
-  transform: translateY(-1px);
+	background: rgba(150, 138, 224, 0.18);
+	color: #f2f1ff;
+	transform: translateY(-1px);
 }
 
 .ss-rail button[aria-pressed='true'] {
-  background: rgba(150, 138, 224, 0.26);
-  color: #fff;
+	background: rgba(150, 138, 224, 0.26);
+	color: #fff;
 }
 
 .ss-swatch {
-  width: 11px;
-  height: 11px;
-  flex: none;
-  border-radius: 50%;
-  box-shadow: inset -2px -2px 3px rgba(0, 0, 0, 0.45);
+	width: 11px;
+	height: 11px;
+	flex: none;
+	border-radius: 50%;
+	box-shadow: inset -2px -2px 3px rgba(0, 0, 0, 0.45);
 }
 
 .ss-plate {
-  padding: 11px 18px;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
-  justify-content: center;
-  background: linear-gradient(180deg, rgba(24, 26, 40, 0.8), rgba(8, 9, 14, 0.86));
-  border: 1px solid rgba(233, 233, 237, 0.12);
-  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(14px);
+	padding: 11px 18px;
+	border-radius: 999px;
+	display: flex;
+	align-items: center;
+	gap: 18px;
+	flex-wrap: wrap;
+	justify-content: center;
+	background: linear-gradient(180deg, rgba(24, 26, 40, 0.8), rgba(8, 9, 14, 0.86));
+	border: 1px solid rgba(233, 233, 237, 0.12);
+	box-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
+	backdrop-filter: blur(14px);
 }
 
 .ss-plate h1 {
-  margin: 0;
-  font: 500 16px/1 var(--ui, system-ui), sans-serif;
-  letter-spacing: 0.02em;
-  color: #f5f4ff;
+	margin: 0;
+	font: 500 16px/1 var(--ui, system-ui), sans-serif;
+	letter-spacing: 0.02em;
+	color: #f5f4ff;
 }
 
 .ss-plate dl {
-  margin: 0;
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  flex-wrap: wrap;
+	margin: 0;
+	display: flex;
+	align-items: baseline;
+	gap: 16px;
+	flex-wrap: wrap;
 }
 
 .ss-fact {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
+	display: flex;
+	align-items: baseline;
+	gap: 6px;
 }
 
 .ss-plate dt {
-  font: 400 9.5px/1.2 ui-monospace, Menlo, monospace;
-  letter-spacing: 0.12em;
-  color: rgba(233, 233, 237, 0.4);
-  text-transform: uppercase;
+	font: 400 9.5px/1.2 ui-monospace, Menlo, monospace;
+	letter-spacing: 0.12em;
+	color: rgba(233, 233, 237, 0.4);
+	text-transform: uppercase;
 }
 
 .ss-plate dd {
-  margin: 0;
-  font: 400 11.5px/1.2 ui-monospace, Menlo, monospace;
-  color: #e9e9ed;
+	margin: 0;
+	font: 400 11.5px/1.2 ui-monospace, Menlo, monospace;
+	color: #e9e9ed;
+}
+
+/* ---------- the mosque viewer, and the card that opens it ---------- */
+
+/* Its own layer, over the whole stage and above the console strip.
+   The card cannot live inside the map: every marker there is under the strip,
+   because the map host has no z-index of its own and the strip has 2 — so a
+   mosque near the top of the view had its card, and its button, half buried
+   under the toolbar. Nothing here takes pointer events except the card. */
+.mv-pop-layer {
+	position: absolute;
+	inset: 0;
+	z-index: 5;
+	pointer-events: none;
+	overflow: hidden;
+}
+
+/* Positioned by transform alone, from the projected point — anything that took
+   part in flow would fight the same property. The arrow is the card's own,
+   drawn with a rotated square so the border reads continuously round it. */
+.mv-pop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 2px;
+	padding: 10px 12px 11px;
+	border-radius: 11px;
+	background: linear-gradient(180deg, rgba(24, 26, 40, 0.94), rgba(8, 9, 14, 0.96));
+	box-shadow: 0 18px 44px rgba(0, 0, 0, 0.62), inset 0 1px 0 rgba(255, 255, 255, 0.06),
+		inset 0 0 0 1px rgba(216, 176, 74, 0.3);
+	backdrop-filter: blur(16px) saturate(1.3);
+	white-space: nowrap;
+	/*
+	 * Opacity only, and no fill mode — both halves matter.
+	 *
+	 * This borrowed the toast's entrance at first, which ends on
+	 * `transform: none` and fills forwards. An animation outranks an inline
+	 * style, so that quietly overrode the transform that positions the card and
+	 * pinned it to the layer's top-left corner for good. `opacity` is set
+	 * inline too, to hide the card when its mosque turns away, so filling
+	 * forwards on that would break it the same way a moment later.
+	 */
+	animation: mv-pop-in 160ms ease-out;
+}
+
+@keyframes mv-pop-in {
+	from {
+		opacity: 0;
+	}
+}
+
+.mv-pop::after {
+	content: '';
+	position: absolute;
+	left: 50%;
+	bottom: -5px;
+	width: 10px;
+	height: 10px;
+	transform: translateX(-50%) rotate(45deg);
+	background: rgba(8, 9, 14, 0.96);
+	border-right: 1px solid rgba(216, 176, 74, 0.3);
+	border-bottom: 1px solid rgba(216, 176, 74, 0.3);
+}
+
+/* Dropped below its mosque because there was no room above. The arrow moves to
+   the top edge and the lit border with it, or it would point at nothing. */
+.mv-pop-below::after {
+	bottom: auto;
+	top: -5px;
+	border-right: 0;
+	border-bottom: 0;
+	border-left: 1px solid rgba(216, 176, 74, 0.3);
+	border-top: 1px solid rgba(216, 176, 74, 0.3);
+	background: rgba(24, 26, 40, 0.94);
+}
+
+.mv-pop-name {
+	font: 500 12.5px/1.3 var(--ui, system-ui), sans-serif;
+	color: #f5f4ff;
+}
+
+.mv-pop-where {
+	font: 400 10.5px/1.3 ui-monospace, Menlo, monospace;
+	letter-spacing: 0.06em;
+	color: rgba(233, 233, 237, 0.45);
+}
+
+.mv-pop-btn {
+	margin-top: 7px;
+	align-self: stretch;
+	border: 0;
+	border-radius: 7px;
+	padding: 7px 12px;
+	background: rgba(216, 176, 74, 0.16);
+	box-shadow: inset 0 0 0 1px rgba(216, 176, 74, 0.34);
+	color: #f0e0b4;
+	font: 500 10.5px/1 ui-monospace, Menlo, monospace;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background 160ms ease, color 160ms ease;
+}
+
+.mv-pop-btn:hover {
+	background: rgba(216, 176, 74, 0.3);
+	color: #fff8e8;
+}
+
+.mv-back {
+	position: fixed;
+	inset: 0;
+	z-index: 40;
+	display: grid;
+	place-items: center;
+	padding: 4vmin;
+	background: rgba(4, 5, 9, 0.72);
+	backdrop-filter: blur(3px);
+	animation: mv-fade 180ms ease both;
+}
+
+.mv {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	max-width: 1280px;
+	overflow: hidden;
+	border-radius: 16px;
+	background: #05070d;
+	border: 1px solid rgba(150, 138, 224, 0.24);
+	box-shadow: 0 40px 120px rgba(0, 0, 0, 0.7);
+	animation: mv-rise 220ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+/* The design's rail, kept on the left where it put it. */
+.mv-rail {
+	flex: none;
+	width: 244px;
+	display: flex;
+	flex-direction: column;
+	overflow-y: auto;
+	background: rgba(10, 12, 20, 0.72);
+	border-right: 1px solid rgba(233, 233, 237, 0.09);
+	/* Twenty-eight rows always scroll, so the bar is permanent furniture. Left
+	   at the platform default it was a bright white slab down the middle of a
+	   dark panel — the loudest thing in the viewer, next to the building. */
+	scrollbar-width: thin;
+	scrollbar-color: rgba(216, 176, 74, 0.34) transparent;
+}
+
+.mv-rail::-webkit-scrollbar {
+	width: 9px;
+}
+
+.mv-rail::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.mv-rail::-webkit-scrollbar-thumb {
+	border: 3px solid transparent;
+	border-radius: 999px;
+	background-clip: content-box;
+	background-color: rgba(216, 176, 74, 0.34);
+}
+
+.mv-rail::-webkit-scrollbar-thumb:hover {
+	background-color: rgba(216, 176, 74, 0.6);
+}
+
+.mv-rail-head {
+	position: sticky;
+	top: 0;
+	margin: 0;
+	padding: 15px 16px 13px;
+	background: rgba(8, 10, 16, 0.96);
+	border-bottom: 1px solid rgba(233, 233, 237, 0.12);
+	font: 500 10px/1 ui-monospace, Menlo, monospace;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: rgba(233, 233, 237, 0.5);
+}
+
+.mv-rail button {
+	display: block;
+	width: 100%;
+	text-align: left;
+	border: 0;
+	border-bottom: 1px solid rgba(233, 233, 237, 0.07);
+	padding: 11px 16px;
+	background: transparent;
+	cursor: pointer;
+	transition: background 160ms ease;
+}
+
+.mv-rail button:hover {
+	background: rgba(216, 176, 74, 0.1);
+}
+
+.mv-rail button[aria-pressed='true'] {
+	background: rgba(216, 176, 74, 0.18);
+	box-shadow: inset 2px 0 0 #d8b04a;
+}
+
+.mv-rail-n {
+	display: block;
+	font: 400 13px/1.35 var(--ui, system-ui), sans-serif;
+	color: #fdf7e6;
+}
+
+.mv-rail-c {
+	display: block;
+	margin-top: 3px;
+	font: 400 10.5px/1.3 ui-monospace, Menlo, monospace;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: rgba(233, 233, 237, 0.45);
+}
+
+.mv-stage {
+	position: relative;
+	flex: 1;
+	min-width: 0;
+}
+
+.mv-canvas {
+	display: block;
+	width: 100%;
+	height: 100%;
+	outline: none;
+}
+
+.mv-close {
+	position: absolute;
+	top: 14px;
+	right: 14px;
+	display: grid;
+	place-items: center;
+	width: 32px;
+	height: 32px;
+	border: 1px solid rgba(233, 233, 237, 0.14);
+	border-radius: 9px;
+	background: rgba(12, 14, 22, 0.7);
+	color: rgba(233, 233, 237, 0.7);
+	cursor: pointer;
+	backdrop-filter: blur(10px);
+	transition: background 160ms ease, color 160ms ease;
+}
+
+.mv-close:hover {
+	background: rgba(233, 233, 237, 0.14);
+	color: #f5f4ff;
+}
+
+/* The modal parks focus here on open so Escape and Tab start somewhere sensible,
+   which means this ring is shown every single time — the platform's default blue
+   was the brightest thing on screen. Same treatment the console buttons get. */
+.mv-close:focus-visible,
+.mv-rail button:focus-visible,
+.mv-pop-btn:focus-visible {
+	outline: 1px solid rgba(216, 176, 74, 0.8);
+	outline-offset: -2px;
+}
+
+.mv-note {
+	position: absolute;
+	left: 18px;
+	bottom: 16px;
+	margin: 0;
+	font: 400 11.5px/1.5 var(--ui, system-ui), sans-serif;
+	color: rgba(233, 233, 237, 0.3);
+	user-select: none;
+	pointer-events: none;
+}
+
+.mv-plate {
+	position: absolute;
+	left: 50%;
+	bottom: 20px;
+	transform: translateX(-50%);
+	max-width: min(560px, calc(100% - 220px));
+	padding: 12px 20px 13px;
+	border-radius: 13px;
+	text-align: center;
+	background: linear-gradient(180deg, rgba(24, 26, 40, 0.82), rgba(8, 9, 14, 0.88));
+	border: 1px solid rgba(233, 233, 237, 0.12);
+	box-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
+	backdrop-filter: blur(14px);
+	pointer-events: none;
+}
+
+.mv-plate h1 {
+	margin: 0;
+	font: 500 16px/1.2 var(--ui, system-ui), sans-serif;
+	letter-spacing: 0.02em;
+	color: #f5f4ff;
+}
+
+.mv-plate-where {
+	margin: 6px 0 0;
+	font: 400 10.5px/1.2 ui-monospace, Menlo, monospace;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: rgba(233, 233, 237, 0.45);
+}
+
+.mv-plate-note {
+	margin: 8px 0 0;
+	font: 400 12px/1.55 var(--ui, system-ui), sans-serif;
+	color: rgba(233, 233, 237, 0.62);
+	text-wrap: pretty;
+}
+
+/* The rail's column while the chunk is still arriving, so the stage does not
+   grow sideways under the spinner the moment it lands. */
+.mv-rail-ghost {
+	background: rgba(10, 12, 20, 0.72);
+}
+
+/* Over the canvas, where the building is about to be. */
+.mv-building {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 14px;
+	background: #05070d;
+	color: rgba(233, 233, 237, 0.5);
+	font: 500 10.5px/1 ui-monospace, Menlo, monospace;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	text-align: center;
+	padding: 0 24px;
+	/* A build that finishes in one frame should not flash a spinner at all, so
+	   the whole thing fades in only if it is still there after a moment. */
+	animation: mv-fade 220ms ease 140ms both;
+}
+
+.mv-spinner {
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	border: 2px solid rgba(216, 176, 74, 0.22);
+	border-top-color: #d8b04a;
+	animation: mv-spin 760ms linear infinite;
+}
+
+@keyframes mv-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mv-spinner {
+		animation-duration: 2.4s;
+	}
+}
+
+@keyframes mv-fade {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes mv-rise {
+	from {
+		opacity: 0;
+		transform: translateY(14px) scale(0.99);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+/* The rail is unreadable on a phone beside a stage; stack them instead. */
+@media (max-width: 720px) {
+	.mv {
+		flex-direction: column;
+	}
+
+	.mv-rail {
+		width: auto;
+		max-height: 34%;
+		border-right: 0;
+		border-bottom: 1px solid rgba(233, 233, 237, 0.09);
+	}
+
+	.mv-plate {
+		max-width: calc(100% - 32px);
+	}
 }
 
 /* Lazy-route states: a chunk still arriving, or one that failed to. */
 .pg-route-loading,
 .pg-route-error {
-  display: grid;
-  place-content: center;
-  gap: 12px;
-  min-height: 100vh;
-  color: rgba(233, 233, 237, 0.72);
-  font: 500 12px ui-monospace, Menlo, monospace;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
+	display: grid;
+	place-content: center;
+	gap: 12px;
+	min-height: 100vh;
+	color: rgba(233, 233, 237, 0.72);
+	font: 500 12px ui-monospace, Menlo, monospace;
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
 }
 .pg-route-error button {
-  padding: 8px 16px;
-  border: 1px solid rgba(233, 233, 237, 0.28);
-  border-radius: 4px;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
+	padding: 8px 16px;
+	border: 1px solid rgba(233, 233, 237, 0.28);
+	border-radius: 4px;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+}
+
+/* ---------- panel modes ----------
+
+   The tabs that switch the middle of the panel. The header, the date and the
+   footer sit outside them: the sun and moon overhead, and the world's tally of
+   prayers, are true whichever mode you are reading, so they never move. */
+
+.modes {
+	display: flex;
+	gap: 3px;
+	padding: 3px;
+	border-radius: 10px;
+	background: rgba(8, 9, 14, 0.55);
+	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.1);
+	flex: none;
+}
+
+.mode-btn {
+	flex: 1;
+	padding: 9px 3px;
+	border: 0;
+	border-radius: 8px;
+	background: transparent;
+	color: rgba(233, 233, 237, 0.55);
+	font: 500 9.5px/1 Inter, sans-serif;
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background 180ms ease, color 180ms ease;
+}
+
+.mode-btn:hover {
+	background: rgba(150, 138, 224, 0.22);
+	color: #efeeff;
+}
+
+/* A tab that needs a city it does not have. Dimmed rather than hidden, so the
+   panel keeps the same four and you can see what selecting one would give you. */
+.mode-btn:disabled {
+	opacity: 0.32;
+	cursor: default;
+}
+
+.mode-btn-on {
+	background: rgba(150, 138, 224, 0.26);
+	color: #fff;
+}
+
+/* ---------- pin & share ---------- */
+
+.pin-btn {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 9px;
+	border: 0;
+	border-radius: 999px;
+	background: rgba(233, 233, 237, 0.07);
+	color: rgba(233, 233, 237, 0.62);
+	font: 500 9px/1 Inter, sans-serif;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background 180ms ease, color 180ms ease;
+}
+
+.pin-btn:hover:not([aria-disabled='true']) {
+	background: rgba(150, 138, 224, 0.28);
+	color: #efeeff;
+}
+
+/* Refused, not absent. `aria-disabled` rather than the real attribute, because a
+   disabled button receives no pointer events and so could never show the tooltip
+   that explains the refusal. */
+.pin-btn[aria-disabled='true'] {
+	opacity: 0.38;
+	cursor: default;
+}
+
+.pin-btn-on {
+	background: rgba(150, 138, 224, 0.26);
+	color: var(--accent-soft);
+}
+
+.pin-glyph {
+	display: flex;
+	align-items: center;
+}
+
+/* react-toastify renders the stack; these keep it looking like the rest of the
+   instrument rather than a library default. The container is only a positioner,
+   so it must not eat pointer events across the top of the map. */
+/* Bottom right, lifted clear of the time bar — that bar is 142px tall and sits
+   22px off the bottom, and a message landing on the scrubber would be a message
+   you have to fight to drag past. */
+/* Two classes on purpose: the library's own `--bottom-right` rule is a single
+   class, so an equal-specificity override would be decided by whichever
+   stylesheet the bundler happened to inject last — which is not something to
+   leave to chance. */
+.Toastify__toast-container.pg-toasts {
+	width: auto;
+	right: 26px;
+	bottom: 180px;
+	padding: 0;
+	pointer-events: none;
+}
+
+/* The four kinds, each only a pair of colours: an accent for the rail, the
+   glyph and the countdown hairline, and the edge that rings the whole card. */
+.pg-toast-ok {
+	--toast-accent: #7ee0b8;
+	--toast-edge: rgba(126, 224, 184, 0.34);
+}
+
+.pg-toast-link {
+	--toast-accent: #b5abfc;
+	--toast-edge: rgba(181, 171, 252, 0.34);
+}
+
+.pg-toast-off {
+	--toast-accent: #8b93a8;
+	--toast-edge: rgba(233, 233, 237, 0.16);
+}
+
+.pg-toast-warn {
+	--toast-accent: #f4c56a;
+	--toast-edge: rgba(244, 197, 106, 0.34);
+}
+
+.Toastify__toast.pg-toast {
+	position: relative;
+	display: flex;
+	align-items: stretch;
+	min-height: 0;
+	width: min(420px, calc(100vw - 52px));
+	margin: 0 0 8px auto;
+	padding: 0;
+	border-radius: 13px;
+	overflow: hidden;
+	background: linear-gradient(180deg, rgba(22, 26, 38, 0.96), rgba(10, 12, 18, 0.97));
+	/* The ring is an inset shadow rather than a border: a border would sit
+	   outside the radius and clip the accent rail's top and bottom corners. */
+	box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06),
+		inset 0 0 0 1px var(--toast-edge);
+	backdrop-filter: blur(18px) saturate(1.3);
+	color: var(--ink-bright);
+	pointer-events: auto;
+	animation: pg-toast-in 260ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+/* The library's own icon column, which the card replaces with its own glyph. */
+.pg-toast .Toastify__toast-icon {
+	display: none;
+}
+
+/* No exit animation, by the spec — it cuts.
+   This has to be an animation rather than none at all: react-toastify unmounts
+   the node when one *ends*, and the entrance rule above already outranks the
+   library's own exit class, so without something here the toast played its
+   entrance, sat out its 5 seconds, and then simply stayed on screen for good.
+   `-exit`, not `--exit`: the class is `Toastify__bounce-exit--bottom-right`,
+   with a single hyphen before `exit` — the doubled one matched nothing, which
+   is exactly how the toast came to be immortal in the first place. */
+.pg-toast[class*='-exit'] {
+	animation: pg-toast-out 120ms ease-in both;
+}
+
+@keyframes pg-toast-out {
+	to {
+		opacity: 0;
+	}
+}
+
+.pg-toast .Toastify__toast-body {
+	display: flex;
+	align-items: stretch;
+	flex: 1;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+}
+
+.pg-toast-rail {
+	flex: none;
+	width: 3px;
+	background: var(--toast-accent);
+}
+
+.pg-toast-glyph {
+	display: flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	font: 400 15px/1 Inter, sans-serif;
+	color: var(--toast-accent);
+}
+
+.pg-toast-text {
+	display: flex;
+	flex: 1;
+	min-width: 0;
+	flex-direction: column;
+	gap: 5px;
+	padding: 13px 4px 14px;
+}
+
+.pg-toast-title {
+	font: 500 12.5px/1.35 Inter, sans-serif;
+	letter-spacing: 0.01em;
+	color: #f5f4ff;
+	text-wrap: pretty;
+}
+
+/* Mono, and one line only: this carries coordinates, distances and URL
+   fragments, which wrap badly and are read by shape as much as by word. */
+.pg-toast-detail {
+	font: 400 11px/1.5 ui-monospace, Menlo, monospace;
+	color: rgba(233, 233, 237, 0.5);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.pg-toast-x {
+	display: flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: rgba(233, 233, 237, 0.38);
+	font: 400 14px/1 Inter, sans-serif;
+	cursor: pointer;
+	transition: color 140ms ease;
+}
+
+.pg-toast-x:hover {
+	color: var(--ink-bright);
+}
+
+/* The lifetime, drawn. react-toastify's own progress bar is off; this one is
+   part of the card, sharing the kind's accent instead of introducing a colour. */
+.pg-toast-bar {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	height: 2px;
+	background: var(--toast-accent);
+	opacity: 0.55;
+	/* Same number as TOAST_MS in `Toast.tsx` — the two have to be changed
+	   together, since a CSS animation cannot read the timer it is drawing. */
+	animation: pg-toast-bar 5000ms linear both;
+}
+
+@keyframes pg-toast-in {
+	from {
+		opacity: 0;
+		transform: translateY(10px) scale(0.985);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes pg-toast-bar {
+	from {
+		width: 100%;
+	}
+	to {
+		width: 0%;
+	}
+}
+
+/* ---------- chain: one prayer, followed round the earth ---------- */
+
+.chain,
+.recs,
+.ram {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.chain {
+	gap: 13px;
+}
+
+.chain-lede {
+	margin: 0;
+	font: 400 10px/1.55 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.45);
+	text-wrap: pretty;
+}
+
+.chain-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.chain-chip {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 7px 10px;
+	border: 0;
+	border-radius: 999px;
+	background: rgba(233, 233, 237, 0.05);
+	color: rgba(233, 233, 237, 0.6);
+	font: 500 10px/1 Inter, sans-serif;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background 180ms ease, color 180ms ease;
+}
+
+.chain-chip:hover {
+	background: rgba(150, 138, 224, 0.24);
+	color: #efeeff;
+}
+
+.chain-chip-on {
+	background: rgba(150, 138, 224, 0.26);
+	color: #fff;
+	box-shadow: inset 0 0 0 1px rgba(181, 171, 252, 0.5);
+}
+
+.chain-chip-dot {
+	width: 6px;
+	height: 6px;
+	flex: none;
+	border-radius: 50%;
+}
+
+.chain-head {
+	display: flex;
+	align-items: flex-end;
+	gap: 16px;
+	padding: 16px 18px;
+	border-radius: 13px;
+	background: linear-gradient(105deg, rgba(150, 138, 224, 0.22), rgba(150, 138, 224, 0.05));
+	box-shadow: inset 0 0 0 1px rgba(181, 171, 252, 0.32);
+}
+
+.chain-head-l {
+	flex: 1;
+}
+
+.chain-label {
+	font: 400 9.5px/1 var(--mono);
+	letter-spacing: 0.13em;
+	color: rgba(233, 233, 237, 0.42);
+	padding-bottom: 10px;
+}
+
+.chain-name-row {
+	display: flex;
+	align-items: baseline;
+	gap: 11px;
+}
+
+.chain-name {
+	font: 500 33px/1 Inter, sans-serif;
+	letter-spacing: -0.03em;
+	color: var(--ink-bright);
+}
+
+.chain-ar {
+	font: 400 20px/1 Amiri, serif;
+	color: #c9c1ff;
+}
+
+.chain-head-r {
+	text-align: right;
+}
+
+.chain-count {
+	font: 400 34px/1 var(--mono);
+	color: var(--ink-bright);
+}
+
+.chain-of {
+	padding-top: 6px;
+	font: 400 10px/1 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.5);
+}
+
+.chain-edges {
+	display: flex;
+	flex-direction: column;
+	gap: 7px;
+}
+
+.chain-edge {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 14px;
+	border: 0;
+	border-radius: 11px;
+	background: rgba(233, 233, 237, 0.045);
+	cursor: pointer;
+	text-align: left;
+	transition: background 180ms ease;
+}
+
+.chain-edge:hover {
+	background: rgba(150, 138, 224, 0.16);
+}
+
+.chain-edge-glyph {
+	width: 20px;
+	flex: none;
+	display: flex;
+	align-items: center;
+}
+
+.chain-edge-mid {
+	flex: 1;
+	min-width: 0;
+}
+
+.chain-edge-kind {
+	display: block;
+	font: 400 9.5px/1 var(--mono);
+	letter-spacing: 0.12em;
+	color: rgba(233, 233, 237, 0.4);
+	padding-bottom: 7px;
+}
+
+.chain-edge-city {
+	display: block;
+	font: 500 15px/1 Inter, sans-serif;
+	color: var(--ink-bright);
+}
+
+.chain-edge-when {
+	font: 400 12px/1 var(--mono);
+}
+
+.chain-foot {
+	margin-top: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 9px;
+}
+
+/* Three columns, with the outer two given equal width, so the controls sit on
+   the row's true centre. Flexed with auto margins they were centred *between*
+   the two labels instead, which meant every time the percentage went from 5% to
+   34% to 100% the buttons slid sideways to match. The number is also tabular,
+   so its own digits stop shuffling. */
+.chain-foot-head {
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+	gap: 8px;
+	font: 400 9.5px/1 var(--mono);
+	letter-spacing: 0.12em;
+	color: rgba(233, 233, 237, 0.36);
+}
+
+.chain-foot-head > :last-child {
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+}
+
+.chain-foot-controls {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.chain-bar {
+	position: relative;
+	height: 4px;
+	border-radius: 2px;
+	background: rgba(233, 233, 237, 0.1);
+	overflow: hidden;
+}
+
+.chain-bar-fill {
+	position: absolute;
+	inset: 0 auto 0 0;
+	background: linear-gradient(90deg, #6f63ad, #b5abfc);
+	transition: width 200ms linear;
+}
+
+.chain-note {
+	margin: 0;
+	font: 400 11px/1.5 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.45);
+	text-wrap: pretty;
+}
+
+/* The empty state, when no city has been chosen.
+   Takes the panel's flexible middle and centres in it, so the panel keeps its
+   shape whether or not a city is selected. */
+.no-city {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+/* The wordmark's square, its 45° twin, and a dashed orbit around them. */
+.no-city-mark {
+	position: relative;
+	width: 74px;
+	height: 74px;
+	opacity: 0.5;
+}
+
+.no-city-sq {
+	position: absolute;
+	inset: 0;
+	border: 1px solid rgba(150, 138, 224, 0.55);
+}
+
+.no-city-sq-rot {
+	border-color: rgba(150, 138, 224, 0.3);
+	transform: rotate(45deg);
+}
+
+.no-city-ring {
+	position: absolute;
+	inset: 26px;
+	border-radius: 50%;
+	border: 1px dashed rgba(233, 233, 237, 0.3);
+}
+
+.no-city-title {
+	padding-top: 26px;
+	font: 500 19px/1 Inter, sans-serif;
+	letter-spacing: -0.01em;
+	color: #f5f4ff;
+}
+
+.no-city-note {
+	margin: 0;
+	padding-top: 12px;
+	max-width: 250px;
+	font: 400 12px/1.65 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.5);
+	text-wrap: pretty;
+}
+
+.no-city-actions {
+	padding-top: 22px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 7px;
+	justify-content: center;
+}
+
+.no-city-btn {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 9px 14px;
+	border: 0;
+	border-radius: 999px;
+	background: rgba(233, 233, 237, 0.05);
+	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.12);
+	color: rgba(233, 233, 237, 0.72);
+	font: 500 10.5px/1 Inter, sans-serif;
+	letter-spacing: 0.09em;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background 180ms ease, color 180ms ease;
+}
+
+.no-city-btn:hover {
+	background: rgba(150, 138, 224, 0.24);
+	color: #efeeff;
+}
+
+.no-city-dot {
+	width: 6px;
+	height: 6px;
+	flex: none;
+	border-radius: 50%;
+	background: #b5abfc;
+}
+
+/* The pinned city is the green one throughout the app, so it is here too. */
+.no-city-btn-home {
+	background: rgba(126, 224, 184, 0.14);
+	box-shadow: inset 0 0 0 1px rgba(126, 224, 184, 0.3);
+	color: #d8f5e8;
+}
+
+.no-city-btn-home .no-city-dot {
+	background: #7ee0b8;
+}
+
+/* "My location", in the same green — it is the same idea as a pinned city, a
+   place that is yours rather than one you happened to pick, and the mark it
+   drops on the globe is this colour too. Its icon carries the green in place of
+   the dot the others use. */
+.no-city-btn-here {
+	background: rgba(126, 224, 184, 0.14);
+	box-shadow: inset 0 0 0 1px rgba(126, 224, 184, 0.3);
+	color: #d8f5e8;
+}
+
+.no-city-btn-here:hover:not(:disabled) {
+	background: rgba(126, 224, 184, 0.26);
+	color: #eafff6;
+}
+
+.no-city-btn-here svg {
+	color: #7ee0b8;
+}
+
+/* Waiting on the device, which can take a second or two outdoors. */
+.no-city-btn-here:disabled {
+	opacity: 0.55;
+	cursor: default;
+}
+
+/* ---------- records ---------- */
+
+.recs {
+	gap: 13px;
+}
+
+.recs-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.recs-title {
+	font: 400 10px/1 var(--mono);
+	letter-spacing: 0.13em;
+	color: rgba(233, 233, 237, 0.42);
+}
+
+.recs-date {
+	font: 400 10px/1 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.32);
+}
+
+.recs-list {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	/* Rows size to their content and stack from the top. Letting them share the
+     panel's height instead — which is what `flex: 1` on each row did — made
+     six cards nearly a hundred pixels tall apiece, so a list of short facts
+     read as six large empty boxes. */
+	justify-content: flex-start;
+	overflow-y: auto;
+}
+
+.recs-empty,
+.ram-empty {
+	font: 400 11.5px/1.5 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.36);
+}
+
+.recs-row {
+	flex: none;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	gap: 6px 14px;
+	padding: 11px 14px;
+	border: 0;
+	border-radius: 11px;
+	background: rgba(233, 233, 237, 0.04);
+	cursor: pointer;
+	text-align: left;
+	width: 100%;
+	transition: background 180ms ease;
+}
+
+.recs-row:hover {
+	background: rgba(150, 138, 224, 0.16);
+}
+
+.recs-label {
+	grid-column: 1;
+	font: 400 9.5px/1 var(--mono);
+	letter-spacing: 0.12em;
+	color: rgba(233, 233, 237, 0.42);
+	text-transform: uppercase;
+}
+
+.recs-value {
+	grid-column: 2;
+	grid-row: 1 / span 2;
+	font: 400 21px/1 var(--mono);
+	/* Colour comes from the record itself — each of the six has its own in the
+     design, which is what lets you tell them apart at a glance. */
+}
+
+.recs-city {
+	grid-column: 1;
+	font: 500 14px/1 Inter, sans-serif;
+	color: var(--ink-bright);
+}
+
+.recs-note,
+.ram-note {
+	margin: 0;
+	font: 400 10.5px/1.5 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.36);
+	text-wrap: pretty;
+}
+
+/* ---------- the ten-minute queue ---------- */
+
+/* Two readings of one thing: a rule ten minutes wide, so where the ticks fall is
+   the shape of the queue, and the codes beneath for exactly who and when. */
+.recs-item-queue {
+	padding-bottom: 10px;
+	border-bottom: 1px solid rgba(233, 233, 237, 0.06);
+}
+
+.q {
+	padding: 8px 12px 0;
+}
+
+.q-rule {
+	position: relative;
+	height: 9px;
+	border-left: 1px solid rgba(233, 233, 237, 0.22);
+	border-right: 1px solid rgba(233, 233, 237, 0.1);
+}
+
+/* The rule's own baseline, behind the ticks. */
+.q-rule::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 50%;
+	height: 1px;
+	background: linear-gradient(90deg, rgba(233, 233, 237, 0.22), rgba(233, 233, 237, 0.05));
+}
+
+.q-tick {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 1.5px;
+	margin-left: -0.75px;
+	border-radius: 1px;
+	opacity: 0.9;
+}
+
+.q-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	padding-top: 7px;
+}
+
+.q-chip {
+	display: flex;
+	align-items: baseline;
+	gap: 4px;
+	padding: 3px 6px;
+	border: 0;
+	border-radius: 4px;
+	background: rgba(233, 233, 237, 0.05);
+	cursor: pointer;
+	transition: background 160ms ease;
+}
+
+.q-chip:hover {
+	background: rgba(150, 138, 224, 0.24);
+}
+
+.q-iso {
+	font: 500 10px/1 var(--mono);
+	letter-spacing: 0.06em;
+	color: rgba(233, 233, 237, 0.62);
+}
+
+/* The minute, unlabelled — the rule above has already said what the unit is. */
+.q-min {
+	font: 500 9px/1 var(--mono);
+	font-variant-numeric: tabular-nums;
+	opacity: 0.85;
+}
+
+/* ---------- ramadan ---------- */
+
+.ram {
+	gap: 12px;
+}
+
+.ram-head {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.ram-label {
+	font: 400 9.5px/1 var(--mono);
+	letter-spacing: 0.13em;
+	color: rgba(233, 233, 237, 0.42);
+	padding-bottom: 9px;
+}
+
+.ram-title {
+	font: 500 24px/1 Inter, sans-serif;
+	letter-spacing: -0.02em;
+	color: var(--ink-bright);
+}
+
+.ram-sub {
+	font: 400 12px/1 Inter, sans-serif;
+	color: #c9c1ff;
+	text-align: right;
+}
+
+.ram-today {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 13px 15px;
+	border-radius: 12px;
+	background: rgba(150, 138, 224, 0.14);
+	box-shadow: inset 0 0 0 1px rgba(181, 171, 252, 0.3);
+}
+
+.ram-today-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.ram-today-label {
+	font: 400 9.5px/1 var(--mono);
+	letter-spacing: 0.12em;
+	color: rgba(233, 233, 237, 0.45);
+}
+
+.ram-today-val {
+	font: 500 12px/1 var(--mono);
+	color: var(--ink-bright);
+}
+
+.ram-today-bar {
+	position: relative;
+	height: 5px;
+	border-radius: 3px;
+	background: rgba(233, 233, 237, 0.12);
+	overflow: hidden;
+}
+
+.ram-today-fill {
+	position: absolute;
+	inset: 0 auto 0 0;
+	background: linear-gradient(90deg, #f4c56a, #f0925e);
+	transition: width 300ms ease;
+}
+
+.ram-today-ends {
+	display: flex;
+	justify-content: space-between;
+	font: 400 11px/1 var(--mono);
+	color: rgba(233, 233, 237, 0.55);
+}
+
+.ram-axis {
+	display: flex;
+	justify-content: space-between;
+	font: 400 9px/1 var(--mono);
+	letter-spacing: 0.1em;
+	color: rgba(233, 233, 237, 0.28);
+}
+
+.ram-days {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+
+.ram-day {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	border-radius: 3px;
+	transition: background 160ms ease;
+}
+
+.ram-day:hover {
+	background: rgba(233, 233, 237, 0.07);
+}
+
+.ram-day-on {
+	background: rgba(150, 138, 224, 0.16);
+}
+
+.ram-day-n {
+	width: 16px;
+	flex: none;
+	text-align: right;
+	font: 400 8.5px/1 var(--mono);
+	color: rgba(233, 233, 237, 0.4);
+}
+
+.ram-day-on .ram-day-n {
+	color: var(--accent-soft);
+}
+
+.ram-day-track {
+	position: relative;
+	flex: 1;
+	height: 100%;
+}
+
+.ram-day-bar {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	height: 5px;
+	border-radius: 3px;
+	background: linear-gradient(90deg, rgba(244, 197, 106, 0.75), rgba(240, 146, 94, 0.75));
+}
+
+.ram-day-on .ram-day-bar {
+	background: linear-gradient(90deg, #f4c56a, #f0925e);
+}
+
+/* ---------- home card ---------- */
+
+/* Up to five of these, so they stack. */
+.home-list {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.home-card {
+	display: flex;
+	align-items: center;
+	border-radius: 10px;
+	background: rgba(233, 233, 237, 0.04);
+	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.1);
+	transition: background 180ms ease;
+}
+
+/* The row is the destination; the cross beside it is the only other thing it
+   does, so it stays quiet until the row is under the pointer. */
+.home-go {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 9px 12px;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+	text-align: left;
+}
+
+.home-drop {
+	display: flex;
+	align-items: center;
+	padding: 9px 11px 9px 6px;
+	border: 0;
+	background: transparent;
+	color: rgba(233, 233, 237, 0.28);
+	cursor: pointer;
+	opacity: 0;
+	transition: opacity 160ms ease, color 160ms ease;
+}
+
+.home-card:hover .home-drop,
+.home-drop:focus-visible {
+	opacity: 1;
+}
+
+.home-drop:hover {
+	color: #f0925e;
+}
+
+.home-card:hover {
+	background: rgba(150, 138, 224, 0.14);
+}
+
+/* Already looking at it — still shown, so the line does not appear and vanish
+   as you move around, but no longer offering to take you anywhere. */
+.home-card-here {
+	cursor: default;
+	background: rgba(150, 138, 224, 0.1);
+}
+
+.home-dot {
+	width: 7px;
+	height: 7px;
+	flex: none;
+	border-radius: 50%;
+	background: var(--accent);
+	box-shadow: 0 0 10px 1px rgba(181, 171, 252, 0.6);
+}
+
+.home-label {
+	font: 500 10px/1 Inter, sans-serif;
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+	color: rgba(233, 233, 237, 0.5);
+}
+
+.home-city {
+	font: 500 12px/1 Inter, sans-serif;
+	color: var(--ink-bright);
+}
+
+.home-next {
+	margin-left: auto;
+	font: 400 11px/1 var(--mono);
+	color: #c9c1ff;
+}
+
+/* ---------- the chain's sweep ---------- */
+
+.chain-foot-head .sweep-btn {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 5px 11px;
+	border: 0;
+	border-radius: 999px;
+	background: rgba(233, 233, 237, 0.06);
+	color: rgba(233, 233, 237, 0.6);
+	font: 500 9px/1 Inter, sans-serif;
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background 180ms ease, color 180ms ease;
+}
+
+.chain-foot-head .sweep-btn:hover {
+	background: rgba(150, 138, 224, 0.26);
+	color: #efeeff;
+}
+
+.sweep-btn-on {
+	background: rgba(150, 138, 224, 0.26) !important;
+	color: #fff !important;
+}
+
+.sweep-dot {
+	width: 6px;
+	height: 6px;
+	flex: none;
+	border-radius: 50%;
+	background: rgba(233, 233, 237, 0.35);
+}
+
+.sweep-btn-on .sweep-dot {
+	background: var(--accent);
+	box-shadow: 0 0 8px 2px rgba(181, 171, 252, 0.7);
+	animation: pg-breathe 1.6s ease-in-out infinite;
+}
+
+/* ---------- the time bar ----------
+
+   Replaces a range input. A slider from now to +10 days told you how far you
+   had pushed an abstract offset; this shows where you are in the selected
+   city's day, with a pip at each of its prayers. The pips and the head are the
+   same `arcMarks` and `nowF` the day dome draws, so the two always agree. */
+
+.tbar {
+	position: absolute;
+	left: 26px;
+	right: 26px;
+	bottom: 22px;
+	z-index: 4;
+	padding: 16px 22px 12px;
+	border-radius: 12px;
+	background: rgba(10, 12, 18, 0.82);
+	border: 1px solid rgba(233, 233, 237, 0.1);
+	backdrop-filter: blur(14px);
+	cursor: ew-resize;
+	/* Without this a drag scrolls the page on touch instead of moving the head. */
+	touch-action: none;
+	user-select: none;
+}
+
+.tbar-head {
+	display: flex;
+	align-items: flex-end;
+	gap: 22px;
+}
+
+.tbar-clock {
+	font: 400 54px/1 var(--mono);
+	letter-spacing: -0.04em;
+	color: var(--ink-bright);
+	font-variant-numeric: tabular-nums;
+}
+
+.tbar-mid {
+	padding-bottom: 7px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.tbar-prayer {
+	display: flex;
+	align-items: baseline;
+	gap: 10px;
+}
+
+.tbar-prayer-name {
+	font: 500 18px/1 Inter, sans-serif;
+	color: var(--ink-bright);
+}
+
+.tbar-prayer-ar {
+	font: 400 15px/1 Amiri, serif;
+	color: var(--accent);
+}
+
+.tbar-label {
+	font: 400 11px/1 var(--mono);
+	letter-spacing: 0.05em;
+	color: rgba(233, 233, 237, 0.42);
+}
+
+.tbar-actions {
+	margin-left: auto;
+	padding-bottom: 7px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.tbar-hint {
+	/* The speed control joined this row and squeezed it enough to break the two
+	   words apart, which turned a quiet hint into a two-line block. */
+	white-space: nowrap;
+	font: 400 9.5px/1 var(--mono);
+	letter-spacing: 0.14em;
+	color: rgba(233, 233, 237, 0.3);
+}
+
+.tbar-now {
+	padding: 8px 14px;
+	border: 0;
+	border-radius: 999px;
+	background: rgba(233, 233, 237, 0.05);
+	color: rgba(233, 233, 237, 0.4);
+	font: 500 9.5px/1 Inter, sans-serif;
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background 180ms ease, color 180ms ease;
+}
+
+.tbar-now-armed {
+	background: rgba(150, 138, 224, 0.2);
+	color: #efeeff;
+}
+
+.tbar-now:hover:not(:disabled) {
+	background: rgba(150, 138, 224, 0.26);
+	color: #efeeff;
+}
+
+.tbar-now:disabled {
+	cursor: default;
+}
+
+.tbar-track {
+	position: relative;
+	height: 42px;
+	margin-top: 16px;
+}
+
+.tbar-rule {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 15px;
+	height: 1px;
+	background: linear-gradient(
+		90deg,
+		rgba(233, 233, 237, 0.05),
+		rgba(233, 233, 237, 0.3) 50%,
+		rgba(233, 233, 237, 0.05)
+	);
+}
+
+.tbar-progress {
+	position: absolute;
+	top: 15px;
+	left: 0;
+	height: 1px;
+	background: linear-gradient(90deg, #6f63ad, #f5f4ff);
+}
+
+.tbar-dot {
+	position: absolute;
+	top: 9px;
+	transform: translateX(-50%);
+	width: 13px;
+	height: 13px;
+	border-radius: 50%;
+	background: var(--ink-bright);
+	box-shadow: 0 0 0 5px rgba(181, 171, 252, 0.18), 0 0 16px 3px rgba(181, 171, 252, 0.5);
+}
+
+/* The sweep's pace, as a segmented control: every option visible and the chosen
+   one lit, rather than a single chip cycling through four values where you had
+   to click blind to discover the next. It reads as multiples of the standard
+   pace because that is the question being asked — not "how many seconds is a
+   circuit" but "how much faster than normal". */
+/* Sits in the time bar's action row now, beside "Now", so it is sized to that
+   row rather than to a panel's full width: laid out by content instead of in
+   equal columns, and no wider than its four options need. */
+.speed-seg {
+	display: flex;
+	align-items: center;
+	padding: 3px;
+	border-radius: 999px;
+	border: 1px solid var(--line);
+}
+
+.speed-seg-label {
+	padding: 0 4px 0 10px;
+	font: 400 9px/1 var(--mono);
+	letter-spacing: 0.16em;
+	color: rgba(233, 233, 237, 0.36);
+}
+
+.speed-seg-btn {
+	min-width: 30px;
+	padding: 5px 6px;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: rgba(233, 233, 237, 0.42);
+	font: 500 11px/1 Inter, sans-serif;
+	cursor: pointer;
+	transition: background 180ms ease, color 180ms ease;
+}
+
+.speed-seg-btn:hover {
+	color: rgba(233, 233, 237, 0.8);
+}
+
+.speed-seg-btn-on,
+.speed-seg-btn-on:hover {
+	background: #453e75;
+	color: #f2f0ff;
+}
+
+/* Share, sitting in the map's control stack with the zoom buttons. Sized and
+   coloured to match them, since MapLibre only supplies the group's chrome. */
+/* Holds an app icon rather than a background image or a character, so the map's
+   own buttons and ours are drawn from one set. MapLibre paints its + and − as a
+   background on this span; ours has to go. */
+.pg-ctrl-icon {
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	background-image: none !important;
+}
+
+.pg-share-ctrl {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	cursor: pointer;
+}
+
+/* The current zoom, under the buttons that set it. A reading, not a control, so
+   it takes the bar's type but none of its interactivity — and it is named rather
+   than a bare number, because "1.5" beside a globe could be almost any quantity. */
+.pg-zoom-readout {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 10px;
+	font: 500 10.5px/1 var(--mono);
+	letter-spacing: 0.06em;
+	color: rgba(233, 233, 237, 0.45);
+	white-space: nowrap;
+	cursor: default;
+	user-select: none;
+}
+
+/* ---------- the map's controls, as the console strip stood on its end ---------- */
+
+/*
+ * Zoom, the reading, and share are three separate MapLibre controls, each of
+ * which ships its own rounded box and its own margin. Stacked in a corner that
+ * read as three loose chips beside a toolbar that is one bar — so the stack is
+ * made into that bar instead: the chrome moves to the container, the controls
+ * give up their boxes, and hairlines divide them exactly as they divide the
+ * toolbar.
+ *
+ * The container keeps `overflow: visible`, unlike the toolbar, because every
+ * button in here carries a tooltip that has to escape the box it sits in. The
+ * corners are rounded on the first and last controls instead.
+ */
+.maplibregl-ctrl-top-right {
+	top: 24px;
+	right: 26px;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	border-radius: 6px;
+	background: rgba(10, 12, 18, 0.9);
+	border: 1px solid rgba(233, 233, 237, 0.14);
+	box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(10px);
+}
+
+.maplibregl-ctrl-top-right .maplibregl-ctrl {
+	position: relative;
+	float: none;
+	margin: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent !important;
+	box-shadow: none !important;
+	overflow: visible;
+}
+
+/* One hairline between controls, and one between the two zoom buttons — the
+   same rule the toolbar uses between its segments. */
+.maplibregl-ctrl-top-right .maplibregl-ctrl + .maplibregl-ctrl,
+.maplibregl-ctrl-top-right .maplibregl-ctrl-group button + button {
+	border-top: 1px solid rgba(233, 233, 237, 0.14) !important;
+}
+
+/* Whichever control the pointer is on goes to the front, or the one below it
+   paints over its tooltip. */
+.maplibregl-ctrl-top-right .maplibregl-ctrl:hover,
+.maplibregl-ctrl-top-right .maplibregl-ctrl:focus-within {
+	z-index: 3;
+}
+
+.maplibregl-ctrl-top-right .maplibregl-ctrl button,
+.maplibregl-ctrl-top-right .pg-zoom-readout {
+	width: 100%;
+	height: 32px;
+	background: transparent;
+	color: rgba(233, 233, 237, 0.6);
+	transition: background 180ms ease, color 180ms ease;
+}
+
+.maplibregl-ctrl-top-right .maplibregl-ctrl button:hover {
+	background: rgba(150, 138, 224, 0.16);
+	color: #efeeff;
+}
+
+/* Rounded where the bar is, so a hover fill cannot square off its corners. */
+.maplibregl-ctrl-top-right .maplibregl-ctrl:first-child button:first-child {
+	border-radius: 5px 5px 0 0;
+}
+
+.maplibregl-ctrl-top-right .maplibregl-ctrl:last-child button:last-child {
+	border-radius: 0 0 5px 5px;
 }

@@ -3504,6 +3504,11 @@
     "districtName": "SEMERKAND",
     "provinceName": "OZBEKISTAN"
   },
+  "Samarra'": {
+    "ilceID": "14169",
+    "districtName": "SAMARRA",
+    "provinceName": "IRAK"
+  },
   "San Cristobal": {
     "ilceID": "12683",
     "districtName": "SAN CRISTOBAL",
@@ -4343,6 +4348,11 @@
     "ilceID": "15165",
     "districtName": "XAM NUA",
     "provinceName": "LAOS"
+  },
+  "Xi'an": {
+    "ilceID": "12368",
+    "districtName": "XI'AN (SHAANXI)",
+    "provinceName": "CIN"
   },
   "Yamoussoukro": {
     "ilceID": "12823",

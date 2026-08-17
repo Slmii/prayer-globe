@@ -6,17 +6,18 @@
 // that rotates the model onto the sphere, then multiplies MapLibre's own
 // projection matrix by it.
 
-import * as THREE from 'three'
-import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
-import type { CustomLayerInterface, Map as MLMap } from 'maplibre-gl'
-import { buildMosque, MOSQUE_FOOTPRINT } from '../lib/mosque-model'
-import { buildKaaba, KAABA_FOOTPRINT } from '../lib/kaaba-model'
-import { buildNabawi, NABAWI_FOOTPRINT } from '../lib/nabawi-model'
-import { MOSQUES } from '../lib/mosques'
-import type { MosqueModel } from '../lib/mosques'
+import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import type { CustomLayerInterface, Map as MLMap } from 'maplibre-gl';
+import { buildMosque, MOSQUE_FOOTPRINT } from '../lib/mosque-model';
+import { buildKaaba, KAABA_FOOTPRINT } from '../lib/kaaba-model';
+import { buildNabawi, NABAWI_FOOTPRINT } from '../lib/nabawi-model';
+import { MOSQUES } from '../lib/mosques';
+import { DESIGN_MOSQUES, buildDesignMosque, measureFootprint } from '../lib/mosques-model';
+import type { MosqueModel } from '../lib/mosques';
 
 /** MapLibre's internal earth radius, in metres. */
-const EARTH_RADIUS = 6371008.8
+const EARTH_RADIUS = 6371008.8;
 
 /**
  * How many screen pixels the mosque's footprint should span, by zoom.
@@ -27,39 +28,39 @@ const EARTH_RADIUS = 6371008.8
  * whole earth is in view and grows into a building as you come down.
  */
 const SIZE_BY_ZOOM: [number, number][] = [
-  [0.6, 11],
-  [2, 15],
-  [3.5, 24],
-  [5, 44],
-  [8, 90],
-]
+	[0.6, 11],
+	[2, 15],
+	[3.5, 24],
+	[5, 44],
+	[8, 90]
+];
 
 function targetPx(zoom: number): number {
-  const stops = SIZE_BY_ZOOM
-  if (zoom <= stops[0][0]) return stops[0][1]
-  for (let i = 1; i < stops.length; i++) {
-    const [z1, p1] = stops[i]
-    if (zoom <= z1) {
-      const [z0, p0] = stops[i - 1]
-      return p0 + ((p1 - p0) * (zoom - z0)) / (z1 - z0)
-    }
-  }
-  return stops[stops.length - 1][1]
+	const stops = SIZE_BY_ZOOM;
+	if (zoom <= stops[0][0]) return stops[0][1];
+	for (let i = 1; i < stops.length; i++) {
+		const [z1, p1] = stops[i];
+		if (zoom <= z1) {
+			const [z0, p0] = stops[i - 1];
+			return p0 + ((p1 - p0) * (zoom - z0)) / (z1 - z0);
+		}
+	}
+	return stops[stops.length - 1][1];
 }
 
 /** Metres per degree of latitude — near enough anywhere for a marker scale. */
-const METRES_PER_DEGREE = 111320
+const METRES_PER_DEGREE = 111320;
 
 /** Clip-space depth and w of a globe-space point under a projection matrix. */
 function clipDepth(m: THREE.Matrix4, p: THREE.Vector3): { z: number; w: number } {
-  const e = m.elements
-  return {
-    z: e[2] * p.x + e[6] * p.y + e[10] * p.z + e[14],
-    w: e[3] * p.x + e[7] * p.y + e[11] * p.z + e[15],
-  }
+	const e = m.elements;
+	return {
+		z: e[2] * p.x + e[6] * p.y + e[10] * p.z + e[14],
+		w: e[3] * p.x + e[7] * p.y + e[11] * p.z + e[15]
+	};
 }
 
-const ORIGIN = new THREE.Vector3(0, 0, 0)
+const ORIGIN = new THREE.Vector3(0, 0, 0);
 
 /**
  * Rebuild the projection so depth stops at the globe instead of at infinity.
@@ -83,16 +84,16 @@ const ORIGIN = new THREE.Vector3(0, 0, 0)
  * before the models are drawn.
  */
 function remapDepth(main: THREE.Matrix4): THREE.Matrix4 {
-  const far = clipDepth(main, ORIGIN)
-  const dFar = far.z / far.w
-  // Hold d = -1 fixed and send dFar to +1: k·(-1) + shift = -1 gives shift = k-1,
-  // and k·dFar + shift = 1 then gives k = 2/(dFar + 1).
-  if (!isFinite(dFar) || dFar <= -1 + 1e-9) return main
-  const k = 2 / (dFar + 1)
-  const shift = k - 1
-  // Row-major here; only the z row changes, so x/y projection is untouched.
-  const depth = new THREE.Matrix4().set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, k, shift, 0, 0, 0, 1)
-  return depth.multiply(main)
+	const far = clipDepth(main, ORIGIN);
+	const dFar = far.z / far.w;
+	// Hold d = -1 fixed and send dFar to +1: k·(-1) + shift = -1 gives shift = k-1,
+	// and k·dFar + shift = 1 then gives k = 2/(dFar + 1).
+	if (!isFinite(dFar) || dFar <= -1 + 1e-9) return main;
+	const k = 2 / (dFar + 1);
+	const shift = k - 1;
+	// Row-major here; only the z row changes, so x/y projection is untouched.
+	const depth = new THREE.Matrix4().set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, k, shift, 0, 0, 0, 1);
+	return depth.multiply(main);
 }
 
 /**
@@ -106,13 +107,13 @@ function remapDepth(main: THREE.Matrix4): THREE.Matrix4 {
  * would otherwise send the scale to infinity.
  */
 function metresPerPixel(map: MLMap): number {
-  const c = map.getCenter()
-  const step = 0.05
-  const a = map.project([c.lng, c.lat])
-  const b = map.project([c.lng, c.lat + step])
-  const px = Math.hypot(b.x - a.x, b.y - a.y)
-  if (!isFinite(px) || px < 1e-3) return 0
-  return (step * METRES_PER_DEGREE) / px
+	const c = map.getCenter();
+	const step = 0.05;
+	const a = map.project([c.lng, c.lat]);
+	const b = map.project([c.lng, c.lat + step]);
+	const px = Math.hypot(b.x - a.x, b.y - a.y);
+	if (!isFinite(px) || px < 1e-3) return 0;
+	return (step * METRES_PER_DEGREE) / px;
 }
 
 /**
@@ -124,11 +125,25 @@ function metresPerPixel(map: MLMap): number {
  * half a continent. Normalising by extent instead gives each site the same
  * screen footprint, whatever it actually is on the ground.
  */
-const MODELS: Record<MosqueModel, { build: () => THREE.Group; footprint: number }> = {
-  mosque: { build: buildMosque, footprint: MOSQUE_FOOTPRINT },
-  kaaba: { build: buildKaaba, footprint: KAABA_FOOTPRINT },
-  nabawi: { build: buildNabawi, footprint: NABAWI_FOOTPRINT },
-}
+const MODELS: Record<MosqueModel, { build: () => THREE.Group; footprint?: number }> = {
+	mosque: { build: buildMosque, footprint: MOSQUE_FOOTPRINT },
+	kaaba: { build: buildKaaba, footprint: KAABA_FOOTPRINT },
+	nabawi: { build: buildNabawi, footprint: NABAWI_FOOTPRINT },
+	/*
+	 * The design's twenty-six, each with its own architecture — the Blue Mosque's
+	 * cascading domes, Djenné's mud towers, Samarra's spiral, Xi'an's timber
+	 * pagoda. They carry no footprint of their own: it is measured off the built
+	 * geometry below, because a hand-kept constant per building is twenty-six more
+	 * numbers that can quietly stop being true.
+	 */
+	...(Object.fromEntries(DESIGN_MOSQUES.map(m => [m.key, { build: () => buildDesignMosque(m.key) }])) as Record<
+		string,
+		{ build: () => THREE.Group }
+	>)
+};
+
+/** Ground extent per model, measured once from the merged prototype. */
+const footprints = new Map<MosqueModel, number>();
 
 /**
  * Collapse a model to one mesh per material.
@@ -138,178 +153,184 @@ const MODELS: Record<MosqueModel, { build: () => THREE.Group; footprint: number 
  * by material takes it to a handful of draw calls each.
  */
 function buildMerged(build: () => THREE.Group, name: string): THREE.Group {
-  const source = build()
-  source.updateMatrixWorld(true)
+	const source = build();
+	source.updateMatrixWorld(true);
 
-  const byMaterial = new Map<THREE.Material, THREE.BufferGeometry[]>()
-  source.traverse((o) => {
-    const mesh = o as THREE.Mesh
-    if (!mesh.isMesh) return
-    const mat = mesh.material as THREE.Material
-    let g = mesh.geometry.clone()
-    g.applyMatrix4(mesh.matrixWorld)
-    // The model mixes indexed primitives with non-indexed extrusions, and
-    // mergeGeometries rejects a batch unless every member matches. Flattening
-    // to non-indexed makes them uniform.
-    if (g.index) {
-      const flat = g.toNonIndexed()
-      g.dispose()
-      g = flat
-    }
-    // It also needs identical attribute sets across the batch.
-    for (const name of Object.keys(g.attributes)) {
-      if (name !== 'position' && name !== 'normal' && name !== 'uv') g.deleteAttribute(name)
-    }
-    if (!g.getAttribute('uv')) {
-      const count = g.getAttribute('position').count
-      g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(count * 2), 2))
-    }
-    const list = byMaterial.get(mat)
-    if (list) list.push(g)
-    else byMaterial.set(mat, [g])
-  })
+	const byMaterial = new Map<THREE.Material, THREE.BufferGeometry[]>();
+	source.traverse(o => {
+		const mesh = o as THREE.Mesh;
+		if (!mesh.isMesh) return;
+		const mat = mesh.material as THREE.Material;
+		let g = mesh.geometry.clone();
+		g.applyMatrix4(mesh.matrixWorld);
+		// The model mixes indexed primitives with non-indexed extrusions, and
+		// mergeGeometries rejects a batch unless every member matches. Flattening
+		// to non-indexed makes them uniform.
+		if (g.index) {
+			const flat = g.toNonIndexed();
+			g.dispose();
+			g = flat;
+		}
+		// It also needs identical attribute sets across the batch.
+		for (const name of Object.keys(g.attributes)) {
+			if (name !== 'position' && name !== 'normal' && name !== 'uv') g.deleteAttribute(name);
+		}
+		if (!g.getAttribute('uv')) {
+			const count = g.getAttribute('position').count;
+			g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(count * 2), 2));
+		}
+		const list = byMaterial.get(mat);
+		if (list) list.push(g);
+		else byMaterial.set(mat, [g]);
+	});
 
-  const merged = new THREE.Group()
-  merged.name = name
-  for (const [mat, geoms] of byMaterial) {
-    const g = mergeGeometries(geoms, false)
-    if (!g) continue
-    g.computeBoundingSphere()
-    const mesh = new THREE.Mesh(g, mat)
-    mesh.name = mat.name || 'part'
-    merged.add(mesh)
-    for (const old of geoms) old.dispose()
-  }
-  return merged
+	const merged = new THREE.Group();
+	merged.name = name;
+	for (const [mat, geoms] of byMaterial) {
+		const g = mergeGeometries(geoms, false);
+		if (!g) continue;
+		g.computeBoundingSphere();
+		const mesh = new THREE.Mesh(g, mat);
+		mesh.name = mat.name || 'part';
+		merged.add(mesh);
+		for (const old of geoms) old.dispose();
+	}
+	return merged;
 }
 
 export interface MosqueLayerOptions {
-  /** Called every frame with how many mosques were drawn — for diagnostics. */
-  onCount?(n: number): void
+	/** Called every frame with how many mosques were drawn — for diagnostics. */
+	onCount?(n: number): void;
 }
 
 export function createMosqueLayer(opts: MosqueLayerOptions = {}): CustomLayerInterface {
-  let renderer: THREE.WebGLRenderer | null = null
-  let scene: THREE.Scene | null = null
-  let camera: THREE.Camera | null = null
-  let map: MLMap | null = null
-  const instances: THREE.Object3D[] = []
+	let renderer: THREE.WebGLRenderer | null = null;
+	let scene: THREE.Scene | null = null;
+	let camera: THREE.Camera | null = null;
+	let map: MLMap | null = null;
+	const instances: THREE.Object3D[] = [];
 
-  return {
-    id: 'mosques-3d',
-    type: 'custom',
-    // Required so the models depth-test correctly against the globe.
-    renderingMode: '3d',
+	return {
+		id: 'mosques-3d',
+		type: 'custom',
+		// Required so the models depth-test correctly against the globe.
+		renderingMode: '3d',
 
-    onAdd(m: MLMap, gl: WebGLRenderingContext | WebGL2RenderingContext) {
-      map = m
-      camera = new THREE.Camera()
-      scene = new THREE.Scene()
+		onAdd(m: MLMap, gl: WebGLRenderingContext | WebGL2RenderingContext) {
+			map = m;
+			camera = new THREE.Camera();
+			scene = new THREE.Scene();
 
-      // No environment map here, so keep it lit from two sides plus a wash;
-      // otherwise the metallic brass reads as black.
-      scene.add(new THREE.HemisphereLight(0xffffff, 0x4a4636, 1.6))
-      const key = new THREE.DirectionalLight(0xfff6e2, 2.4)
-      key.position.set(4, 7, 5)
-      scene.add(key)
-      const fill = new THREE.DirectionalLight(0xbfd0ff, 0.8)
-      fill.position.set(-5, 3, -4)
-      scene.add(fill)
+			// No environment map here, so keep it lit from two sides plus a wash;
+			// otherwise the metallic brass reads as black.
+			scene.add(new THREE.HemisphereLight(0xffffff, 0x4a4636, 1.6));
+			const key = new THREE.DirectionalLight(0xfff6e2, 2.4);
+			key.position.set(4, 7, 5);
+			scene.add(key);
+			const fill = new THREE.DirectionalLight(0xbfd0ff, 0.8);
+			fill.position.set(-5, 3, -4);
+			scene.add(fill);
 
-      // One merged prototype per building, cloned per site.
-      const prototypes = new Map<MosqueModel, THREE.Group>()
-      for (const kind of Object.keys(MODELS) as MosqueModel[]) {
-        prototypes.set(kind, buildMerged(MODELS[kind].build, `${kind}_merged`))
-      }
-      for (const site of MOSQUES) {
-        // clone() shares geometry and material, so this costs almost nothing.
-        const inst = (prototypes.get(site.model) as THREE.Group).clone()
-        inst.matrixAutoUpdate = false
-        inst.visible = false
-        scene.add(inst)
-        instances.push(inst)
-      }
+			// One merged prototype per building, cloned per site.
+			//
+			// Only the kinds actually standing somewhere. The registry holds every
+			// model the app can draw, and building all of them meant assembling,
+			// merging and uploading buildings nobody had placed — now that every
+			// site names its own model, the generic mosque is exactly that: a
+			// fallback for a site added without one, kept but no longer paid for.
+			const prototypes = new Map<MosqueModel, THREE.Group>();
+			for (const kind of new Set(MOSQUES.map(s => s.model))) {
+				const merged = buildMerged(MODELS[kind].build, `${kind}_merged`);
+				prototypes.set(kind, merged);
+				footprints.set(kind, MODELS[kind].footprint ?? measureFootprint(merged));
+			}
+			for (const site of MOSQUES) {
+				// clone() shares geometry and material, so this costs almost nothing.
+				const inst = (prototypes.get(site.model) as THREE.Group).clone();
+				inst.matrixAutoUpdate = false;
+				inst.visible = false;
+				scene.add(inst);
+				instances.push(inst);
+			}
 
-      renderer = new THREE.WebGLRenderer({
-        canvas: m.getCanvas(),
-        context: gl,
-        antialias: true,
-      })
-      // MapLibre has already drawn the globe; do not wipe it.
-      renderer.autoClear = false
-    },
+			renderer = new THREE.WebGLRenderer({
+				canvas: m.getCanvas(),
+				context: gl,
+				antialias: true
+			});
+			// MapLibre has already drawn the globe; do not wipe it.
+			renderer.autoClear = false;
+		},
 
-    onRemove() {
-      renderer?.dispose()
-      renderer = null
-      scene = null
-      camera = null
-      map = null
-      instances.length = 0
-    },
+		onRemove() {
+			renderer?.dispose();
+			renderer = null;
+			scene = null;
+			camera = null;
+			map = null;
+			instances.length = 0;
+		},
 
-    render(_gl, args) {
-      if (!renderer || !scene || !camera || !map) return
+		render(_gl, args) {
+			if (!renderer || !scene || !camera || !map) return;
 
-      // `mainMatrix` already carries the globe transform for the current frame.
-      const projection = (args as { defaultProjectionData?: { mainMatrix?: number[] } })
-        .defaultProjectionData
-      const main = projection?.mainMatrix
-      if (!main) return
+			// `mainMatrix` already carries the globe transform for the current frame.
+			const projection = (args as { defaultProjectionData?: { mainMatrix?: number[] } }).defaultProjectionData;
+			const main = projection?.mainMatrix;
+			if (!main) return;
 
-      const centre = map.getCenter()
-      const zoom = map.getZoom()
-      const rad = Math.PI / 180
-      let drawn = 0
+			const centre = map.getCenter();
+			const zoom = map.getZoom();
+			const rad = Math.PI / 180;
+			let drawn = 0;
 
-      // One target size for the whole frame, so every site is the same size on
-      // screen wherever it sits on the globe; each model then divides by its own
-      // footprint to reach it.
-      const mpp = metresPerPixel(map)
-      const spanMetres = targetPx(zoom) * mpp
-      if (!isFinite(spanMetres) || spanMetres <= 0) return
+			// One target size for the whole frame, so every site is the same size on
+			// screen wherever it sits on the globe; each model then divides by its own
+			// footprint to reach it.
+			const mpp = metresPerPixel(map);
+			const spanMetres = targetPx(zoom) * mpp;
+			if (!isFinite(spanMetres) || spanMetres <= 0) return;
 
+			for (let i = 0; i < MOSQUES.length; i++) {
+				const site = MOSQUES[i];
+				const inst = instances[i];
 
-      for (let i = 0; i < MOSQUES.length; i++) {
-        const site = MOSQUES[i]
-        const inst = instances[i]
+				// Skip anything on the far side of the earth.
+				const facing =
+					Math.sin(site.lat * rad) * Math.sin(centre.lat * rad) +
+					Math.cos(site.lat * rad) * Math.cos(centre.lat * rad) * Math.cos((site.lon - centre.lng) * rad);
+				if (facing <= 0.05) {
+					inst.visible = false;
+					continue;
+				}
+				inst.visible = true;
+				drawn++;
 
-        // Skip anything on the far side of the earth.
-        const facing =
-          Math.sin(site.lat * rad) * Math.sin(centre.lat * rad) +
-          Math.cos(site.lat * rad) * Math.cos(centre.lat * rad) * Math.cos((site.lon - centre.lng) * rad)
-        if (facing <= 0.05) {
-          inst.visible = false
-          continue
-        }
-        inst.visible = true
-        drawn++
+				const s = spanMetres / (footprints.get(site.model) ?? 40) / EARTH_RADIUS;
+				inst.matrix
+					.makeRotationY(site.lon * rad)
+					.multiply(new THREE.Matrix4().makeRotationX(-site.lat * rad))
+					.multiply(new THREE.Matrix4().makeTranslation(0, 0, 1))
+					.multiply(new THREE.Matrix4().makeRotationX(Math.PI / 2))
+					.multiply(new THREE.Matrix4().makeScale(s, s, s));
+				inst.matrixWorldNeedsUpdate = true;
+			}
 
-        const s = spanMetres / MODELS[site.model].footprint / EARTH_RADIUS
-        inst.matrix
-          .makeRotationY(site.lon * rad)
-          .multiply(new THREE.Matrix4().makeRotationX(-site.lat * rad))
-          .multiply(new THREE.Matrix4().makeTranslation(0, 0, 1))
-          .multiply(new THREE.Matrix4().makeRotationX(Math.PI / 2))
-          .multiply(new THREE.Matrix4().makeScale(s, s, s))
-        inst.matrixWorldNeedsUpdate = true
-      }
+			opts.onCount?.(drawn);
 
-      opts.onCount?.(drawn)
+			camera.projectionMatrix = remapDepth(new THREE.Matrix4().fromArray(main));
 
-      camera.projectionMatrix = remapDepth(new THREE.Matrix4().fromArray(main))
+			scene.updateMatrixWorld();
+			renderer.resetState();
+			// Our depths are on a different scale from the globe's, so start clean.
+			renderer.clearDepth();
+			renderer.render(scene, camera);
 
-      scene.updateMatrixWorld()
-      renderer.resetState()
-      // Our depths are on a different scale from the globe's, so start clean.
-      renderer.clearDepth()
-      renderer.render(scene, camera)
-
-      // No triggerRepaint here. These models are static geometry with no
-      // self-animation, and asking for another frame from inside the render
-      // meant the map never stopped drawing — a permanent 60 Hz GPU load on
-      // battery even with the globe motionless. MapLibre already repaints on
-      // any camera change, which is the only thing that moves them.
-    },
-  }
+			// No triggerRepaint here. These models are static geometry with no
+			// self-animation, and asking for another frame from inside the render
+			// meant the map never stopped drawing — a permanent 60 Hz GPU load on
+			// battery even with the globe motionless. MapLibre already repaints on
+			// any camera change, which is the only thing that moves them.
+		}
+	};
 }

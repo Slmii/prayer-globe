@@ -9,58 +9,58 @@
 name: Refresh prayer times
 
 on:
-  schedule:
-    # 03:00 UTC on the 1st and 15th. Twice a month rather than once because the
-    # phase bundle is a fixed window: at one run a month it expired the same
-    # week its replacement was due, so a single failed run left every dot on the
-    # solar model until the following month. A fortnightly cadence gives a
-    # second attempt well before anything degrades.
-    #
-    # 03:00 UTC also keeps clear of 21:00-24:00, when Diyanet (UTC+3) has
-    # already rolled to tomorrow's date and a crawl would miss today entirely.
-    - cron: '0 3 1,15 * *'
-  workflow_dispatch:
+    schedule:
+        # 03:00 UTC on the 1st and 15th. Twice a month rather than once because the
+        # phase bundle is a fixed window: at one run a month it expired the same
+        # week its replacement was due, so a single failed run left every dot on the
+        # solar model until the following month. A fortnightly cadence gives a
+        # second attempt well before anything degrades.
+        #
+        # 03:00 UTC also keeps clear of 21:00-24:00, when Diyanet (UTC+3) has
+        # already rolled to tomorrow's date and a crawl would miss today entirely.
+        - cron: '0 3 1,15 * *'
+    workflow_dispatch:
 
 # Never `push` — the job's own commit would retrigger it.
 
 permissions:
-  contents: write
+    contents: write
 
 jobs:
-  refresh:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    refresh:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
 
-      - run: npm ci
+            - run: npm ci
 
-      - name: Crawl
-        run: npm run prayer:fetch -- --prune
+            - name: Crawl
+              run: npm run prayer:fetch -- --prune
 
-      # phases.json is a fixed window derived from the snapshots, so it expires
-      # rather than merely going stale: past its last day every dot on the globe
-      # reverts to the solar model. It has to be rebuilt on every refresh.
-      - name: Rebuild the phase bundle
-        run: npm run prayer:phases
+            # phases.json is a fixed window derived from the snapshots, so it expires
+            # rather than merely going stale: past its last day every dot on the globe
+            # reverts to the solar model. It has to be rebuilt on every refresh.
+            - name: Rebuild the phase bundle
+              run: npm run prayer:phases
 
-      # Runs after both, and before the commit, so a partial crawl or a stale
-      # phase bundle fails the job rather than being deployed.
-      - name: Verify coverage
-        run: npm run prayer:check
+            # Runs after both, and before the commit, so a partial crawl or a stale
+            # phase bundle fails the job rather than being deployed.
+            - name: Verify coverage
+              run: npm run prayer:check
 
-      - name: Commit if anything changed
-        run: |
-          if git diff --quiet -- public/times public/phases.json; then
-            echo "no changes"
-            exit 0
-          fi
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/times public/phases.json
-          git commit -m "data: refresh prayer times"
-          git push
+            - name: Commit if anything changed
+              run: |
+                  if git diff --quiet -- public/times public/phases.json; then
+                    echo "no changes"
+                    exit 0
+                  fi
+                  git config user.name  "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git add public/times public/phases.json
+                  git commit -m "data: refresh prayer times"
+                  git push

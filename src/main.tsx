@@ -1,24 +1,25 @@
-import { Component, StrictMode, Suspense, lazy, useEffect, useState } from 'react'
-import type { ReactNode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import App from './App'
+import { Component, StrictMode, Suspense, lazy, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import App from './App';
 // Only reachable at #/solar, and it pulls in three.js. Loading it eagerly put
 // the whole model viewer in the globe's critical path for a route almost nobody
 // opens.
-const SolarSystem = lazy(() => import('./components/SolarSystem'))
-import './styles.css'
+const SolarSystem = lazy(() => import('./components/SolarSystem'));
+import 'react-toastify/dist/ReactToastify.css';
+import './styles.css';
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      // Prayer timetables and reference lists don't change under us, and the
-      // upstream API is rate-limited — so don't refetch on every window focus.
-      refetchOnWindowFocus: false,
-      retry: 1,
-    },
-  },
-})
+	defaultOptions: {
+		queries: {
+			// Prayer timetables and reference lists don't change under us, and the
+			// upstream API is rate-limited — so don't refetch on every window focus.
+			refetchOnWindowFocus: false,
+			retry: 1
+		}
+	}
+});
 
 /**
  * Two pages, switched on the hash.
@@ -33,42 +34,42 @@ const queryClient = new QueryClient({
  * deploy, asking for a hashed chunk that no longer exists.
  */
 class RouteBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
-  state = { failed: false }
-  static getDerivedStateFromError() {
-    return { failed: true }
-  }
-  render() {
-    if (!this.state.failed) return this.props.children
-    return (
-      <div className="pg-route-error">
-        <p>Could not load this view.</p>
-        <button onClick={() => window.location.reload()}>Reload</button>
-      </div>
-    )
-  }
+	state = { failed: false };
+	static getDerivedStateFromError() {
+		return { failed: true };
+	}
+	render() {
+		if (!this.state.failed) return this.props.children;
+		return (
+			<div className='pg-route-error'>
+				<p>Could not load this view.</p>
+				<button onClick={() => window.location.reload()}>Reload</button>
+			</div>
+		);
+	}
 }
 
 function Routes() {
-  const [hash, setHash] = useState(() => window.location.hash)
-  useEffect(() => {
-    const on = () => setHash(window.location.hash)
-    window.addEventListener('hashchange', on)
-    return () => window.removeEventListener('hashchange', on)
-  }, [])
-  if (!hash.startsWith('#/solar')) return <App />
-  return (
-    <RouteBoundary>
-      <Suspense fallback={<div className="pg-route-loading">Loading…</div>}>
-        <SolarSystem />
-      </Suspense>
-    </RouteBoundary>
-  )
+	const [hash, setHash] = useState(() => window.location.hash);
+	useEffect(() => {
+		const on = () => setHash(window.location.hash);
+		window.addEventListener('hashchange', on);
+		return () => window.removeEventListener('hashchange', on);
+	}, []);
+	if (!hash.startsWith('#/solar')) return <App />;
+	return (
+		<RouteBoundary>
+			<Suspense fallback={<div className='pg-route-loading'>Loading…</div>}>
+				<SolarSystem />
+			</Suspense>
+		</RouteBoundary>
+	);
 }
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <Routes />
-    </QueryClientProvider>
-  </StrictMode>,
-)
+	<StrictMode>
+		<QueryClientProvider client={queryClient}>
+			<Routes />
+		</QueryClientProvider>
+	</StrictMode>
+);

@@ -27,34 +27,34 @@
 // Reads public/times/ but never writes to it — that directory belongs to the
 // crawler.
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
 interface CityRow {
-  n: string
-  ilceID: string
+	n: string;
+	ilceID: string;
 }
 
 interface SnapshotFile {
-  tz: string
-  days: Record<string, string[]>
+	tz: string;
+	days: Record<string, string[]>;
 }
 
 /**
  * Days of boundaries to publish, measured from the first day on disk. Sized
  * against the twice-monthly refresh, not the +10-day scrubber — see above.
  */
-const WINDOW = 45
+const WINDOW = 45;
 /** fajr, sunrise, dhuhr, asr, maghrib, isha — the order the files use. */
-const PER_DAY = 6
+const PER_DAY = 6;
 
 export interface PhasesFile {
-  /** UTC minutes since the epoch at 00:00 on `from` — deltas are added to this. */
-  base: number
-  from: string
-  days: number
-  perDay: number
-  /** ilceID -> [first instant, then deltas], in UTC minutes. */
-  cities: Record<string, number[]>
+	/** UTC minutes since the epoch at 00:00 on `from` — deltas are added to this. */
+	base: number;
+	from: string;
+	days: number;
+	perDay: number;
+	/** ilceID -> [first instant, then deltas], in UTC minutes. */
+	cities: Record<string, number[]>;
 }
 
 /**
@@ -64,89 +64,118 @@ export interface PhasesFile {
  * transition happens in the small hours, so midday never lands on the boundary.
  */
 function offsetMinutes(tz: string, isoDate: string): number {
-  const probe = new Date(`${isoDate}T12:00:00Z`)
-  const name =
-    new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'longOffset' })
-      .formatToParts(probe)
-      .find((p) => p.type === 'timeZoneName')?.value ?? 'GMT'
-  const m = /GMT([+-])(\d{1,2}):?(\d{2})?/.exec(name)
-  if (!m) return 0
-  return (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3] ?? 0))
+	const probe = new Date(`${isoDate}T12:00:00Z`);
+	const name =
+		new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'longOffset' })
+			.formatToParts(probe)
+			.find(p => p.type === 'timeZoneName')?.value ?? 'GMT';
+	const m = /GMT([+-])(\d{1,2}):?(\d{2})?/.exec(name);
+	if (!m) return 0;
+	return (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3] ?? 0));
 }
 
 const addDays = (iso: string, n: number) => {
-  const d = new Date(`${iso}T00:00:00Z`)
-  d.setUTCDate(d.getUTCDate() + n)
-  return d.toISOString().slice(0, 10)
-}
+	const d = new Date(`${iso}T00:00:00Z`);
+	d.setUTCDate(d.getUTCDate() + n);
+	return d.toISOString().slice(0, 10);
+};
 
 function main() {
-  const cities = JSON.parse(readFileSync('src/data/cities.json', 'utf8')) as CityRow[]
+	const cities = JSON.parse(readFileSync('src/data/cities.json', 'utf8')) as CityRow[];
 
-  // Start from the first day the snapshots actually cover, not from today: the
-  // crawler decides the range, and guessing here would silently drop a day.
-  const first = JSON.parse(
-    readFileSync(`public/times/${cities[0].ilceID}.json`, 'utf8'),
-  ) as SnapshotFile
-  const from = Object.keys(first.days).sort()[0]
-  const base = Math.floor(Date.parse(`${from}T00:00:00Z`) / 60000)
+	// Start from the first day EVERY snapshot covers, not from today: the crawler
+	// decides the range, and guessing here would silently drop a day.
+	//
+	// The latest of the first days, not the earliest. This used to read the first
+	// day of whichever city sorted first and take it as the start for all of them,
+	// which holds only while every snapshot was fetched in the same run. Fetch two
+	// cities with `--only` after midnight and their files begin a day later than
+	// the rest — Diyanet serves today forward and has no archive — so the loop
+	// below found no row for day zero, broke immediately, and published `days: 0`.
+	// That is not a smaller window: `days: 0` means the app finds nothing in the
+	// file for any city and every dot on the globe silently reverts to the solar
+	// model. Anchoring to the latest start makes the window common by
+	// construction, so a partial re-fetch costs a day of history rather than the
+	// whole file.
+	const firstDays: string[] = [];
+	for (const city of cities) {
+		const path = `public/times/${city.ilceID}.json`;
+		if (!existsSync(path)) continue;
+		const file = JSON.parse(readFileSync(path, 'utf8')) as SnapshotFile;
+		const day = Object.keys(file.days).sort()[0];
+		if (day) firstDays.push(day);
+	}
+	if (!firstDays.length) throw new Error('no snapshots in public/times — run `npm run prayer:fetch` first');
+	const from = firstDays.sort()[firstDays.length - 1];
+	const base = Math.floor(Date.parse(`${from}T00:00:00Z`) / 60000);
 
-  const out: Record<string, number[]> = {}
-  const skipped: string[] = []
-  let shortest = Infinity
+	const out: Record<string, number[]> = {};
+	const skipped: string[] = [];
+	/** Snapshots that exist but cover none of the window — reported, never published. */
+	const empty: string[] = [];
+	let shortest = Infinity;
 
-  for (const city of cities) {
-    const path = `public/times/${city.ilceID}.json`
-    if (!existsSync(path)) {
-      skipped.push(city.n)
-      continue
-    }
-    const file = JSON.parse(readFileSync(path, 'utf8')) as SnapshotFile
+	for (const city of cities) {
+		const path = `public/times/${city.ilceID}.json`;
+		if (!existsSync(path)) {
+			skipped.push(city.n);
+			continue;
+		}
+		const file = JSON.parse(readFileSync(path, 'utf8')) as SnapshotFile;
 
-    const abs: number[] = []
-    for (let k = 0; k < WINDOW; k++) {
-      const date = addDays(from, k)
-      const row = file.days[date]
-      if (!row) break
-      const offset = offsetMinutes(file.tz, date)
-      const midnight = Math.floor(Date.parse(`${date}T00:00:00Z`) / 60000)
-      for (let i = 0; i < PER_DAY; i++) {
-        const t = row[i]
-        const hh = Number(t.slice(0, 2))
-        const mm = Number(t.slice(3, 5))
-        abs.push(midnight + hh * 60 + mm - offset)
-      }
-    }
+		const abs: number[] = [];
+		for (let k = 0; k < WINDOW; k++) {
+			const date = addDays(from, k);
+			const row = file.days[date];
+			if (!row) break;
+			const offset = offsetMinutes(file.tz, date);
+			const midnight = Math.floor(Date.parse(`${date}T00:00:00Z`) / 60000);
+			for (let i = 0; i < PER_DAY; i++) {
+				const t = row[i];
+				const hh = Number(t.slice(0, 2));
+				const mm = Number(t.slice(3, 5));
+				abs.push(midnight + hh * 60 + mm - offset);
+			}
+		}
 
-    // A day whose times run backwards would corrupt the binary search that reads
-    // this, and would do it silently — so refuse to publish one.
-    for (let i = 1; i < abs.length; i++) {
-      if (abs[i] <= abs[i - 1]) {
-        throw new Error(
-          `${city.n} (${city.ilceID}): boundary ${i} is not after the one before ` +
-            `(${abs[i]} <= ${abs[i - 1]})`,
-        )
-      }
-    }
+		// A day whose times run backwards would corrupt the binary search that reads
+		// this, and would do it silently — so refuse to publish one.
+		for (let i = 1; i < abs.length; i++) {
+			if (abs[i] <= abs[i - 1]) {
+				throw new Error(
+					`${city.n} (${city.ilceID}): boundary ${i} is not after the one before ` +
+						`(${abs[i]} <= ${abs[i - 1]})`
+				);
+			}
+		}
 
-    shortest = Math.min(shortest, abs.length / PER_DAY)
-    const deltas = [abs[0] - base]
-    for (let i = 1; i < abs.length; i++) deltas.push(abs[i] - abs[i - 1])
-    out[city.ilceID] = deltas
-  }
+		// Nothing at all for this city in the window. Publishing it anyway wrote a
+		// leading `NaN`, which JSON renders as `null` — a city whose first boundary
+		// is null, in a file the reader has no reason to distrust.
+		if (!abs.length) {
+			empty.push(city.n);
+			continue;
+		}
 
-  const doc: PhasesFile = {
-    base,
-    from,
-    days: shortest === Infinity ? 0 : shortest,
-    perDay: PER_DAY,
-    cities: out,
-  }
-  writeFileSync('public/phases.json', JSON.stringify(doc))
+		shortest = Math.min(shortest, abs.length / PER_DAY);
+		const deltas = [abs[0] - base];
+		for (let i = 1; i < abs.length; i++) deltas.push(abs[i] - abs[i - 1]);
+		out[city.ilceID] = deltas;
+	}
 
-  const kb = (readFileSync('public/phases.json').length / 1024).toFixed(0)
-  console.log(`phases.json: ${Object.keys(out).length} cities, ${doc.days} days, ${kb} KB`)
-  if (skipped.length) console.warn(`no snapshot for ${skipped.length}: ${skipped.slice(0, 5)}`)
+	const doc: PhasesFile = {
+		base,
+		from,
+		days: shortest === Infinity ? 0 : shortest,
+		perDay: PER_DAY,
+		cities: out
+	};
+	writeFileSync('public/phases.json', JSON.stringify(doc));
+
+	const kb = (readFileSync('public/phases.json').length / 1024).toFixed(0);
+	console.log(`phases.json: ${Object.keys(out).length} cities, ${doc.days} days, ${kb} KB`);
+	if (skipped.length) console.warn(`no snapshot for ${skipped.length}: ${skipped.slice(0, 5)}`);
+	if (empty.length) console.warn(`snapshot covers none of the window for ${empty.length}: ${empty.slice(0, 5)}`);
 }
 
-main()
+main();

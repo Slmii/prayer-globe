@@ -83,28 +83,28 @@ Chile.
 Three things make that harder than it sounds, each of which silently cost real
 cities before it was handled:
 
-- Country names arrive HTML-escaped (`T&#220;RKİYE`) and often in Turkish
-  (`ZIMBABVE`, `UMMAN`, `KATAR`), so they need decoding and an override table.
-- `Intl.DisplayNames` resolves withdrawn ISO2 codes to the same English name as
-  the live ones — FX for France, SU for Russia, UK for the United Kingdom — and
-  the withdrawn code winning meant the country vanished while still *looking*
-  resolved.
-- District names carry parenthetical qualifiers that mean different things:
-  `SAO PAULO (S.P.)` where the parenthesis is noise, and `BUKRES(bucharest)`
-  where it holds the English name.
+-   Country names arrive HTML-escaped (`T&#220;RKİYE`) and often in Turkish
+    (`ZIMBABVE`, `UMMAN`, `KATAR`), so they need decoding and an override table.
+-   `Intl.DisplayNames` resolves withdrawn ISO2 codes to the same English name as
+    the live ones — FX for France, SU for Russia, UK for the United Kingdom — and
+    the withdrawn code winning meant the country vanished while still _looking_
+    resolved.
+-   District names carry parenthetical qualifiers that mean different things:
+    `SAO PAULO (S.P.)` where the parenthesis is noise, and `BUKRES(bucharest)`
+    where it holds the English name.
 
 ## Notes
 
-- The app is browser-only and needs no backend. The snapshot is served from
-  disk, so the ~100-requests-per-15-minutes limit on the `ezanvakti` API no
-  longer applies to anything the app does; that API survives in
-  `src/lib/diyanet.ts` only as a fallback the coverage gate should keep from
-  ever firing.
-- Scraping the site rather than ingesting its yearly XLSX was not a compromise:
-  the XLSX is generated in the browser by `pdfmake`/`jszip` from rows the page
-  already contains, so the HTML is the actual source.
-- The website and the `ezanvakti` API share district IDs
-  (`/en-US/9206/prayer-time-for-ankara` is Ankara, and `9206` is its `IlceID`),
-  which is why the snapshot drops straight into the existing lookup path.
-- The `ezanvakti.imsakiyem.com` open-data set covers Türkiye and KKTC only
-  (880 districts, no coordinates), so it cannot back a global globe.
+-   The app is browser-only and needs no backend. The snapshot is served from
+    disk, so the ~100-requests-per-15-minutes limit on the `ezanvakti` API no
+    longer applies to anything the app does; that API survives in
+    `src/lib/diyanet.ts` only as a fallback the coverage gate should keep from
+    ever firing.
+-   Scraping the site rather than ingesting its yearly XLSX was not a compromise:
+    the XLSX is generated in the browser by `pdfmake`/`jszip` from rows the page
+    already contains, so the HTML is the actual source.
+-   The website and the `ezanvakti` API share district IDs
+    (`/en-US/9206/prayer-time-for-ankara` is Ankara, and `9206` is its `IlceID`),
+    which is why the snapshot drops straight into the existing lookup path.
+-   The `ezanvakti.imsakiyem.com` open-data set covers Türkiye and KKTC only
+    (880 districts, no coordinates), so it cannot back a global globe.
