@@ -89,11 +89,36 @@ body {
 	color: var(--ink-bright);
 }
 
+/* A badge, not a footnote — see the note in SidePanel. The source is in the
+   app's accent and the angles in plain white, so the two halves read as
+   "who says so" and "how", separated by a hairline rather than a space. */
 .method {
 	margin-left: auto;
-	font: 400 10.5px/1 var(--mono);
-	letter-spacing: 0.06em;
-	color: rgba(233, 233, 237, 0.4);
+	display: inline-flex;
+	align-items: center;
+	gap: 9px;
+	padding: 6px 12px;
+	border-radius: 999px;
+	background: rgba(150, 138, 224, 0.1);
+	box-shadow: inset 0 0 0 1px rgba(150, 138, 224, 0.42);
+	font: 500 10.5px/1 var(--mono);
+	white-space: nowrap;
+}
+
+.method-src {
+	letter-spacing: 0.14em;
+	color: #b5abfc;
+}
+
+.method-sep {
+	width: 1px;
+	height: 11px;
+	background: rgba(233, 233, 237, 0.22);
+}
+
+.method-deg {
+	letter-spacing: 0.04em;
+	color: #f5f4ff;
 }
 
 .rule {
@@ -695,13 +720,34 @@ body {
 
 /* The credit. Quieter than the tally above it — it is the last thing in the
    panel and should be the last thing read. */
+/*
+ * Pinned to the foot of the panel, alone.
+ *
+ * The panel scrolls, and in the longer modes the signature was pushed off the
+ * bottom — so whether the app appeared signed depended on which tab was open
+ * and how tall the window was. Only this line is held: pinning the whole footer
+ * with it took a third of a short panel for readings that can afford to scroll.
+ *
+ * Sticky rather than a fixed strip outside the scroller, so the panel stays a
+ * single column and the line still simply sits at the end in the modes that do
+ * not overflow. The negative margins and matching padding cancel the panel's
+ * own 30/24px padding, so it reaches the edges instead of leaving a band of
+ * gradient beside and beneath it, and the background is opaque — the panel's
+ * own end colour — because content scrolling under it reads through anything
+ * less.
+ */
 .credit {
+	position: sticky;
+	bottom: -24px;
+	z-index: 3;
+	margin: 0 -30px -24px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	gap: 7px;
-	padding-top: 14px;
+	padding: 14px 30px 24px;
 	border-top: 1px solid rgba(233, 233, 237, 0.06);
+	background: #0f1120;
 	font: 400 9.5px/1 var(--mono);
 	letter-spacing: 0.08em;
 	color: rgba(233, 233, 237, 0.28);
@@ -725,13 +771,6 @@ body {
 	display: block;
 	height: 15px;
 	width: auto;
-	opacity: 0.55;
-	transition: opacity 180ms ease;
-}
-
-.credit-link:hover .credit-logo,
-.credit-link:focus-visible .credit-logo {
-	opacity: 1;
 }
 
 /* ---------- data-source badge ---------- */
@@ -3248,6 +3287,347 @@ body {
 .no-city-btn-here:disabled {
 	opacity: 0.55;
 	cursor: default;
+}
+
+/* ---------- hilal: tonight's crescent ---------- */
+
+.hil {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 13px;
+	overflow-y: auto;
+}
+
+.hil-head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.hil-label {
+	font: 500 9.5px/1 var(--mono);
+	letter-spacing: 0.16em;
+	color: rgba(233, 233, 237, 0.4);
+}
+
+.hil-title {
+	padding-top: 6px;
+	font: 500 17px/1.15 Inter, sans-serif;
+	color: #f5f4ff;
+}
+
+.hil-sub {
+	text-align: right;
+	font: 400 9.5px/1.45 var(--mono);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: rgba(233, 233, 237, 0.38);
+}
+
+/* Says so on the map, where the reader is watching for the bands to appear. */
+.hil-busy {
+	position: absolute;
+	top: 122px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 5;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 9px 16px;
+	border-radius: 999px;
+	background: linear-gradient(180deg, rgba(24, 26, 40, 0.9), rgba(8, 9, 14, 0.94));
+	box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(233, 233, 237, 0.12);
+	backdrop-filter: blur(14px);
+	color: rgba(233, 233, 237, 0.7);
+	font: 500 10.5px/1 var(--mono);
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	pointer-events: none;
+}
+
+.hil-busy .mv-spinner {
+	width: 14px;
+	height: 14px;
+	border-width: 1.5px;
+}
+
+/* The evening, stepped in whole days — see the note in HilalPanel. */
+.hil-nav {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.hil-nav-btn {
+	flex: none;
+	width: 34px;
+	height: 34px;
+	border: 0;
+	border-radius: 9px;
+	background: rgba(233, 233, 237, 0.055);
+	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.1);
+	color: rgba(233, 233, 237, 0.72);
+	font: 400 17px/1 Inter, sans-serif;
+	cursor: pointer;
+	transition: background 160ms ease, color 160ms ease;
+}
+
+.hil-nav-btn:hover {
+	background: rgba(150, 138, 224, 0.24);
+	color: #f2f1ff;
+}
+
+.hil-nav-date {
+	flex: 1;
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+	font: 500 15px/1 Inter, sans-serif;
+	color: #f5f4ff;
+}
+
+.hil-nav-off {
+	font: 400 11px/1 var(--mono);
+	letter-spacing: 0.06em;
+	color: rgba(233, 233, 237, 0.38);
+}
+
+.hil-nav-now {
+	flex: none;
+	border: 0;
+	border-radius: 9px;
+	padding: 10px 14px;
+	background: rgba(150, 138, 224, 0.26);
+	color: #e8e5ff;
+	font: 500 10px/1 var(--mono);
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background 160ms ease;
+}
+
+.hil-nav-now:hover {
+	background: rgba(150, 138, 224, 0.38);
+}
+
+/* The one jump anybody makes from here: to the evening a month might turn. */
+.hil-jump {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	border: 0;
+	border-radius: 11px;
+	padding: 13px 15px;
+	background: rgba(150, 138, 224, 0.12);
+	box-shadow: inset 0 0 0 1px rgba(181, 171, 252, 0.3);
+	color: #d2cefd;
+	font: 500 12.5px/1 Inter, sans-serif;
+	cursor: pointer;
+	transition: background 160ms ease;
+}
+
+.hil-jump:hover {
+	background: rgba(150, 138, 224, 0.22);
+}
+
+.hil-jump-moon {
+	font-size: 14px;
+	line-height: 1;
+}
+
+.hil-jump-go {
+	margin-left: auto;
+	color: rgba(210, 206, 253, 0.6);
+}
+
+.hil-conj {
+	margin: -4px 0 0;
+	font: 400 10.5px/1.5 var(--mono);
+	letter-spacing: 0.04em;
+	color: rgba(233, 233, 237, 0.34);
+}
+
+/* Where on earth it is best seen — a way into that city, so it is a button. */
+.hil-best {
+	display: flex;
+	align-items: center;
+	gap: 11px;
+	width: 100%;
+	text-align: left;
+	border: 0;
+	border-radius: 11px;
+	padding: 12px 14px;
+	background: rgba(233, 233, 237, 0.045);
+	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.09);
+	cursor: pointer;
+	transition: background 160ms ease;
+}
+
+.hil-best:hover {
+	background: rgba(233, 233, 237, 0.085);
+}
+
+.hil-best-dot {
+	flex: none;
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+}
+
+.hil-best-main {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.hil-best-tag {
+	font: 500 9px/1 var(--mono);
+	letter-spacing: 0.16em;
+	color: rgba(233, 233, 237, 0.42);
+}
+
+.hil-best-city {
+	font: 500 15px/1 Inter, sans-serif;
+	color: #f5f4ff;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.hil-best-zone {
+	flex: none;
+	font: 400 11.5px/1 Inter, sans-serif;
+}
+
+/* Diyanet's decision, distinguished from the geometry beside it. */
+.hil-diyanet {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	padding: 10px 13px 11px;
+	border-radius: 11px;
+	background: rgba(150, 138, 224, 0.12);
+	box-shadow: inset 0 0 0 1px rgba(181, 171, 252, 0.28);
+}
+
+.hil-diyanet-tag {
+	font: 500 9px/1 var(--mono);
+	letter-spacing: 0.16em;
+	color: rgba(210, 206, 253, 0.7);
+}
+
+.hil-diyanet-val {
+	font: 400 12.5px/1.35 Inter, sans-serif;
+	color: #f2f1ff;
+}
+
+.hil-local {
+	padding: 12px 13px 13px;
+	border-radius: 11px;
+	background: rgba(233, 233, 237, 0.035);
+	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.1);
+}
+
+.hil-verdict {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font: 500 13.5px/1.2 Inter, sans-serif;
+}
+
+.hil-where {
+	color: rgba(233, 233, 237, 0.45);
+	font: 400 11px/1 var(--mono);
+	letter-spacing: 0.06em;
+}
+
+.hil-swatch {
+	width: 9px;
+	height: 9px;
+	flex: none;
+	border-radius: 2px;
+}
+
+.hil-facts {
+	margin: 0;
+	padding-top: 12px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 9px 14px;
+}
+
+.hil-facts dt {
+	font: 400 9px/1.2 var(--mono);
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: rgba(233, 233, 237, 0.4);
+}
+
+.hil-facts dd {
+	margin: 3px 0 0;
+	font: 400 13px/1 var(--mono);
+	color: #e9e9ed;
+}
+
+.hil-empty {
+	margin: 0;
+	padding: 14px 13px;
+	border-radius: 11px;
+	background: rgba(233, 233, 237, 0.035);
+	font: 400 12px/1.6 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.5);
+	text-wrap: pretty;
+}
+
+.hil-legend {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+
+.hil-key {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 7px 9px;
+	border-radius: 8px;
+	font: 400 11.5px/1 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.6);
+}
+
+/* The zone the selected city is in, so the local verdict and the global
+   picture read as one thing rather than two. */
+.hil-key-on {
+	background: rgba(233, 233, 237, 0.055);
+	color: rgba(233, 233, 237, 0.9);
+}
+
+.hil-key-label {
+	flex: 1;
+	min-width: 0;
+}
+
+.hil-key-count {
+	flex: none;
+	font: 400 11px/1 var(--mono);
+	letter-spacing: 0.04em;
+	color: rgba(233, 233, 237, 0.42);
+}
+
+/* The line that keeps the map honest — see the note in HilalPanel. */
+.hil-note {
+	margin: 0;
+	padding-top: 2px;
+	font: 400 11px/1.6 Inter, sans-serif;
+	color: rgba(233, 233, 237, 0.42);
+	text-wrap: pretty;
 }
 
 /* ---------- records ---------- */

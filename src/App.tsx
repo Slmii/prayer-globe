@@ -22,6 +22,9 @@ import { pad, phaseCentre, skyState } from './lib/astro';
 import { locateDistrict } from './lib/locate';
 import { MOSQUES } from './lib/mosques';
 import type { MosqueModel } from './lib/mosques';
+import { useHilal, eveningKey } from './hooks/useHilal';
+import { nextConjunction, toJD, fromJD } from './lib/hilal';
+import type { Criterion } from './lib/hilal';
 
 /**
  * The 3D viewer, fetched only when someone asks for it.
@@ -71,7 +74,8 @@ const MODE_NAMES: Record<PanelMode, string | null> = {
 	now: null,
 	chain: 'Chain',
 	records: 'Records',
-	ramadan: 'Ramadan'
+	ramadan: 'Ramadan',
+	hilal: 'Hilal'
 };
 
 /** "41.01° N 28.98° E" — where the reader is, as a toast states it. */
@@ -173,6 +177,19 @@ export default function App() {
 	const [hoveredSite, setHoveredSite] = useState<string | null>(null);
 	/** Which building the 3D viewer is showing, or null while it is closed. */
 	const [viewer, setViewer] = useState<MosqueModel | null>(null);
+	/**
+	 * Which rule the crescent map applies.
+	 *
+	 * A constant, not a choice, because there is no choice yet: everything on
+	 * this globe is Diyanet's, and Istanbul 1978 is the rule they apply. The
+	 * other criteria are implemented and tested in `hilal.ts` ready for the
+	 * method selector that will eventually cover the whole app — this stays a
+	 * constant until that exists, rather than pretending to be state nothing can
+	 * change.
+	 */
+	const criterion: Criterion = 'istanbul';
+	/** Evenings from tonight that the crescent map is showing. */
+	const [hilalDays, setHilalDays] = useState(0);
 	const [view, setView] = useState<View>({ lng: 39, lat: 20, zoom: 1.4 });
 	/**
 	 * The same view, readable without re-subscribing.
@@ -680,6 +697,27 @@ export default function App() {
 
 	const rounded = Math.round(scrub);
 
+	/*
+	 * The evening the crescent map is drawn for.
+	 *
+	 * Read off the scrubbed *date* and nothing finer. This map is not an
+	 * instant: every point on it is judged at that place's own best moment,
+	 * some minutes after its own sunset. Following the clock would imply a
+	 * precision the map does not have, so the hour is thrown away and only the
+	 * day survives — which is also what makes the field cacheable, since
+	 * scrubbing within a day asks the same question.
+	 */
+	const tonightMs = useMemo(() => eveningKey(nowMs), [Math.floor(nowMs / 86400000)]);
+	const hilalEveningMs = tonightMs + hilalDays * 86400000;
+	const hilal = useHilal(mode === 'hilal' ? hilalEveningMs : null, criterion);
+
+	/** Jump to the evening after the next new moon — the first one worth seeing. */
+	const nextCrescent = useCallback(() => {
+		const conj = nextConjunction(toJD(hilalEveningMs));
+		const evening = eveningKey(fromJD(conj) + 86400000);
+		setHilalDays(Math.round((evening - tonightMs) / 86400000));
+	}, [hilalEveningMs, tonightMs]);
+
 	/**
 	 * Keep the address bar showing what you are looking at.
 	 *
@@ -735,6 +773,17 @@ export default function App() {
 				onUnpin={unpin}
 				onLocate={locate}
 				locating={locating}
+				hilalEveningMs={hilalEveningMs}
+				criterion={criterion}
+				hilalCity={activeCity}
+				hilalBusy={hilal.busy}
+				hilalSummary={hilal.summary}
+				conjunctionMs={hilal.field?.conjunctionMs ?? null}
+				onStep={(d: number) => setHilalDays(v => v + d)}
+				onNextCrescent={nextCrescent}
+				onTonight={() => setHilalDays(0)}
+				shifted={hilalDays !== 0}
+				tonightMs={tonightMs}
 			/>
 
 			<main className='stage'>
@@ -751,6 +800,7 @@ export default function App() {
 					phases={phases}
 					qiblaMode={qiblaMode}
 					bandPhase={mode === 'chain' ? chain : null}
+					hilal={mode === 'hilal' ? hilal.field?.bands ?? null : null}
 					mark={mark}
 					markPulsing={markPulsing}
 					sweeping={sweeping}
@@ -939,6 +989,16 @@ export default function App() {
 					bar is the promise, and this is what keeps it.
 				*/}
 				{/* Every `data-tip` in the app is drawn by this one node, in a portal. */}
+				{/* On the map, not only in the panel — the map is what the reader is
+				    watching for a change, and a second of blank earth with the news
+				    two feet to the left reads as nothing happening. */}
+				{mode === 'hilal' && hilal.busy && (
+					<div className='hil-busy' role='status'>
+						<span className='mv-spinner' aria-hidden='true' />
+						{hilal.field ? 'Sharpening the crescent map…' : 'Working out the whole earth…'}
+					</div>
+				)}
+
 				<TipLayer />
 
 				{/* The globe keeps running behind it, so closing returns to exactly the

@@ -26,14 +26,14 @@ export interface ViewState {
 	city: string | null;
 	/** Scrub offset in minutes from now, as the app's clock uses. */
 	scrub: number;
-	/** Panel mode: 'now' | 'chain' | 'records' | 'ramadan'. */
+	/** Panel mode: 'now' | 'chain' | 'records' | 'ramadan' | 'hilal'. */
 	mode: string | null;
 	/** Which prayer the chain mode is following, 0–5. */
 	chain: number | null;
 }
 
 const PREFIX = '#/view';
-const MODES: readonly string[] = ['now', 'chain', 'records', 'ramadan'];
+const MODES: readonly string[] = ['now', 'chain', 'records', 'ramadan', 'hilal'];
 const STORAGE_KEY = 'pg.pinnedCity';
 
 /** Fields at their defaults are simply omitted, keeping links short. */
@@ -139,9 +139,7 @@ export function loadPinned(): Pin[] {
 		if (!raw.startsWith('[')) return [raw];
 		const list: unknown = JSON.parse(raw);
 		if (!Array.isArray(list)) return [];
-		return list
-			.filter((p): p is Pin => (typeof p === 'string' && !!p) || isCity(p))
-			.slice(0, MAX_PINNED);
+		return list.filter((p): p is Pin => (typeof p === 'string' && !!p) || isCity(p)).slice(0, MAX_PINNED);
 	} catch {
 		return [];
 	}

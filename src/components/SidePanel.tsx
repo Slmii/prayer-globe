@@ -12,6 +12,9 @@ import { AppIcon } from './AppIcon';
 import ChainPanel from './ChainPanel';
 import RecordsPanel from './RecordsPanel';
 import RamadanPanel from './RamadanPanel';
+import HilalPanel from './HilalPanel';
+import type { Criterion } from '../lib/hilal';
+import type { CitySummary } from '../lib/hilal-field';
 
 interface SidePanelProps {
 	readout: Readout;
@@ -49,6 +52,22 @@ interface SidePanelProps {
 	onLocate(): void;
 	/** A fix is being waited on, so the button can say so rather than sit dead. */
 	locating: boolean;
+	/** The evening the crescent map is drawn for, ms. */
+	hilalEveningMs: number;
+	criterion: Criterion;
+	/** The selected city as a record, for the crescent's local geometry. */
+	hilalCity: City | null;
+	hilalBusy: boolean;
+	conjunctionMs: number | null;
+	/** Move the crescent map by whole evenings. */
+	onStep(days: number): void;
+	onNextCrescent(): void;
+	onTonight(): void;
+	/** The crescent map is showing an evening other than tonight. */
+	shifted: boolean;
+	tonightMs: number;
+	/** Cities per crescent zone, and the best-placed one. */
+	hilalSummary: CitySummary;
 }
 
 /**
@@ -59,7 +78,7 @@ interface SidePanelProps {
  * are true whatever you happen to be reading, so they stay put rather than
  * appearing and vanishing under you.
  */
-export type PanelMode = 'now' | 'chain' | 'records' | 'ramadan';
+export type PanelMode = 'now' | 'chain' | 'records' | 'ramadan' | 'hilal';
 
 const MODES: { id: PanelMode; label: string; hint: string }[] = [
 	{ id: 'now', label: 'Now', hint: 'This city, right now' },
@@ -69,7 +88,8 @@ const MODES: { id: PanelMode; label: string; hint: string }[] = [
 		label: 'Records',
 		hint: "The day's extremes across every city"
 	},
-	{ id: 'ramadan', label: 'Ramadan', hint: 'The month of fasting, day by day' }
+	{ id: 'ramadan', label: 'Ramadan', hint: 'The month of fasting, day by day' },
+	{ id: 'hilal', label: 'Hilal', hint: 'Where tonight’s new crescent can be seen' }
 ];
 
 /** h:mm:ss while there is an hour to go, m:ss inside the last one. */
@@ -387,7 +407,18 @@ export default function SidePanel(props: SidePanelProps) {
 					<span className='mark-sq mark-rot' />
 				</div>
 				<div className='wordmark'>Ever&#8209;Standing</div>
-				<div className='method'>DIYANET 18°/17°</div>
+				{/*
+					Where every number in this panel comes from, and the depression
+					angles behind them. It reads as a badge rather than as a footnote
+					because it is the app's one claim about its own authority — and
+					because the two halves say different things: the source, and the
+					convention that source applies.
+				*/}
+				<div className='method' data-tip='Diyanet’s own tables, solved at 18° for fajr and 17° for isha'>
+					<span className='method-src'>DIYANET</span>
+					<span className='method-sep' aria-hidden='true' />
+					<span className='method-deg'>18°/17°</span>
+				</div>
 			</header>
 
 			<div className='datebar'>
@@ -643,6 +674,25 @@ export default function SidePanel(props: SidePanelProps) {
 				<RamadanPanel days={props.times.days} nowMs={props.nowMs} cityName={a.city ?? ''} pending={pending} />
 			)}
 
+			{/* No city needed: the crescent is a question about the whole earth,
+			    and the legend answers it before anywhere is picked. */}
+			{props.mode === 'hilal' && (
+				<HilalPanel
+					eveningMs={props.hilalEveningMs}
+					criterion={props.criterion}
+					city={props.hilalCity}
+					busy={props.hilalBusy}
+					onStep={props.onStep}
+					onNextCrescent={props.onNextCrescent}
+					onTonight={props.onTonight}
+					shifted={props.shifted}
+					tonightMs={props.tonightMs}
+					days={props.times.days}
+					summary={props.hilalSummary}
+					onGoToCity={props.onGoToCity}
+				/>
+			)}
+
 			<footer className='panel-foot'>
 				<div className='bodies'>
 					<button
@@ -721,28 +771,33 @@ export default function SidePanel(props: SidePanelProps) {
 						<span>{a.countLead}</span>
 					</div>
 				</div>
-
-				{/*
-					The credit, last and quietest thing in the panel.
-
-					The year comes from the clock rather than being typed in, so it cannot
-					go stale in a file nobody thinks to open in January. The logo carries
-					the name itself, so the line does not repeat it in words.
-				*/}
-				<div className='credit'>
-					<span>© {new Date().getFullYear()} · Made by</span>
-					{/* `noopener` because it opens in a new tab: without it the new page
-					    gets a handle on this one through `window.opener`. */}
-					<a
-						className='credit-link'
-						href='https://www.sbytes-it.com/en'
-						target='_blank'
-						rel='noopener noreferrer'
-					>
-						<img className='credit-logo' src={`${import.meta.env.BASE_URL}company.png`} alt='S-Bytes IT' />
-					</a>
-				</div>
 			</footer>
+
+			{/*
+				The credit, last and quietest thing in the panel.
+
+				A direct child of the panel, not of the footer above it. It is pinned to
+				the foot of the scroller, and a sticky element can only travel inside
+				its own parent — tucked in the footer it had a hundred and fifty pixels
+				to move in and never reached the bottom of anything.
+
+				The year comes from the clock rather than being typed in, so it cannot
+				go stale in a file nobody thinks to open in January. The logo carries
+				the name itself, so the line does not repeat it in words.
+			*/}
+			<div className='credit'>
+				<span>© {new Date().getFullYear()} · Made by</span>
+				{/* `noopener` because it opens in a new tab: without it the new page
+				    gets a handle on this one through `window.opener`. */}
+				<a
+					className='credit-link'
+					href='https://www.sbytes-it.com/en'
+					target='_blank'
+					rel='noopener noreferrer'
+				>
+					<img className='credit-logo' src={`${import.meta.env.BASE_URL}company.png`} alt='S-Bytes IT' />
+				</a>
+			</div>
 		</aside>
 	);
 }

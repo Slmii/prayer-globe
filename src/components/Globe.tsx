@@ -2,7 +2,7 @@ import { useEffect, useImperativeHandle, useRef, forwardRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
 import * as maplibregl from 'maplibre-gl';
-import type { Map as MLMap, Marker, LngLat } from 'maplibre-gl';
+import type { Map as MLMap, Marker, LngLat, ExpressionSpecification } from 'maplibre-gl';
 import type { FeatureCollection } from 'geojson';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { CITIES } from '../lib/cities';
@@ -22,6 +22,8 @@ import { blendOf } from '../lib/phases';
 import type { PhaseTable } from '../lib/phases';
 import { MOSQUES } from '../lib/mosques';
 import type { Mosque, MosqueModel } from '../lib/mosques';
+import { ZONES } from '../lib/hilal';
+import type { Band as HilalBand } from '../lib/hilal-field';
 import { AppIcon } from './AppIcon';
 import type { AppIconName } from './AppIcon';
 import {
@@ -108,6 +110,9 @@ const QIBLA_MAX = 220;
 /** Pixels between the mosque and the card offering to open it, either side. */
 const GAP = 14;
 
+/** A zone the palette does not know. Unreachable, but `match` needs an else. */
+const ZONE_FALLBACK = '#8b4a4a';
+
 export interface GlobeHandle {
 	flyTo(lng: number, lat: number, zoom: number, duration?: number): void;
 }
@@ -148,6 +153,14 @@ interface GlobeProps {
 	qiblaMode: QiblaMode;
 	/** Shade the ground standing in this prayer, or null for none. */
 	bandPhase: number | null;
+	/**
+	 * Where tonight's crescent can be seen, or null when not asking.
+	 *
+	 * Its own layer rather than a reuse of the prayer bands: these are a
+	 * classification with published boundaries, not a phase of the day, and
+	 * sharing the phase palette would make one read as the other.
+	 */
+	hilal: HilalBand[] | null;
 	/**
 	 * A point to mark on the surface while it lasts — where the reader is.
 	 *
@@ -688,6 +701,30 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 		allCitiesRef.current = g && !CITIES.some(c => c.n === g.n) ? [...CITIES, g] : CITIES;
 	}, [props.guestCity]);
 
+	/**
+	 * The crescent bands, pushed only when they change.
+	 *
+	 * Not in the frame loop: a field is one evening's answer and does not move
+	 * with the clock or the camera, so redrawing it per frame would be eleven
+	 * thousand rectangles of pure waste.
+	 */
+	function pushHilal() {
+		const map = mapRef.current;
+		const src = map?.getSource('hilal') as maplibregl.GeoJSONSource | undefined;
+		if (!src) return;
+		src.setData({
+			type: 'FeatureCollection',
+			features: (propsRef.current.hilal ?? []).map(b => ({
+				type: 'Feature' as const,
+				properties: { z: b.zone },
+				geometry: { type: 'Polygon' as const, coordinates: [b.ring] }
+			}))
+		});
+	}
+
+	// Also pushed on style load, for a field that arrived before the map did.
+	useEffect(pushHilal, [props.hilal]);
+
 	/** A city by the name a dot carries, wherever that city's record lives. */
 	function cityNamed(name: string | null): City | undefined {
 		return name ? allCitiesRef.current.find(c => c.n === name) : undefined;
@@ -1129,6 +1166,37 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 				filter: ['==', ['get', 'k'], 'sunrise'],
 				paint: { 'line-color': '#ffc65c', 'line-width': 1.5, 'line-opacity': 0.9 }
 			});
+
+			/*
+			 * Tonight's crescent, under the terminator it hugs.
+			 *
+			 * Added before the city dots so the dots stay readable on top of it —
+			 * the bands cover whole continents and would otherwise swallow them.
+			 * Solid colour, not a pattern: this globe has already learned that a
+			 * `fill-pattern` refuses to render above the tile limit while a
+			 * `fill-color` goes on to about 88°, and these bands reach high
+			 * latitudes in summer.
+			 */
+			map.addSource('hilal', { type: 'geojson', data: EMPTY });
+			map.addLayer({
+				id: 'hilal-fill',
+				type: 'fill',
+				source: 'hilal',
+				paint: {
+					// Built from ZONES rather than written out, so the legend in the
+					// panel and the colours on the earth cannot drift apart. The cast
+					// is because a `match` built by spread is a plain array to
+					// TypeScript, while MapLibre's type wants a literal tuple.
+					'fill-color': [
+						'match',
+						['get', 'z'],
+						...ZONES.flatMap(z => [z.id, z.colour]),
+						ZONE_FALLBACK
+					] as unknown as ExpressionSpecification,
+					'fill-opacity': 0.34
+				}
+			});
+			pushHilal();
 
 			map.addSource('cities', { type: 'geojson', data: EMPTY });
 			map.addLayer({
