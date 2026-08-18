@@ -1,0 +1,110 @@
+// Every typographic value in the app, named once.
+//
+// Before this file the stylesheet carried 159 `font:` declarations in 96
+// distinct combinations: 29 sizes running 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12,
+// 12.5, 13 … as a continuum rather than a scale, 13 line-heights, 21 letter
+// spacings, and three families spelled five different ways — `var(--mono)` and
+// `ui-monospace, Menlo, monospace` were the same stack, as were `Inter,
+// sans-serif` and `var(--ui, system-ui)`.
+//
+// Nothing was wrong on screen. It was simply impossible to answer "what size is
+// a label?" without grepping, or to change one without finding every place it
+// had been retyped by hand.
+//
+// EVERY NUMBER HERE IS ONE THAT WAS ALREADY IN USE. This is an inventory, not a
+// redesign, which is why the app renders identically after it — see the
+// baseline check in the notes. Sizes are named by their own value rather than
+// by an invented `sm`/`md`/`lg` ladder, because there is no real ladder here
+// yet: 29 sizes for a dozen roles means several of them are accidents of
+// hand-tuning, and a name like `$fs-105` says what it is without pretending
+// otherwise. The semantics live in `_type.scss`, on top of these.
+
+// ---------- families ----------
+
+/// Interface text: names, titles, sentences.
+///
+/// `Inter, sans-serif` exactly, because that is what all sixty of the rules
+/// that were folded into this said. The `body` rule declares a *different*
+/// stack — `Inter, system-ui, sans-serif` — and has done all along; the two
+/// disagree about what to fall back to if Inter fails to load. That is a
+/// pre-existing inconsistency and not this refactor's to decide, so it is kept
+/// as `$ff-root` below and left flagged rather than quietly unified.
+$ff-ui: Inter, sans-serif;
+
+/// The stack on `body`, which differs from `$ff-ui` — see above.
+$ff-root: Inter, system-ui, sans-serif;
+/// Numbers, codes, coordinates — anything that must not reflow as it ticks.
+$ff-mono: ui-monospace, Menlo, monospace;
+/// The Arabic prayer names, which have their own face.
+$ff-arabic: Amiri, serif;
+
+// ---------- size ----------
+
+$fs-85: 8.5px;
+$fs-9: 9px;
+$fs-95: 9.5px;
+$fs-10: 10px;
+$fs-105: 10.5px;
+$fs-11: 11px;
+$fs-115: 11.5px;
+$fs-12: 12px;
+$fs-125: 12.5px;
+$fs-13: 13px;
+$fs-135: 13.5px;
+$fs-14: 14px;
+$fs-145: 14.5px;
+$fs-15: 15px;
+$fs-16: 16px;
+$fs-17: 17px;
+$fs-18: 18px;
+$fs-19: 19px;
+$fs-20: 20px;
+$fs-21: 21px;
+$fs-24: 24px;
+$fs-26: 26px;
+$fs-33: 33px;
+$fs-34: 34px;
+$fs-36: 36px;
+$fs-38: 38px;
+$fs-44: 44px;
+$fs-54: 54px;
+$fs-62: 62px;
+
+// ---------- weight ----------
+
+$fw-normal: 400;
+$fw-medium: 500;
+
+// ---------- leading ----------
+//
+// `1` almost everywhere, because almost nothing in this interface wraps: each
+// line sits in a box that sets its own height. The values above 1.4 are the
+// handful of places that carry real sentences.
+
+$lh-normal: normal; // the shorthand's own default, where one was omitted
+$lh-086: 0.86; // the big clock, pulled tight
+$lh-1: 1;
+$lh-115: 1.15;
+$lh-12: 1.2;
+$lh-13: 1.3;
+$lh-135: 1.35;
+$lh-14: 1.4;
+$lh-145: 1.45;
+$lh-15: 1.5;
+$lh-155: 1.55;
+$lh-16: 1.6;
+$lh-165: 1.65;
+
+// ---------- tracking ----------
+//
+// Uppercase mono needs air or it sets as a block; a display number needs
+// pulling in. Everything between is `normal`.
+
+$ls-tight-lg: -0.03em;
+$ls-tight: -0.02em;
+$ls-snug: 0.04em;
+$ls-wide: 0.06em;
+$ls-wider: 0.1em;
+$ls-widest: 0.12em;
+$ls-caps: 0.14em;
+$ls-caps-lg: 0.16em;

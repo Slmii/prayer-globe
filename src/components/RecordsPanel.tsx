@@ -9,6 +9,7 @@ import { dayRecords, WINDOW_MINS } from '../lib/records';
 import type { Crossing } from '../lib/records';
 import type { PhaseTable } from '../lib/phases';
 import type { City } from '../lib/cities';
+import { Label } from './Typography';
 
 interface Props {
 	phases: PhaseTable | null;
@@ -75,7 +76,9 @@ export default function RecordsPanel({ phases, nowMs, dateLine, onGoTo }: Props)
 	return (
 		<div className='recs'>
 			<div className='recs-head'>
-				<span className='recs-title'>RECORDS FOR THIS DAY</span>
+				<Label size='md' className='recs-title'>
+					RECORDS FOR THIS DAY
+				</Label>
 				<span className='recs-date'>{dateLine}</span>
 			</div>
 
@@ -89,7 +92,9 @@ export default function RecordsPanel({ phases, nowMs, dateLine, onGoTo }: Props)
 							onClick={() => onGoTo(r.city)}
 							data-tip={`Fly to ${r.city.n}`}
 						>
-							<span className='recs-label'>{r.label}</span>
+							<Label size='sm' className='recs-label'>
+								{r.label}
+							</Label>
 							<span className='recs-value' style={{ color: r.color }}>
 								{r.value}
 							</span>

@@ -104,14 +104,7 @@ interface AppIconProps {
 	className?: string;
 }
 
-export function AppIcon({
-	name,
-	size = 'medium',
-	strokeWidth = 1.5,
-	filled = false,
-	style,
-	className
-}: AppIconProps) {
+export function AppIcon({ name, size = 'medium', strokeWidth = 1.5, filled = false, style, className }: AppIconProps) {
 	const pair = ICONS[name];
 	const Glyph = filled ? pair.filled : pair.outline;
 	return (

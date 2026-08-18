@@ -17,6 +17,7 @@ import type { City } from '../lib/cities';
 import { monthStarts, startNear } from '../lib/hijri';
 import type { TimetableDay } from '../lib/diyanet';
 import type { CitySummary } from '../lib/hilal-field';
+import { Body, Caption, Title, Value } from './Typography';
 
 interface Props {
 	/** The evening being asked about, ms. */
@@ -116,7 +117,7 @@ export default function HilalPanel({
 				day: 'numeric',
 				month: 'short',
 				timeZone: 'UTC'
-			})
+		  })
 		: '';
 
 	return (
@@ -135,7 +136,11 @@ export default function HilalPanel({
 				</button>
 				<span className='hil-nav-date'>
 					{dayLabel}
-					{shifted && <span className='hil-nav-off'>{offsetLabel}</span>}
+					{shifted && (
+						<Value size='2xs' className='hil-nav-off'>
+							{offsetLabel}
+						</Value>
+					)}
 				</span>
 				{shifted && (
 					<button type='button' className='hil-nav-now' onClick={onTonight}>
@@ -168,11 +173,11 @@ export default function HilalPanel({
 					<span className='hil-best-dot' style={{ background: bestZone.colour }} />
 					<span className='hil-best-main'>
 						<span className='hil-best-tag'>BEST SIGHTING {shifted ? 'THIS EVENING' : 'TONIGHT'}</span>
-						<span className='hil-best-city'>{summary.best.name}</span>
+						<Title className='hil-best-city'>{summary.best.name}</Title>
 					</span>
-					<span className='hil-best-zone' style={{ color: bestZone.colour }}>
+					<Caption size='lg' className='hil-best-zone' color={bestZone.colour}>
 						{bestZone.label}
-					</span>
+					</Caption>
 				</button>
 			)}
 
@@ -198,7 +203,9 @@ export default function HilalPanel({
 					<div className='hil-verdict' style={{ color: zone.colour }}>
 						<span className='hil-swatch' style={{ background: zone.colour }} />
 						{zone.label}
-						<span className='hil-where'>in {city.n}</span>
+						<Value size='2xs' className='hil-where'>
+							in {city.n}
+						</Value>
 					</div>
 					<dl className='hil-facts'>
 						<div>
@@ -249,16 +256,18 @@ export default function HilalPanel({
 					<span key={z.id} className={'hil-key' + (local?.zone === z.id ? ' hil-key-on' : '')}>
 						<span className='hil-swatch' style={{ background: z.colour }} />
 						<span className='hil-key-label'>{z.label}</span>
-						<span className='hil-key-count'>{summary.counts[z.id] ?? 0} cities</span>
+						<Value size='2xs' className='hil-key-count'>
+							{summary.counts[z.id] ?? 0} cities
+						</Value>
 					</span>
 				))}
 			</div>
 
-			<p className='hil-note'>
+			<Body as='p' className='hil-note'>
 				{busy ? 'Working out the whole earth…' : 'Geometry only.'} This map knows where the moon will be and how
 				thin it will be. It knows nothing of cloud, haze or the horizon in front of you — a colour here means
 				the sky permits a sighting, never that one was made.
-			</p>
+			</Body>
 		</div>
 	);
 }

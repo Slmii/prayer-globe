@@ -1,3 +1,7 @@
+@use 'styles/tokens' as t;
+@use 'styles/spacing' as sp;
+@use 'styles/type' as ty;
+
 :root {
 	--bg: #0c0e14;
 	--panel-a: #171a2a;
@@ -10,6 +14,16 @@
 	--accent-deep: #796cbf;
 	--dim: #cfd3e5;
 	--line: rgba(233, 233, 237, 0.1);
+	/*
+	 * Muted inks, as three steps rather than the fourteen opacities that had
+	 * grown up by hand — 0.3, 0.36, 0.38, 0.4, 0.42, 0.45, 0.5, 0.55, 0.6, 0.62,
+	 * 0.66, 0.7, 0.72. These are the levels the `Typography` colour prop offers;
+	 * the existing rules keep their own values until they are converted, so
+	 * nothing moves on screen today.
+	 */
+	--ink-muted: rgba(233, 233, 237, 0.62);
+	--ink-faint: rgba(233, 233, 237, 0.45);
+	--ink-ghost: rgba(233, 233, 237, 0.3);
 	--glass: rgba(12, 14, 20, 0.78);
 	--mono: ui-monospace, Menlo, monospace;
 }
@@ -32,9 +46,13 @@ body {
 	-webkit-font-smoothing: antialiased;
 }
 
+:root {
+	overscroll-behavior: none;
+}
+
 .app {
 	display: grid;
-	grid-template-columns: 456px 1fr;
+	grid-template-columns: sp.$panel-width 1fr;
 	height: 100%;
 	overflow: hidden;
 }
@@ -49,10 +67,10 @@ body {
      licence — an overflowing tip is still clipped, so tips near the edges want
      `data-tip-start` / `data-tip-end` to fit in the first place. */
 	overflow-x: clip;
-	padding: 28px 30px 24px;
+	padding: sp.$panel-pad-top sp.$panel-pad-x sp.$panel-pad-bottom;
 	display: flex;
 	flex-direction: column;
-	gap: 15px;
+	gap: sp.$sp-16;
 	border-right: 1px solid rgba(233, 233, 237, 0.08);
 	background: linear-gradient(180deg, #171a2a, #0f1120);
 	overflow-y: auto;
@@ -61,7 +79,7 @@ body {
 .panel-head {
 	display: flex;
 	align-items: center;
-	gap: 11px;
+	gap: sp.$sp-12;
 }
 
 .mark {
@@ -83,7 +101,7 @@ body {
 }
 
 .wordmark {
-	font: 500 12px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-12, t.$fw-medium);
 	letter-spacing: 0.17em;
 	text-transform: uppercase;
 	color: var(--ink-bright);
@@ -96,12 +114,14 @@ body {
 	margin-left: auto;
 	display: inline-flex;
 	align-items: center;
-	gap: 9px;
-	padding: 6px 12px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-8 sp.$sp-12;
 	border-radius: 999px;
 	background: rgba(150, 138, 224, 0.1);
 	box-shadow: inset 0 0 0 1px rgba(150, 138, 224, 0.42);
-	font: 500 10.5px/1 var(--mono);
+	@include ty.label-caps;
+	letter-spacing: normal;
+	text-transform: none;
 	white-space: nowrap;
 }
 
@@ -121,19 +141,24 @@ body {
 	color: #f5f4ff;
 }
 
+/* `flex: none` because it is one pixel tall in a flex column that scrolls.
+   In the longer modes the column overflows, every child that may shrink does,
+   and a 1px hairline shrinks to nothing — so the divider was there above the
+   tabs in Records and gone in Now, for no reason the markup could explain. */
 .rule {
+	flex: none;
 	height: 1px;
 	background: linear-gradient(90deg, rgba(233, 233, 237, 0.22), transparent);
 }
 
 .ar-title {
-	font: 400 38px/1.35 Amiri, serif;
+	@include ty.font(t.$ff-arabic, t.$fs-38, t.$fw-normal, t.$lh-135);
 	color: var(--accent-soft);
 }
 
 .lede {
-	margin: -12px 0 0;
-	font: 400 12.5px/1.6 Inter, sans-serif;
+	margin: sp.$sp-pull-12 0 0;
+	@include ty.font(t.$ff-ui, t.$fs-125, t.$fw-normal, t.$lh-16);
 	color: rgba(233, 233, 237, 0.5);
 	max-width: 330px;
 	text-wrap: pretty;
@@ -142,45 +167,42 @@ body {
 .now-head {
 	display: flex;
 	align-items: baseline;
-	gap: 8px;
-	margin-bottom: 12px;
+	gap: sp.$sp-8;
+	margin-bottom: sp.$sp-12;
 }
 
 .now-mode {
-	font: 400 10.5px/1 var(--mono);
-	letter-spacing: 0.1em;
 	color: rgba(233, 233, 237, 0.42);
 }
 
 .now-hint {
-	font: 400 10.5px/1 Inter, sans-serif;
 	color: rgba(233, 233, 237, 0.32);
 }
 
 .now-name {
 	display: flex;
 	align-items: flex-end;
-	gap: 16px;
+	gap: sp.$sp-16;
 }
 
 .now-prayer {
-	font: 500 62px/0.86 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-62, t.$fw-medium, t.$lh-086);
 	letter-spacing: -0.032em;
 	color: var(--ink-bright);
 }
 
 .now-ar {
-	font: 400 36px/1 Amiri, serif;
+	@include ty.font(t.$ff-arabic, t.$fs-36);
 	color: var(--accent);
-	padding-bottom: 2px;
+	padding-bottom: sp.$sp-hairline;
 }
 
 .city-chip {
-	margin-top: 14px;
+	margin-top: sp.$sp-16;
 	display: inline-flex;
 	align-items: center;
-	gap: 10px;
-	padding: 8px 12px;
+	gap: sp.$sp-12;
+	padding: sp.$sp-8 sp.$sp-12;
 	border-radius: 9px;
 	background: rgba(233, 233, 237, 0.045);
 	box-shadow: 0 0 0 1px rgba(233, 233, 237, 0.14);
@@ -204,25 +226,24 @@ body {
 }
 
 .city-name {
-	font: 500 20px/1 Inter, sans-serif;
 	color: var(--ink-bright);
 }
 
 .city-coord {
-	font: 400 12px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-12);
 	color: rgba(233, 233, 237, 0.5);
 }
 
 .meta {
-	margin-top: 9px;
+	margin-top: sp.$sp-8;
 	display: flex;
 	flex-wrap: wrap;
-	gap: 8px 14px;
+	gap: sp.$sp-8 sp.$sp-16;
 	align-items: center;
 }
 
 .meta-clock {
-	font: 400 14.5px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-145);
 	color: var(--ink-bright);
 }
 
@@ -234,15 +255,15 @@ body {
 }
 
 .meta-next {
-	font: 400 13.5px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-135);
 	color: var(--accent-soft);
 }
 
 .meta-qibla {
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	font: 400 12.5px/1 var(--mono);
+	gap: sp.$sp-8;
+	@include ty.font(t.$ff-mono, t.$fs-125);
 	color: rgba(233, 233, 237, 0.62);
 }
 
@@ -271,20 +292,20 @@ body {
 	display: flex;
 	align-items: baseline;
 	justify-content: space-between;
-	gap: 12px;
+	gap: sp.$sp-12;
 	/* Belt and braces against the row collapsing: the hijri text is 13px/1, so
      the bar holds that height even if both sides were ever empty at once. */
 	min-height: 13px;
 }
 
 .datebar-greg {
-	font: 400 12.5px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-125);
 	color: rgba(233, 233, 237, 0.72);
 }
 
 .datebar-hijri {
 	position: relative;
-	font: 400 13px/1 Amiri, serif;
+	@include ty.arabic-sm;
 	color: var(--accent);
 }
 
@@ -430,24 +451,22 @@ body {
 .arc-centre {
 	position: relative;
 	text-align: center;
-	padding-bottom: 2px;
+	padding-bottom: sp.$sp-hairline;
 }
 
 .arc-prayer {
-	font: 500 44px/1 Inter, sans-serif;
-	letter-spacing: -0.03em;
 	color: var(--ink-bright);
 }
 
 .arc-ar {
-	font: 400 24px/1.2 Amiri, serif;
+	@include ty.font(t.$ff-arabic, t.$fs-24, t.$fw-normal, t.$lh-12);
 	color: var(--accent);
 }
 
 .arc-foot {
 	position: absolute;
 	bottom: -2px;
-	font: 400 9.5px/1 var(--mono);
+	@include ty.label;
 	letter-spacing: 0.1em;
 	color: rgba(233, 233, 237, 0.3);
 }
@@ -481,7 +500,7 @@ body {
 	   column scrolls instead. */
 	flex: none;
 	align-items: flex-end;
-	padding: 10px 12px;
+	padding: sp.$sp-12 sp.$sp-12;
 	border-radius: 11px;
 	overflow: hidden;
 	background: rgba(150, 138, 224, 0.14);
@@ -522,12 +541,12 @@ body {
 .city-card-name {
 	display: flex;
 	align-items: center;
-	gap: 9px;
+	gap: sp.$sp-8;
 }
 
 .city-card-sub {
-	padding-top: 8px;
-	font: 400 11px/1 var(--mono);
+	padding-top: sp.$sp-8;
+	@include ty.value-sm;
 	color: rgba(233, 233, 237, 0.45);
 }
 
@@ -537,19 +556,18 @@ body {
 }
 
 .city-clock {
-	font: 400 26px/1 var(--mono);
 	color: var(--ink-bright);
 }
 
 .city-next {
-	padding-top: 8px;
-	font: 400 11px/1 Inter, sans-serif;
+	padding-top: sp.$sp-8;
+	@include ty.caption;
 	color: #c9c1ff;
 }
 
 /* Tabular figures so the ticking seconds do not jiggle the line. */
 .city-countdown {
-	font: 500 11px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-11, t.$fw-medium);
 	font-variant-numeric: tabular-nums;
 	color: var(--ink-bright);
 }
@@ -559,17 +577,17 @@ body {
 .times-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 8px;
+	gap: sp.$sp-8;
 	align-content: start;
 }
 
 .time-card {
-	padding: 12px 14px;
+	padding: sp.$sp-12 sp.$sp-16;
 	border-radius: 11px;
 	background: rgba(233, 233, 237, 0.035);
 	display: flex;
 	flex-direction: column;
-	gap: 9px;
+	gap: sp.$sp-8;
 	transition: background 180ms ease;
 }
 
@@ -585,7 +603,7 @@ body {
 .time-card-head {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: sp.$sp-8;
 }
 
 .time-card-dot {
@@ -596,18 +614,18 @@ body {
 }
 
 .time-card-label {
-	font: 500 11px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-11, t.$fw-medium);
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
 }
 
 .time-card-ar {
 	margin-left: auto;
-	font: 400 13px/1 Amiri, serif;
+	@include ty.arabic-sm;
 }
 
 .time-card-val {
-	font: 400 17px/1 var(--mono);
+	@include ty.value-lg;
 }
 
 .time-card-on .time-card-val {
@@ -619,12 +637,12 @@ body {
 .tally {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: sp.$sp-8;
 }
 
 .tally-bar {
 	display: flex;
-	gap: 5px;
+	gap: sp.$sp-4;
 	align-items: center;
 }
 
@@ -671,8 +689,8 @@ body {
 	transform: translateX(-50%);
 	display: flex;
 	align-items: center;
-	gap: 7px;
-	padding: 5px 9px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-4 sp.$sp-8;
 	border-radius: 7px;
 	white-space: nowrap;
 	background: rgba(12, 14, 20, 0.95);
@@ -701,19 +719,18 @@ body {
 }
 
 .tally-tip-name {
-	font: 500 11px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-11, t.$fw-medium);
 	color: var(--ink-bright);
 }
 
 .tally-tip-n {
-	font: 400 10px/1 var(--mono);
 	color: rgba(233, 233, 237, 0.55);
 }
 
 .tally-foot {
 	display: flex;
 	justify-content: space-between;
-	font: 400 9.5px/1 var(--mono);
+	@include ty.label;
 	letter-spacing: 0.1em;
 	color: rgba(233, 233, 237, 0.32);
 }
@@ -740,15 +757,15 @@ body {
 	position: sticky;
 	bottom: -24px;
 	z-index: 3;
-	margin: 0 -30px -24px;
+	margin: 0 sp.$sp-pull-32 sp.$sp-pull-24;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 7px;
-	padding: 14px 30px 24px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-16 sp.$sp-32 sp.$sp-24;
 	border-top: 1px solid rgba(233, 233, 237, 0.06);
 	background: #0f1120;
-	font: 400 9.5px/1 var(--mono);
+	@include ty.label;
 	letter-spacing: 0.08em;
 	color: rgba(233, 233, 237, 0.28);
 }
@@ -779,8 +796,8 @@ body {
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
-	gap: 8px;
-	padding: 7px 10px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-8 sp.$sp-12;
 	border-radius: 8px;
 	border: 1px solid var(--line);
 }
@@ -818,7 +835,7 @@ body {
 }
 
 .src-label {
-	font: 500 10px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-10, t.$fw-medium);
 	letter-spacing: 0.1em;
 	color: rgba(233, 233, 237, 0.75);
 }
@@ -828,7 +845,6 @@ body {
 }
 
 .src-note {
-	font: 400 10.5px/1 Inter, sans-serif;
 	color: rgba(233, 233, 237, 0.42);
 }
 
@@ -860,29 +876,29 @@ body {
 .times {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	gap: sp.$sp-8;
 }
 
 .time-row {
 	display: grid;
 	grid-template-columns: auto 1fr auto;
 	align-items: center;
-	gap: 11px;
-	padding: 8px 12px;
+	gap: sp.$sp-12;
+	padding: sp.$sp-8 sp.$sp-12;
 	border-radius: 8px;
 	border-left: 2px solid transparent;
 }
 
 .time-ar {
-	font: 400 15px/1 Amiri, serif;
+	@include ty.arabic;
 }
 
 .time-label {
-	font: 500 13px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-13, t.$fw-medium);
 }
 
 .time-val {
-	font: 400 13.5px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-135);
 }
 
 /* ---------- sunrise / sunset from coordinates ---------- */
@@ -890,8 +906,8 @@ body {
 .solar {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
-	padding: 10px 12px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-12 sp.$sp-12;
 	border-radius: 9px;
 	border: 1px solid var(--line);
 	background: linear-gradient(100deg, rgba(255, 198, 92, 0.05), rgba(181, 171, 252, 0.05) 70%, transparent);
@@ -900,31 +916,30 @@ body {
 .solar-head {
 	display: flex;
 	align-items: baseline;
-	gap: 8px;
+	gap: sp.$sp-8;
 }
 
 .solar-title {
-	font: 400 9.5px/1 var(--mono);
 	letter-spacing: 0.11em;
 	color: rgba(233, 233, 237, 0.45);
 }
 
 .solar-note {
 	margin-left: auto;
-	font: 400 9.5px/1 var(--mono);
+	letter-spacing: normal;
 	color: rgba(233, 233, 237, 0.3);
 }
 
 .solar-row {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 10px;
+	gap: sp.$sp-12;
 }
 
 .solar-cell {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: sp.$sp-8;
 }
 
 /* The icon inherits its colour from here rather than carrying one itself, which
@@ -944,13 +959,12 @@ body {
 }
 
 .solar-label {
-	font: 500 11.5px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-115, t.$fw-medium);
 	color: rgba(233, 233, 237, 0.7);
 }
 
 .solar-time {
 	margin-left: auto;
-	font: 400 13px/1 var(--mono);
 	color: var(--ink-bright);
 }
 
@@ -960,17 +974,17 @@ body {
 	margin-top: auto;
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: sp.$sp-12;
 }
 
 .bodies {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 10px;
+	gap: sp.$sp-12;
 }
 
 .body-card {
-	padding: 11px 12px;
+	padding: sp.$sp-12 sp.$sp-12;
 	text-align: left;
 	font: inherit;
 	color: inherit;
@@ -978,7 +992,7 @@ body {
 	border-radius: 9px;
 	display: flex;
 	flex-direction: column;
-	gap: 7px;
+	gap: sp.$sp-8;
 }
 
 .body-card-go {
@@ -1000,7 +1014,7 @@ body {
 .body-head {
 	display: flex;
 	align-items: center;
-	gap: 7px;
+	gap: sp.$sp-8;
 }
 
 /* The sun and moon beside their coordinates. Both were hand-built from nested
@@ -1024,27 +1038,25 @@ body {
 }
 
 .body-title {
-	font: 400 10px/1 var(--mono);
-	letter-spacing: 0.1em;
 	color: rgba(233, 233, 237, 0.45);
 }
 
 .body-val {
-	font: 400 12px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-12);
 	color: var(--ink);
 }
 
 .counts {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 6px;
+	gap: sp.$sp-8;
 }
 
 .count {
 	display: flex;
 	align-items: center;
-	gap: 7px;
-	padding: 5px 9px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-4 sp.$sp-8;
 	border-radius: 999px;
 	border: 1px solid rgba(233, 233, 237, 0.13);
 }
@@ -1056,12 +1068,12 @@ body {
 }
 
 .count-label {
-	font: 400 11.5px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-115);
 	color: rgba(233, 233, 237, 0.7);
 }
 
 .count-n {
-	font: 500 11.5px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-115, t.$fw-medium);
 	color: var(--ink);
 }
 
@@ -1140,12 +1152,12 @@ body {
 .con-btn {
 	display: flex;
 	align-items: center;
-	gap: 9px;
-	padding: 12px 15px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-12 sp.$sp-16;
 	border: 0;
 	background: transparent;
 	color: rgba(233, 233, 237, 0.6);
-	font: 500 10.5px/1 var(--mono);
+	@include ty.label-caps;
 	letter-spacing: 0.13em;
 	text-transform: uppercase;
 	white-space: nowrap;
@@ -1283,12 +1295,14 @@ body {
 
 .con-key {
 	min-width: 34px;
-	padding: 12px 4px;
+	padding: sp.$sp-12 sp.$sp-4;
 	border: 0;
 	border-left: 1px solid rgba(233, 233, 237, 0.1);
 	background: transparent;
 	color: rgba(233, 233, 237, 0.5);
-	font: 500 10.5px/1 var(--mono);
+	@include ty.label-caps;
+	letter-spacing: normal;
+	text-transform: none;
 	cursor: pointer;
 	transition: background 180ms ease, color 180ms ease;
 }
@@ -1305,21 +1319,20 @@ body {
 
 /* What the strip is set to, in words, because five highlights cannot say it. */
 .con-status {
-	padding-top: 12px;
-	font: 400 10.5px/1 var(--mono);
-	letter-spacing: 0.1em;
+	padding-top: sp.$sp-12;
+	@include ty.label-lg;
 	color: rgba(233, 233, 237, 0.4);
 	white-space: nowrap;
 }
 
 .btn {
-	font: 500 11.5px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-115, t.$fw-medium);
 	letter-spacing: 0.04em;
 	color: rgba(233, 233, 237, 0.7);
 	background: rgba(12, 14, 20, 0.72);
 	border: 1px solid rgba(233, 233, 237, 0.16);
 	border-radius: 8px;
-	padding: 9px 13px;
+	padding: sp.$sp-8 sp.$sp-12;
 	cursor: pointer;
 	transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
 }
@@ -1379,7 +1392,7 @@ body {
 }
 
 .orrery-name {
-	font: 500 8.5px ui-monospace, Menlo, monospace;
+	@include ty.font(t.$ff-mono, t.$fs-85, t.$fw-medium, t.$lh-normal);
 	letter-spacing: 0.1em;
 	fill: currentColor;
 	opacity: 0.62;
@@ -1394,13 +1407,13 @@ body {
 
 .search-input {
 	width: 190px;
-	font: 500 11.5px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-115, t.$fw-medium);
 	letter-spacing: 0.04em;
 	color: var(--ink-bright);
 	background: rgba(12, 14, 20, 0.72);
 	border: 1px solid rgba(233, 233, 237, 0.16);
 	border-radius: 8px;
-	padding: 9px 12px;
+	padding: sp.$sp-8 sp.$sp-12;
 	transition: border-color 0.15s ease, width 0.2s ease;
 }
 
@@ -1426,7 +1439,7 @@ body {
 	z-index: 3;
 	min-width: 230px;
 	margin: 0;
-	padding: 4px;
+	padding: sp.$sp-4;
 	list-style: none;
 	border-radius: 9px;
 	background: rgba(12, 14, 20, 0.94);
@@ -1438,9 +1451,9 @@ body {
 .search-item {
 	display: flex;
 	align-items: baseline;
-	gap: 10px;
+	gap: sp.$sp-12;
 	width: 100%;
-	padding: 7px 9px;
+	padding: sp.$sp-8 sp.$sp-8;
 	border: none;
 	border-radius: 6px;
 	background: transparent;
@@ -1453,13 +1466,13 @@ body {
 }
 
 .search-name {
-	font: 500 12.5px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-125, t.$fw-medium);
 	color: var(--ink-bright);
 }
 
 .search-coord {
 	margin-left: auto;
-	font: 400 10px/1 var(--mono);
+	@include ty.label-sm;
 	color: rgba(233, 233, 237, 0.42);
 }
 
@@ -1469,19 +1482,19 @@ body {
    — it wraps onto a second row on a narrow window — and a fixed offset here put
    the coordinates straight through the status line whenever it did. */
 .pointer {
-	padding-top: 14px;
+	padding-top: sp.$sp-16;
 	text-align: left;
 	pointer-events: none;
 }
 
 .pointer-pos {
-	font: 500 16px/1.4 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-16, t.$fw-medium, t.$lh-14);
 	color: var(--ink);
 }
 
 .pointer-note {
-	margin-top: 4px;
-	font: 400 10.5px/1.6 var(--mono);
+	margin-top: sp.$sp-4;
+	@include ty.font(t.$ff-mono, t.$fs-105, t.$fw-normal, t.$lh-16);
 	color: rgba(233, 233, 237, 0.4);
 }
 
@@ -1497,8 +1510,8 @@ body {
 	z-index: 2;
 	display: flex;
 	flex-direction: column;
-	gap: 9px;
-	padding: 13px 15px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-12 sp.$sp-16;
 	border-radius: 10px;
 	background: var(--glass);
 	border: 1px solid var(--line);
@@ -1506,7 +1519,6 @@ body {
 }
 
 .legend-title {
-	font: 400 10px/1 var(--mono);
 	letter-spacing: 0.11em;
 	color: rgba(233, 233, 237, 0.42);
 }
@@ -1514,11 +1526,11 @@ body {
 .legend-row {
 	display: flex;
 	align-items: center;
-	gap: 9px;
+	gap: sp.$sp-8;
 }
 
 .legend-label {
-	font: 500 11px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-11, t.$fw-medium);
 	color: rgba(233, 233, 237, 0.8);
 }
 
@@ -1531,7 +1543,7 @@ body {
 }
 
 .legend-angle {
-	font: 400 10px/1 var(--mono);
+	letter-spacing: normal;
 	color: rgba(233, 233, 237, 0.45);
 }
 
@@ -1579,7 +1591,7 @@ body {
 .legend-note {
 	margin: 0;
 	max-width: 212px;
-	font: 400 10.5px/1.5 Inter, sans-serif;
+	@include ty.body-sm;
 	color: rgba(233, 233, 237, 0.42);
 	text-wrap: pretty;
 }
@@ -1594,8 +1606,8 @@ body {
 	z-index: 2;
 	display: flex;
 	flex-direction: column;
-	gap: 9px;
-	padding: 14px 16px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-16 sp.$sp-16;
 	border-radius: 10px;
 	background: var(--glass);
 	border: 1px solid var(--line);
@@ -1605,29 +1617,28 @@ body {
 .scrub-head {
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: sp.$sp-12;
 }
 
 .scrub-title {
-	font: 400 10.5px/1 var(--mono);
-	letter-spacing: 0.1em;
+	@include ty.label-lg;
 	color: rgba(233, 233, 237, 0.45);
 }
 
 .scrub-label {
-	font: 500 13px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-13, t.$fw-medium);
 	font-variant-numeric: tabular-nums;
 	color: var(--ink-bright);
 }
 
 .scrub-offset {
-	font: 400 11px/1 var(--mono);
+	@include ty.value-sm;
 	color: var(--accent-soft);
 }
 
 .scrub-note {
 	margin-left: auto;
-	font: 400 11px/1 Inter, sans-serif;
+	@include ty.caption;
 	color: rgba(233, 233, 237, 0.4);
 	text-align: right;
 }
@@ -1803,7 +1814,7 @@ body {
 	position: absolute;
 	left: 0;
 	top: 0;
-	font: 500 8.5px ui-monospace, Menlo, monospace;
+	@include ty.font(t.$ff-mono, t.$fs-85, t.$fw-medium, t.$lh-normal);
 	letter-spacing: 0.11em;
 	text-transform: uppercase;
 	white-space: nowrap;
@@ -1818,10 +1829,10 @@ body {
 	position: absolute;
 	left: 0;
 	top: 0;
-	padding: 4px 8px;
+	padding: sp.$sp-4 sp.$sp-8;
 	border-radius: 6px;
 	white-space: nowrap;
-	font: 500 11px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-11, t.$fw-medium);
 	color: var(--ink-bright);
 	background: rgba(12, 14, 20, 0.92);
 	border: 1px solid rgba(181, 171, 252, 0.45);
@@ -1857,11 +1868,11 @@ body {
 .tip {
 	position: fixed;
 	z-index: 60;
-	padding: 4px 8px;
+	padding: sp.$sp-4 sp.$sp-8;
 	border-radius: 6px;
 	border: 1px solid rgba(181, 171, 252, 0.45);
 	white-space: nowrap;
-	font: 500 11px/1.35 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-11, t.$fw-medium, t.$lh-135);
 	letter-spacing: 0;
 	text-transform: none;
 	color: var(--ink-bright);
@@ -1922,7 +1933,7 @@ body {
 	}
 
 	.panel {
-		padding: 24px 22px 20px;
+		padding: sp.$sp-24 sp.$sp-24 sp.$sp-24;
 	}
 
 	.now-prayer {
@@ -1953,7 +1964,7 @@ body {
 	}
 
 	.panel-foot {
-		margin-top: 12px;
+		margin-top: sp.$sp-12;
 	}
 
 	.stage {
@@ -2033,7 +2044,7 @@ body {
 	bottom: 16px;
 	margin: 0;
 	max-width: 60%;
-	font: 400 12px/1.5 var(--ui, system-ui), sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-12, t.$fw-normal, t.$lh-15);
 	color: rgba(233, 233, 237, 0.34);
 	user-select: none;
 	pointer-events: none;
@@ -2045,10 +2056,10 @@ body {
 	top: 18px;
 	display: inline-flex;
 	align-items: center;
-	gap: 6px;
-	padding: 9px 15px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-8 sp.$sp-16;
 	border-radius: 999px;
-	font: 500 11px/1 ui-monospace, Menlo, monospace;
+	@include ty.font(t.$ff-mono, t.$fs-11, t.$fw-medium);
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
 	text-decoration: none;
@@ -2072,8 +2083,8 @@ body {
 	transform: translateX(-50%);
 	display: flex;
 	align-items: stretch;
-	gap: 4px;
-	padding: 4px;
+	gap: sp.$sp-4;
+	padding: sp.$sp-4;
 	border-radius: 999px;
 	background: rgba(12, 20, 30, 0.55);
 	border: 1px solid rgba(216, 176, 74, 0.32);
@@ -2087,13 +2098,13 @@ body {
 	border-radius: 999px;
 	background: transparent;
 	color: #f0e6d2;
-	font: 500 12px/1 ui-monospace, Menlo, monospace;
+	@include ty.font(t.$ff-mono, t.$fs-12, t.$fw-medium);
 	letter-spacing: 0.14em;
 	text-transform: uppercase;
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	padding: 11px 18px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-12 sp.$sp-16;
 	cursor: pointer;
 	transition: background 160ms ease, color 160ms ease;
 }
@@ -2134,8 +2145,8 @@ body {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 12px;
-	padding: 0 20px;
+	gap: sp.$sp-12;
+	padding: 0 sp.$sp-24;
 	pointer-events: none;
 }
 
@@ -2148,8 +2159,8 @@ body {
 	flex-wrap: wrap;
 	justify-content: center;
 	align-items: stretch;
-	gap: 3px;
-	padding: 5px;
+	gap: sp.$sp-4;
+	padding: sp.$sp-4;
 	max-width: 100%;
 	border-radius: 999px;
 	background: linear-gradient(180deg, rgba(24, 26, 40, 0.82), rgba(8, 9, 14, 0.88));
@@ -2161,13 +2172,13 @@ body {
 .ss-rail button {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: sp.$sp-8;
 	border: 0;
 	background: transparent;
 	border-radius: 999px;
-	padding: 10px 15px;
+	padding: sp.$sp-12 sp.$sp-16;
 	cursor: pointer;
-	font: 500 11px/1 var(--ui, system-ui), sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-11, t.$fw-medium);
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
 	color: rgba(233, 233, 237, 0.66);
@@ -2194,11 +2205,11 @@ body {
 }
 
 .ss-plate {
-	padding: 11px 18px;
+	padding: sp.$sp-12 sp.$sp-16;
 	border-radius: 999px;
 	display: flex;
 	align-items: center;
-	gap: 18px;
+	gap: sp.$sp-16;
 	flex-wrap: wrap;
 	justify-content: center;
 	background: linear-gradient(180deg, rgba(24, 26, 40, 0.8), rgba(8, 9, 14, 0.86));
@@ -2209,7 +2220,7 @@ body {
 
 .ss-plate h1 {
 	margin: 0;
-	font: 500 16px/1 var(--ui, system-ui), sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-16, t.$fw-medium);
 	letter-spacing: 0.02em;
 	color: #f5f4ff;
 }
@@ -2218,18 +2229,18 @@ body {
 	margin: 0;
 	display: flex;
 	align-items: baseline;
-	gap: 16px;
+	gap: sp.$sp-16;
 	flex-wrap: wrap;
 }
 
 .ss-fact {
 	display: flex;
 	align-items: baseline;
-	gap: 6px;
+	gap: sp.$sp-8;
 }
 
 .ss-plate dt {
-	font: 400 9.5px/1.2 ui-monospace, Menlo, monospace;
+	@include ty.font(t.$ff-mono, t.$fs-95, t.$fw-normal, t.$lh-12);
 	letter-spacing: 0.12em;
 	color: rgba(233, 233, 237, 0.4);
 	text-transform: uppercase;
@@ -2237,7 +2248,7 @@ body {
 
 .ss-plate dd {
 	margin: 0;
-	font: 400 11.5px/1.2 ui-monospace, Menlo, monospace;
+	@include ty.font(t.$ff-mono, t.$fs-115, t.$fw-normal, t.$lh-12);
 	color: #e9e9ed;
 }
 
@@ -2266,8 +2277,8 @@ body {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 2px;
-	padding: 10px 12px 11px;
+	gap: sp.$sp-hairline;
+	padding: sp.$sp-12 sp.$sp-12 sp.$sp-12;
 	border-radius: 11px;
 	background: linear-gradient(180deg, rgba(24, 26, 40, 0.94), rgba(8, 9, 14, 0.96));
 	box-shadow: 0 18px 44px rgba(0, 0, 0, 0.62), inset 0 1px 0 rgba(255, 255, 255, 0.06),
@@ -2319,26 +2330,26 @@ body {
 }
 
 .mv-pop-name {
-	font: 500 12.5px/1.3 var(--ui, system-ui), sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-125, t.$fw-medium, t.$lh-13);
 	color: #f5f4ff;
 }
 
 .mv-pop-where {
-	font: 400 10.5px/1.3 ui-monospace, Menlo, monospace;
+	@include ty.font(t.$ff-mono, t.$fs-105, t.$fw-normal, t.$lh-13);
 	letter-spacing: 0.06em;
 	color: rgba(233, 233, 237, 0.45);
 }
 
 .mv-pop-btn {
-	margin-top: 7px;
+	margin-top: sp.$sp-8;
 	align-self: stretch;
 	border: 0;
 	border-radius: 7px;
-	padding: 7px 12px;
+	padding: sp.$sp-8 sp.$sp-12;
 	background: rgba(216, 176, 74, 0.16);
 	box-shadow: inset 0 0 0 1px rgba(216, 176, 74, 0.34);
 	color: #f0e0b4;
-	font: 500 10.5px/1 ui-monospace, Menlo, monospace;
+	@include ty.label-caps;
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	cursor: pointer;
@@ -2414,10 +2425,10 @@ body {
 	position: sticky;
 	top: 0;
 	margin: 0;
-	padding: 15px 16px 13px;
+	padding: sp.$sp-16 sp.$sp-16 sp.$sp-12;
 	background: rgba(8, 10, 16, 0.96);
 	border-bottom: 1px solid rgba(233, 233, 237, 0.12);
-	font: 500 10px/1 ui-monospace, Menlo, monospace;
+	@include ty.font(t.$ff-mono, t.$fs-10, t.$fw-medium);
 	letter-spacing: 0.2em;
 	text-transform: uppercase;
 	color: rgba(233, 233, 237, 0.5);
@@ -2429,7 +2440,7 @@ body {
 	text-align: left;
 	border: 0;
 	border-bottom: 1px solid rgba(233, 233, 237, 0.07);
-	padding: 11px 16px;
+	padding: sp.$sp-12 sp.$sp-16;
 	background: transparent;
 	cursor: pointer;
 	transition: background 160ms ease;
@@ -2446,14 +2457,14 @@ body {
 
 .mv-rail-n {
 	display: block;
-	font: 400 13px/1.35 var(--ui, system-ui), sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-13, t.$fw-normal, t.$lh-135);
 	color: #fdf7e6;
 }
 
 .mv-rail-c {
 	display: block;
-	margin-top: 3px;
-	font: 400 10.5px/1.3 ui-monospace, Menlo, monospace;
+	margin-top: sp.$sp-4;
+	@include ty.font(t.$ff-mono, t.$fs-105, t.$fw-normal, t.$lh-13);
 	letter-spacing: 0.06em;
 	text-transform: uppercase;
 	color: rgba(233, 233, 237, 0.45);
@@ -2509,7 +2520,7 @@ body {
 	left: 18px;
 	bottom: 16px;
 	margin: 0;
-	font: 400 11.5px/1.5 var(--ui, system-ui), sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-115, t.$fw-normal, t.$lh-15);
 	color: rgba(233, 233, 237, 0.3);
 	user-select: none;
 	pointer-events: none;
@@ -2521,7 +2532,7 @@ body {
 	bottom: 20px;
 	transform: translateX(-50%);
 	max-width: min(560px, calc(100% - 220px));
-	padding: 12px 20px 13px;
+	padding: sp.$sp-12 sp.$sp-24 sp.$sp-12;
 	border-radius: 13px;
 	text-align: center;
 	background: linear-gradient(180deg, rgba(24, 26, 40, 0.82), rgba(8, 9, 14, 0.88));
@@ -2533,22 +2544,22 @@ body {
 
 .mv-plate h1 {
 	margin: 0;
-	font: 500 16px/1.2 var(--ui, system-ui), sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-16, t.$fw-medium, t.$lh-12);
 	letter-spacing: 0.02em;
 	color: #f5f4ff;
 }
 
 .mv-plate-where {
-	margin: 6px 0 0;
-	font: 400 10.5px/1.2 ui-monospace, Menlo, monospace;
+	margin: sp.$sp-8 0 0;
+	@include ty.font(t.$ff-mono, t.$fs-105, t.$fw-normal, t.$lh-12);
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	color: rgba(233, 233, 237, 0.45);
 }
 
 .mv-plate-note {
-	margin: 8px 0 0;
-	font: 400 12px/1.55 var(--ui, system-ui), sans-serif;
+	margin: sp.$sp-8 0 0;
+	@include ty.font(t.$ff-ui, t.$fs-12, t.$fw-normal, t.$lh-155);
 	color: rgba(233, 233, 237, 0.62);
 	text-wrap: pretty;
 }
@@ -2567,14 +2578,12 @@ body {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	gap: 14px;
+	gap: sp.$sp-16;
 	background: #05070d;
 	color: rgba(233, 233, 237, 0.5);
-	font: 500 10.5px/1 ui-monospace, Menlo, monospace;
-	letter-spacing: 0.14em;
-	text-transform: uppercase;
+	@include ty.label-caps;
 	text-align: center;
-	padding: 0 24px;
+	padding: 0 sp.$sp-24;
 	/* A build that finishes in one frame should not flash a spinner at all, so
 	   the whole thing fades in only if it is still there after a moment. */
 	animation: mv-fade 220ms ease 140ms both;
@@ -2644,15 +2653,15 @@ body {
 .pg-route-error {
 	display: grid;
 	place-content: center;
-	gap: 12px;
+	gap: sp.$sp-12;
 	min-height: 100vh;
 	color: rgba(233, 233, 237, 0.72);
-	font: 500 12px ui-monospace, Menlo, monospace;
+	@include ty.font(t.$ff-mono, t.$fs-12, t.$fw-medium, t.$lh-normal);
 	letter-spacing: 0.11em;
 	text-transform: uppercase;
 }
 .pg-route-error button {
-	padding: 8px 16px;
+	padding: sp.$sp-8 sp.$sp-16;
 	border: 1px solid rgba(233, 233, 237, 0.28);
 	border-radius: 4px;
 	background: transparent;
@@ -2669,8 +2678,8 @@ body {
 
 .modes {
 	display: flex;
-	gap: 3px;
-	padding: 3px;
+	gap: sp.$sp-4;
+	padding: sp.$sp-4;
 	border-radius: 10px;
 	background: rgba(8, 9, 14, 0.55);
 	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.1);
@@ -2679,14 +2688,12 @@ body {
 
 .mode-btn {
 	flex: 1;
-	padding: 9px 3px;
+	padding: sp.$sp-8 sp.$sp-4;
 	border: 0;
 	border-radius: 8px;
 	background: transparent;
 	color: rgba(233, 233, 237, 0.55);
-	font: 500 9.5px/1 Inter, sans-serif;
-	letter-spacing: 0.11em;
-	text-transform: uppercase;
+	@include ty.chip-sm;
 	cursor: pointer;
 	transition: background 180ms ease, color 180ms ease;
 }
@@ -2713,13 +2720,13 @@ body {
 .pin-btn {
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	padding: 6px 9px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-8 sp.$sp-8;
 	border: 0;
 	border-radius: 999px;
 	background: rgba(233, 233, 237, 0.07);
 	color: rgba(233, 233, 237, 0.62);
-	font: 500 9px/1 Inter, sans-serif;
+	@include ty.chip-tiny;
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
 	cursor: pointer;
@@ -2795,7 +2802,7 @@ body {
 	align-items: stretch;
 	min-height: 0;
 	width: min(420px, calc(100vw - 52px));
-	margin: 0 0 8px auto;
+	margin: 0 0 sp.$sp-8 auto;
 	padding: 0;
 	border-radius: 13px;
 	overflow: hidden;
@@ -2854,7 +2861,7 @@ body {
 	align-items: center;
 	justify-content: center;
 	width: 38px;
-	font: 400 15px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-15);
 	color: var(--toast-accent);
 }
 
@@ -2863,12 +2870,12 @@ body {
 	flex: 1;
 	min-width: 0;
 	flex-direction: column;
-	gap: 5px;
-	padding: 13px 4px 14px;
+	gap: sp.$sp-4;
+	padding: sp.$sp-12 sp.$sp-4 sp.$sp-16;
 }
 
 .pg-toast-title {
-	font: 500 12.5px/1.35 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-125, t.$fw-medium, t.$lh-135);
 	letter-spacing: 0.01em;
 	color: #f5f4ff;
 	text-wrap: pretty;
@@ -2877,7 +2884,7 @@ body {
 /* Mono, and one line only: this carries coordinates, distances and URL
    fragments, which wrap badly and are read by shape as much as by word. */
 .pg-toast-detail {
-	font: 400 11px/1.5 ui-monospace, Menlo, monospace;
+	@include ty.font(t.$ff-mono, t.$fs-11, t.$fw-normal, t.$lh-15);
 	color: rgba(233, 233, 237, 0.5);
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -2894,7 +2901,7 @@ body {
 	border: 0;
 	background: none;
 	color: rgba(233, 233, 237, 0.38);
-	font: 400 14px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-14);
 	cursor: pointer;
 	transition: color 140ms ease;
 }
@@ -2949,12 +2956,12 @@ body {
 }
 
 .chain {
-	gap: 13px;
+	gap: sp.$sp-12;
 }
 
 .chain-lede {
 	margin: 0;
-	font: 400 10px/1.55 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-10, t.$fw-normal, t.$lh-155);
 	color: rgba(233, 233, 237, 0.45);
 	text-wrap: pretty;
 }
@@ -2962,21 +2969,19 @@ body {
 .chain-chips {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 4px;
+	gap: sp.$sp-4;
 }
 
 .chain-chip {
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	padding: 7px 10px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-8 sp.$sp-12;
 	border: 0;
 	border-radius: 999px;
 	background: rgba(233, 233, 237, 0.05);
 	color: rgba(233, 233, 237, 0.6);
-	font: 500 10px/1 Inter, sans-serif;
-	letter-spacing: 0.1em;
-	text-transform: uppercase;
+	@include ty.chip;
 	cursor: pointer;
 	transition: background 180ms ease, color 180ms ease;
 }
@@ -3002,8 +3007,8 @@ body {
 .chain-head {
 	display: flex;
 	align-items: flex-end;
-	gap: 16px;
-	padding: 16px 18px;
+	gap: sp.$sp-16;
+	padding: sp.$sp-16 sp.$sp-16;
 	border-radius: 13px;
 	background: linear-gradient(105deg, rgba(150, 138, 224, 0.22), rgba(150, 138, 224, 0.05));
 	box-shadow: inset 0 0 0 1px rgba(181, 171, 252, 0.32);
@@ -3014,26 +3019,22 @@ body {
 }
 
 .chain-label {
-	font: 400 9.5px/1 var(--mono);
 	letter-spacing: 0.13em;
 	color: rgba(233, 233, 237, 0.42);
-	padding-bottom: 10px;
+	padding-bottom: sp.$sp-12;
 }
 
 .chain-name-row {
 	display: flex;
 	align-items: baseline;
-	gap: 11px;
+	gap: sp.$sp-12;
 }
 
 .chain-name {
-	font: 500 33px/1 Inter, sans-serif;
-	letter-spacing: -0.03em;
 	color: var(--ink-bright);
 }
 
 .chain-ar {
-	font: 400 20px/1 Amiri, serif;
 	color: #c9c1ff;
 }
 
@@ -3042,27 +3043,27 @@ body {
 }
 
 .chain-count {
-	font: 400 34px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-34);
 	color: var(--ink-bright);
 }
 
 .chain-of {
-	padding-top: 6px;
-	font: 400 10px/1 Inter, sans-serif;
+	padding-top: sp.$sp-8;
+	@include ty.font(t.$ff-ui, t.$fs-10);
 	color: rgba(233, 233, 237, 0.5);
 }
 
 .chain-edges {
 	display: flex;
 	flex-direction: column;
-	gap: 7px;
+	gap: sp.$sp-8;
 }
 
 .chain-edge {
 	display: flex;
 	align-items: center;
-	gap: 12px;
-	padding: 12px 14px;
+	gap: sp.$sp-12;
+	padding: sp.$sp-12 sp.$sp-16;
 	border: 0;
 	border-radius: 11px;
 	background: rgba(233, 233, 237, 0.045);
@@ -3089,27 +3090,25 @@ body {
 
 .chain-edge-kind {
 	display: block;
-	font: 400 9.5px/1 var(--mono);
-	letter-spacing: 0.12em;
+	@include ty.label;
 	color: rgba(233, 233, 237, 0.4);
-	padding-bottom: 7px;
+	padding-bottom: sp.$sp-8;
 }
 
 .chain-edge-city {
 	display: block;
-	font: 500 15px/1 Inter, sans-serif;
 	color: var(--ink-bright);
 }
 
 .chain-edge-when {
-	font: 400 12px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-12);
 }
 
 .chain-foot {
 	margin-top: auto;
 	display: flex;
 	flex-direction: column;
-	gap: 9px;
+	gap: sp.$sp-8;
 }
 
 /* Three columns, with the outer two given equal width, so the controls sit on
@@ -3121,9 +3120,8 @@ body {
 	display: grid;
 	grid-template-columns: 1fr auto 1fr;
 	align-items: center;
-	gap: 8px;
-	font: 400 9.5px/1 var(--mono);
-	letter-spacing: 0.12em;
+	gap: sp.$sp-8;
+	@include ty.label;
 	color: rgba(233, 233, 237, 0.36);
 }
 
@@ -3135,7 +3133,7 @@ body {
 .chain-foot-controls {
 	display: flex;
 	align-items: center;
-	gap: 6px;
+	gap: sp.$sp-8;
 }
 
 .chain-bar {
@@ -3155,7 +3153,7 @@ body {
 
 .chain-note {
 	margin: 0;
-	font: 400 11px/1.5 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-11, t.$fw-normal, t.$lh-15);
 	color: rgba(233, 233, 237, 0.45);
 	text-wrap: pretty;
 }
@@ -3200,40 +3198,40 @@ body {
 }
 
 .no-city-title {
-	padding-top: 26px;
-	font: 500 19px/1 Inter, sans-serif;
+	padding-top: sp.$sp-24;
+	@include ty.font(t.$ff-ui, t.$fs-19, t.$fw-medium);
 	letter-spacing: -0.01em;
 	color: #f5f4ff;
 }
 
 .no-city-note {
 	margin: 0;
-	padding-top: 12px;
+	padding-top: sp.$sp-12;
 	max-width: 250px;
-	font: 400 12px/1.65 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-12, t.$fw-normal, t.$lh-165);
 	color: rgba(233, 233, 237, 0.5);
 	text-wrap: pretty;
 }
 
 .no-city-actions {
-	padding-top: 22px;
+	padding-top: sp.$sp-24;
 	display: flex;
 	flex-wrap: wrap;
-	gap: 7px;
+	gap: sp.$sp-8;
 	justify-content: center;
 }
 
 .no-city-btn {
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	padding: 9px 14px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-8 sp.$sp-16;
 	border: 0;
 	border-radius: 999px;
 	background: rgba(233, 233, 237, 0.05);
 	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.12);
 	color: rgba(233, 233, 237, 0.72);
-	font: 500 10.5px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-105, t.$fw-medium);
 	letter-spacing: 0.09em;
 	text-transform: uppercase;
 	cursor: pointer;
@@ -3296,7 +3294,7 @@ body {
 	min-height: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 13px;
+	gap: sp.$sp-12;
 	overflow-y: auto;
 }
 
@@ -3304,24 +3302,24 @@ body {
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
-	gap: 12px;
+	gap: sp.$sp-12;
 }
 
 .hil-label {
-	font: 500 9.5px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-95, t.$fw-medium);
 	letter-spacing: 0.16em;
 	color: rgba(233, 233, 237, 0.4);
 }
 
 .hil-title {
-	padding-top: 6px;
-	font: 500 17px/1.15 Inter, sans-serif;
+	padding-top: sp.$sp-8;
+	@include ty.font(t.$ff-ui, t.$fs-17, t.$fw-medium, t.$lh-115);
 	color: #f5f4ff;
 }
 
 .hil-sub {
 	text-align: right;
-	font: 400 9.5px/1.45 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-95, t.$fw-normal, t.$lh-145);
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
 	color: rgba(233, 233, 237, 0.38);
@@ -3336,14 +3334,14 @@ body {
 	z-index: 5;
 	display: flex;
 	align-items: center;
-	gap: 10px;
-	padding: 9px 16px;
+	gap: sp.$sp-12;
+	padding: sp.$sp-8 sp.$sp-16;
 	border-radius: 999px;
 	background: linear-gradient(180deg, rgba(24, 26, 40, 0.9), rgba(8, 9, 14, 0.94));
 	box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(233, 233, 237, 0.12);
 	backdrop-filter: blur(14px);
 	color: rgba(233, 233, 237, 0.7);
-	font: 500 10.5px/1 var(--mono);
+	@include ty.label-caps;
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	pointer-events: none;
@@ -3359,7 +3357,7 @@ body {
 .hil-nav {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: sp.$sp-8;
 }
 
 .hil-nav-btn {
@@ -3371,7 +3369,7 @@ body {
 	background: rgba(233, 233, 237, 0.055);
 	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.1);
 	color: rgba(233, 233, 237, 0.72);
-	font: 400 17px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-17);
 	cursor: pointer;
 	transition: background 160ms ease, color 160ms ease;
 }
@@ -3385,13 +3383,12 @@ body {
 	flex: 1;
 	display: flex;
 	align-items: baseline;
-	gap: 8px;
-	font: 500 15px/1 Inter, sans-serif;
+	gap: sp.$sp-8;
+	@include ty.title;
 	color: #f5f4ff;
 }
 
 .hil-nav-off {
-	font: 400 11px/1 var(--mono);
 	letter-spacing: 0.06em;
 	color: rgba(233, 233, 237, 0.38);
 }
@@ -3400,10 +3397,10 @@ body {
 	flex: none;
 	border: 0;
 	border-radius: 9px;
-	padding: 10px 14px;
+	padding: sp.$sp-12 sp.$sp-16;
 	background: rgba(150, 138, 224, 0.26);
 	color: #e8e5ff;
-	font: 500 10px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-10, t.$fw-medium);
 	letter-spacing: 0.14em;
 	text-transform: uppercase;
 	cursor: pointer;
@@ -3418,15 +3415,15 @@ body {
 .hil-jump {
 	display: flex;
 	align-items: center;
-	gap: 10px;
+	gap: sp.$sp-12;
 	width: 100%;
 	border: 0;
 	border-radius: 11px;
-	padding: 13px 15px;
+	padding: sp.$sp-12 sp.$sp-16;
 	background: rgba(150, 138, 224, 0.12);
 	box-shadow: inset 0 0 0 1px rgba(181, 171, 252, 0.3);
 	color: #d2cefd;
-	font: 500 12.5px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-125, t.$fw-medium);
 	cursor: pointer;
 	transition: background 160ms ease;
 }
@@ -3446,8 +3443,8 @@ body {
 }
 
 .hil-conj {
-	margin: -4px 0 0;
-	font: 400 10.5px/1.5 var(--mono);
+	margin: sp.$sp-pull-4 0 0;
+	@include ty.font(t.$ff-mono, t.$fs-105, t.$fw-normal, t.$lh-15);
 	letter-spacing: 0.04em;
 	color: rgba(233, 233, 237, 0.34);
 }
@@ -3456,12 +3453,12 @@ body {
 .hil-best {
 	display: flex;
 	align-items: center;
-	gap: 11px;
+	gap: sp.$sp-12;
 	width: 100%;
 	text-align: left;
 	border: 0;
 	border-radius: 11px;
-	padding: 12px 14px;
+	padding: sp.$sp-12 sp.$sp-16;
 	background: rgba(233, 233, 237, 0.045);
 	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.09);
 	cursor: pointer;
@@ -3484,17 +3481,16 @@ body {
 	min-width: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 5px;
+	gap: sp.$sp-4;
 }
 
 .hil-best-tag {
-	font: 500 9px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-9, t.$fw-medium);
 	letter-spacing: 0.16em;
 	color: rgba(233, 233, 237, 0.42);
 }
 
 .hil-best-city {
-	font: 500 15px/1 Inter, sans-serif;
 	color: #f5f4ff;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -3503,33 +3499,32 @@ body {
 
 .hil-best-zone {
 	flex: none;
-	font: 400 11.5px/1 Inter, sans-serif;
 }
 
 /* Diyanet's decision, distinguished from the geometry beside it. */
 .hil-diyanet {
 	display: flex;
 	flex-direction: column;
-	gap: 5px;
-	padding: 10px 13px 11px;
+	gap: sp.$sp-4;
+	padding: sp.$sp-12 sp.$sp-12 sp.$sp-12;
 	border-radius: 11px;
 	background: rgba(150, 138, 224, 0.12);
 	box-shadow: inset 0 0 0 1px rgba(181, 171, 252, 0.28);
 }
 
 .hil-diyanet-tag {
-	font: 500 9px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-9, t.$fw-medium);
 	letter-spacing: 0.16em;
 	color: rgba(210, 206, 253, 0.7);
 }
 
 .hil-diyanet-val {
-	font: 400 12.5px/1.35 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-125, t.$fw-normal, t.$lh-135);
 	color: #f2f1ff;
 }
 
 .hil-local {
-	padding: 12px 13px 13px;
+	padding: sp.$sp-12 sp.$sp-12 sp.$sp-12;
 	border-radius: 11px;
 	background: rgba(233, 233, 237, 0.035);
 	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.1);
@@ -3538,13 +3533,12 @@ body {
 .hil-verdict {
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	font: 500 13.5px/1.2 Inter, sans-serif;
+	gap: sp.$sp-8;
+	@include ty.title-sm;
 }
 
 .hil-where {
 	color: rgba(233, 233, 237, 0.45);
-	font: 400 11px/1 var(--mono);
 	letter-spacing: 0.06em;
 }
 
@@ -3557,31 +3551,31 @@ body {
 
 .hil-facts {
 	margin: 0;
-	padding-top: 12px;
+	padding-top: sp.$sp-12;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 9px 14px;
+	gap: sp.$sp-8 sp.$sp-16;
 }
 
 .hil-facts dt {
-	font: 400 9px/1.2 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-9, t.$fw-normal, t.$lh-12);
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
 	color: rgba(233, 233, 237, 0.4);
 }
 
 .hil-facts dd {
-	margin: 3px 0 0;
-	font: 400 13px/1 var(--mono);
+	margin: sp.$sp-4 0 0;
+	@include ty.value;
 	color: #e9e9ed;
 }
 
 .hil-empty {
 	margin: 0;
-	padding: 14px 13px;
+	padding: sp.$sp-16 sp.$sp-12;
 	border-radius: 11px;
 	background: rgba(233, 233, 237, 0.035);
-	font: 400 12px/1.6 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-12, t.$fw-normal, t.$lh-16);
 	color: rgba(233, 233, 237, 0.5);
 	text-wrap: pretty;
 }
@@ -3589,16 +3583,16 @@ body {
 .hil-legend {
 	display: flex;
 	flex-direction: column;
-	gap: 1px;
+	gap: sp.$sp-hairline;
 }
 
 .hil-key {
 	display: flex;
 	align-items: center;
-	gap: 10px;
-	padding: 7px 9px;
+	gap: sp.$sp-12;
+	padding: sp.$sp-8 sp.$sp-8;
 	border-radius: 8px;
-	font: 400 11.5px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-115);
 	color: rgba(233, 233, 237, 0.6);
 }
 
@@ -3616,7 +3610,6 @@ body {
 
 .hil-key-count {
 	flex: none;
-	font: 400 11px/1 var(--mono);
 	letter-spacing: 0.04em;
 	color: rgba(233, 233, 237, 0.42);
 }
@@ -3624,8 +3617,7 @@ body {
 /* The line that keeps the map honest — see the note in HilalPanel. */
 .hil-note {
 	margin: 0;
-	padding-top: 2px;
-	font: 400 11px/1.6 Inter, sans-serif;
+	padding-top: sp.$sp-hairline;
 	color: rgba(233, 233, 237, 0.42);
 	text-wrap: pretty;
 }
@@ -3633,24 +3625,23 @@ body {
 /* ---------- records ---------- */
 
 .recs {
-	gap: 13px;
+	gap: sp.$sp-12;
 }
 
 .recs-head {
 	display: flex;
 	align-items: baseline;
 	justify-content: space-between;
-	gap: 10px;
+	gap: sp.$sp-12;
 }
 
 .recs-title {
-	font: 400 10px/1 var(--mono);
 	letter-spacing: 0.13em;
 	color: rgba(233, 233, 237, 0.42);
 }
 
 .recs-date {
-	font: 400 10px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-10);
 	color: rgba(233, 233, 237, 0.32);
 }
 
@@ -3659,7 +3650,7 @@ body {
 	min-height: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	gap: sp.$sp-8;
 	/* Rows size to their content and stack from the top. Letting them share the
      panel's height instead — which is what `flex: 1` on each row did — made
      six cards nearly a hundred pixels tall apiece, so a list of short facts
@@ -3670,7 +3661,7 @@ body {
 
 .recs-empty,
 .ram-empty {
-	font: 400 11.5px/1.5 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-115, t.$fw-normal, t.$lh-15);
 	color: rgba(233, 233, 237, 0.36);
 }
 
@@ -3679,8 +3670,8 @@ body {
 	display: grid;
 	grid-template-columns: 1fr auto;
 	align-items: center;
-	gap: 6px 14px;
-	padding: 11px 14px;
+	gap: sp.$sp-8 sp.$sp-16;
+	padding: sp.$sp-12 sp.$sp-16;
 	border: 0;
 	border-radius: 11px;
 	background: rgba(233, 233, 237, 0.04);
@@ -3696,7 +3687,6 @@ body {
 
 .recs-label {
 	grid-column: 1;
-	font: 400 9.5px/1 var(--mono);
 	letter-spacing: 0.12em;
 	color: rgba(233, 233, 237, 0.42);
 	text-transform: uppercase;
@@ -3705,21 +3695,21 @@ body {
 .recs-value {
 	grid-column: 2;
 	grid-row: 1 / span 2;
-	font: 400 21px/1 var(--mono);
+	@include ty.value-xl;
 	/* Colour comes from the record itself — each of the six has its own in the
      design, which is what lets you tell them apart at a glance. */
 }
 
 .recs-city {
 	grid-column: 1;
-	font: 500 14px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-14, t.$fw-medium);
 	color: var(--ink-bright);
 }
 
 .recs-note,
 .ram-note {
 	margin: 0;
-	font: 400 10.5px/1.5 Inter, sans-serif;
+	@include ty.body-sm;
 	color: rgba(233, 233, 237, 0.36);
 	text-wrap: pretty;
 }
@@ -3729,12 +3719,12 @@ body {
 /* Two readings of one thing: a rule ten minutes wide, so where the ticks fall is
    the shape of the queue, and the codes beneath for exactly who and when. */
 .recs-item-queue {
-	padding-bottom: 10px;
+	padding-bottom: sp.$sp-12;
 	border-bottom: 1px solid rgba(233, 233, 237, 0.06);
 }
 
 .q {
-	padding: 8px 12px 0;
+	padding: sp.$sp-8 sp.$sp-12 0;
 }
 
 .q-rule {
@@ -3760,7 +3750,7 @@ body {
 	top: 0;
 	bottom: 0;
 	width: 1.5px;
-	margin-left: -0.75px;
+	margin-left: sp.$sp-pull-hairline;
 	border-radius: 1px;
 	opacity: 0.9;
 }
@@ -3768,15 +3758,15 @@ body {
 .q-list {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 4px;
-	padding-top: 7px;
+	gap: sp.$sp-4;
+	padding-top: sp.$sp-8;
 }
 
 .q-chip {
 	display: flex;
 	align-items: baseline;
-	gap: 4px;
-	padding: 3px 6px;
+	gap: sp.$sp-4;
+	padding: sp.$sp-4 sp.$sp-8;
 	border: 0;
 	border-radius: 4px;
 	background: rgba(233, 233, 237, 0.05);
@@ -3789,14 +3779,14 @@ body {
 }
 
 .q-iso {
-	font: 500 10px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-10, t.$fw-medium);
 	letter-spacing: 0.06em;
 	color: rgba(233, 233, 237, 0.62);
 }
 
 /* The minute, unlabelled — the rule above has already said what the unit is. */
 .q-min {
-	font: 500 9px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-9, t.$fw-medium);
 	font-variant-numeric: tabular-nums;
 	opacity: 0.85;
 }
@@ -3804,31 +3794,27 @@ body {
 /* ---------- ramadan ---------- */
 
 .ram {
-	gap: 12px;
+	gap: sp.$sp-12;
 }
 
 .ram-head {
 	display: flex;
 	align-items: flex-end;
 	justify-content: space-between;
-	gap: 12px;
+	gap: sp.$sp-12;
 }
 
 .ram-label {
-	font: 400 9.5px/1 var(--mono);
 	letter-spacing: 0.13em;
 	color: rgba(233, 233, 237, 0.42);
-	padding-bottom: 9px;
+	padding-bottom: sp.$sp-8;
 }
 
 .ram-title {
-	font: 500 24px/1 Inter, sans-serif;
-	letter-spacing: -0.02em;
 	color: var(--ink-bright);
 }
 
 .ram-sub {
-	font: 400 12px/1 Inter, sans-serif;
 	color: #c9c1ff;
 	text-align: right;
 }
@@ -3836,8 +3822,8 @@ body {
 .ram-today {
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
-	padding: 13px 15px;
+	gap: sp.$sp-12;
+	padding: sp.$sp-12 sp.$sp-16;
 	border-radius: 12px;
 	background: rgba(150, 138, 224, 0.14);
 	box-shadow: inset 0 0 0 1px rgba(181, 171, 252, 0.3);
@@ -3847,17 +3833,15 @@ body {
 	display: flex;
 	align-items: baseline;
 	justify-content: space-between;
-	gap: 10px;
+	gap: sp.$sp-12;
 }
 
 .ram-today-label {
-	font: 400 9.5px/1 var(--mono);
-	letter-spacing: 0.12em;
 	color: rgba(233, 233, 237, 0.45);
 }
 
 .ram-today-val {
-	font: 500 12px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-12, t.$fw-medium);
 	color: var(--ink-bright);
 }
 
@@ -3879,15 +3863,14 @@ body {
 .ram-today-ends {
 	display: flex;
 	justify-content: space-between;
-	font: 400 11px/1 var(--mono);
+	@include ty.value-sm;
 	color: rgba(233, 233, 237, 0.55);
 }
 
 .ram-axis {
 	display: flex;
 	justify-content: space-between;
-	font: 400 9px/1 var(--mono);
-	letter-spacing: 0.1em;
+	@include ty.label-tiny;
 	color: rgba(233, 233, 237, 0.28);
 }
 
@@ -3896,14 +3879,14 @@ body {
 	min-height: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 1px;
+	gap: sp.$sp-hairline;
 }
 
 .ram-day {
 	flex: 1;
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: sp.$sp-8;
 	border-radius: 3px;
 	transition: background 160ms ease;
 }
@@ -3920,7 +3903,6 @@ body {
 	width: 16px;
 	flex: none;
 	text-align: right;
-	font: 400 8.5px/1 var(--mono);
 	color: rgba(233, 233, 237, 0.4);
 }
 
@@ -3953,7 +3935,7 @@ body {
 .home-list {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	gap: sp.$sp-8;
 }
 
 .home-card {
@@ -3972,8 +3954,8 @@ body {
 	min-width: 0;
 	display: flex;
 	align-items: center;
-	gap: 10px;
-	padding: 9px 12px;
+	gap: sp.$sp-12;
+	padding: sp.$sp-8 sp.$sp-12;
 	border: 0;
 	background: transparent;
 	cursor: pointer;
@@ -3983,7 +3965,7 @@ body {
 .home-drop {
 	display: flex;
 	align-items: center;
-	padding: 9px 11px 9px 6px;
+	padding: sp.$sp-8 sp.$sp-12 sp.$sp-8 sp.$sp-8;
 	border: 0;
 	background: transparent;
 	color: rgba(233, 233, 237, 0.28);
@@ -4022,20 +4004,19 @@ body {
 }
 
 .home-label {
-	font: 500 10px/1 Inter, sans-serif;
+	@include ty.chip;
 	letter-spacing: 0.11em;
 	text-transform: uppercase;
 	color: rgba(233, 233, 237, 0.5);
 }
 
 .home-city {
-	font: 500 12px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-12, t.$fw-medium);
 	color: var(--ink-bright);
 }
 
 .home-next {
 	margin-left: auto;
-	font: 400 11px/1 var(--mono);
 	color: #c9c1ff;
 }
 
@@ -4044,15 +4025,13 @@ body {
 .chain-foot-head .sweep-btn {
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	padding: 5px 11px;
+	gap: sp.$sp-8;
+	padding: sp.$sp-4 sp.$sp-12;
 	border: 0;
 	border-radius: 999px;
 	background: rgba(233, 233, 237, 0.06);
 	color: rgba(233, 233, 237, 0.6);
-	font: 500 9px/1 Inter, sans-serif;
-	letter-spacing: 0.11em;
-	text-transform: uppercase;
+	@include ty.chip-tiny;
 	cursor: pointer;
 	transition: background 180ms ease, color 180ms ease;
 }
@@ -4094,7 +4073,7 @@ body {
 	right: 26px;
 	bottom: 22px;
 	z-index: 4;
-	padding: 16px 22px 12px;
+	padding: sp.$sp-16 sp.$sp-24 sp.$sp-12;
 	border-radius: 12px;
 	background: rgba(10, 12, 18, 0.82);
 	border: 1px solid rgba(233, 233, 237, 0.1);
@@ -4108,71 +4087,66 @@ body {
 .tbar-head {
 	display: flex;
 	align-items: flex-end;
-	gap: 22px;
+	gap: sp.$sp-24;
 }
 
 .tbar-clock {
-	font: 400 54px/1 var(--mono);
+	@include ty.font(t.$ff-mono, t.$fs-54);
 	letter-spacing: -0.04em;
 	color: var(--ink-bright);
 	font-variant-numeric: tabular-nums;
 }
 
 .tbar-mid {
-	padding-bottom: 7px;
+	padding-bottom: sp.$sp-8;
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: sp.$sp-8;
 }
 
 .tbar-prayer {
 	display: flex;
 	align-items: baseline;
-	gap: 10px;
+	gap: sp.$sp-12;
 }
 
 .tbar-prayer-name {
-	font: 500 18px/1 Inter, sans-serif;
 	color: var(--ink-bright);
 }
 
 .tbar-prayer-ar {
-	font: 400 15px/1 Amiri, serif;
 	color: var(--accent);
 }
 
 .tbar-label {
-	font: 400 11px/1 var(--mono);
+	@include ty.value-sm;
 	letter-spacing: 0.05em;
 	color: rgba(233, 233, 237, 0.42);
 }
 
 .tbar-actions {
 	margin-left: auto;
-	padding-bottom: 7px;
+	padding-bottom: sp.$sp-8;
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: sp.$sp-8;
 }
 
 .tbar-hint {
 	/* The speed control joined this row and squeezed it enough to break the two
 	   words apart, which turned a quiet hint into a two-line block. */
 	white-space: nowrap;
-	font: 400 9.5px/1 var(--mono);
 	letter-spacing: 0.14em;
 	color: rgba(233, 233, 237, 0.3);
 }
 
 .tbar-now {
-	padding: 8px 14px;
+	padding: sp.$sp-8 sp.$sp-16;
 	border: 0;
 	border-radius: 999px;
 	background: rgba(233, 233, 237, 0.05);
 	color: rgba(233, 233, 237, 0.4);
-	font: 500 9.5px/1 Inter, sans-serif;
-	letter-spacing: 0.11em;
-	text-transform: uppercase;
+	@include ty.chip-sm;
 	cursor: pointer;
 	transition: background 180ms ease, color 180ms ease;
 }
@@ -4194,7 +4168,7 @@ body {
 .tbar-track {
 	position: relative;
 	height: 42px;
-	margin-top: 16px;
+	margin-top: sp.$sp-16;
 }
 
 .tbar-rule {
@@ -4241,26 +4215,25 @@ body {
 .speed-seg {
 	display: flex;
 	align-items: center;
-	padding: 3px;
+	padding: sp.$sp-4;
 	border-radius: 999px;
 	border: 1px solid var(--line);
 }
 
 .speed-seg-label {
-	padding: 0 4px 0 10px;
-	font: 400 9px/1 var(--mono);
+	padding: 0 sp.$sp-4 0 sp.$sp-12;
 	letter-spacing: 0.16em;
 	color: rgba(233, 233, 237, 0.36);
 }
 
 .speed-seg-btn {
 	min-width: 30px;
-	padding: 5px 6px;
+	padding: sp.$sp-4 sp.$sp-8;
 	border: 0;
 	border-radius: 999px;
 	background: transparent;
 	color: rgba(233, 233, 237, 0.42);
-	font: 500 11px/1 Inter, sans-serif;
+	@include ty.font(t.$ff-ui, t.$fs-11, t.$fw-medium);
 	cursor: pointer;
 	transition: background 180ms ease, color 180ms ease;
 }
@@ -4303,8 +4276,9 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 0 10px;
-	font: 500 10.5px/1 var(--mono);
+	padding: 0 sp.$sp-12;
+	@include ty.label-caps;
+	text-transform: none;
 	letter-spacing: 0.06em;
 	color: rgba(233, 233, 237, 0.45);
 	white-space: nowrap;
@@ -4386,4 +4360,125 @@ body {
 
 .maplibregl-ctrl-top-right .maplibregl-ctrl:last-child button:last-child {
 	border-radius: 0 0 5px 5px;
+}
+
+/* ---------- typography components ---------- */
+/*
+ * The classes behind `Typography.tsx`.
+ *
+ * They are built from the same mixins the rest of this sheet uses, so a role
+ * cannot drift between the component and the stylesheet: there is one
+ * definition of "label", in `_type.scss`, and both reach it from here.
+ *
+ * Every selector here is wrapped in `:where()`, which drops its specificity to
+ * zero. That is the whole point: a role is a *default*. `.solar-title` tracks
+ * at 0.11em where its role tracks at 0.12em, and that exception has to keep
+ * winning after the element starts asking for the role — otherwise adopting a
+ * component silently overrides the very thing the rule was written to say.
+ *
+ * `.t` itself sets nothing. It exists so a typographic element can be found —
+ * `document.querySelectorAll('.t')` answers "what text is on this screen and
+ * what is it for", which is the check that turned up the ninety-six variations
+ * in the first place.
+ */
+:where(.t) {
+	margin: 0;
+}
+
+:where(.t-label-2xs) {
+	@include ty.label-micro;
+}
+:where(.t-label-xs) {
+	@include ty.label-tiny;
+}
+:where(.t-label-sm) {
+	@include ty.label;
+}
+:where(.t-label-md) {
+	@include ty.label-sm;
+}
+:where(.t-label-lg, .t-label-xl, .t-label-2xl) {
+	@include ty.label-lg;
+}
+
+:where(.t-value-2xs, .t-value-xs) {
+	@include ty.value-sm;
+}
+:where(.t-value-sm) {
+	@include ty.value;
+}
+:where(.t-value-md) {
+	@include ty.value-lg;
+}
+:where(.t-value-lg) {
+	@include ty.value-xl;
+}
+:where(.t-value-xl, .t-value-2xl) {
+	@include ty.clock;
+}
+
+:where(.t-title-2xs, .t-title-xs) {
+	@include ty.title-sm;
+}
+:where(.t-title-sm, .t-title-md) {
+	@include ty.title;
+}
+:where(.t-title-lg) {
+	@include ty.title-lg;
+}
+:where(.t-title-xl, .t-title-2xl) {
+	@include ty.title-xl;
+}
+
+:where(.t-display-2xs, .t-display-xs, .t-display-sm) {
+	@include ty.display-sm;
+}
+:where(.t-display-md, .t-display-lg) {
+	@include ty.display;
+}
+:where(.t-display-xl, .t-display-2xl) {
+	@include ty.display-lg;
+}
+
+:where(.t-body-2xs, .t-body-xs, .t-body-sm) {
+	@include ty.body-sm;
+}
+:where(.t-body-md, .t-body-lg, .t-body-xl, .t-body-2xl) {
+	@include ty.body;
+}
+
+:where(.t-caption-2xs) {
+	@include ty.caption-tiny;
+}
+:where(.t-caption-xs, .t-caption-sm) {
+	@include ty.caption-sm;
+}
+:where(.t-caption-md) {
+	@include ty.caption;
+}
+:where(.t-caption-lg) {
+	@include ty.caption-note;
+}
+:where(.t-caption-xl, .t-caption-2xl) {
+	@include ty.caption-lg;
+}
+
+:where(.t-chip-2xs, .t-chip-xs) {
+	@include ty.chip-tiny;
+}
+:where(.t-chip-sm) {
+	@include ty.chip-sm;
+}
+:where(.t-chip-md, .t-chip-lg, .t-chip-xl, .t-chip-2xl) {
+	@include ty.chip;
+}
+
+:where(.t-arabic-2xs, .t-arabic-xs, .t-arabic-sm) {
+	@include ty.arabic-sm;
+}
+:where(.t-arabic-md) {
+	@include ty.arabic;
+}
+:where(.t-arabic-lg, .t-arabic-xl, .t-arabic-2xl) {
+	@include ty.arabic-lg;
 }

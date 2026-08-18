@@ -8,6 +8,7 @@
 
 import { ramadanMonth } from '../lib/ramadan';
 import type { TimetableDay } from '../lib/diyanet';
+import { Caption, Display, Label } from './Typography';
 
 interface Props {
 	days: TimetableDay[] | null;
@@ -34,10 +35,16 @@ export default function RamadanPanel({ days, nowMs, cityName, pending }: Props) 
 		<div className='ram'>
 			<div className='ram-head'>
 				<div>
-					<div className='ram-label'>{month.current ? 'THIS MONTH' : 'NEXT IN THE TIMETABLE'}</div>
-					<div className='ram-title'>{month.title}</div>
+					<Label as='div' size='sm' className='ram-label'>
+						{month.current ? 'THIS MONTH' : 'NEXT IN THE TIMETABLE'}
+					</Label>
+					<Display as='div' size='sm' className='ram-title'>
+						{month.title}
+					</Display>
 				</div>
-				<div className='ram-sub'>{month.sub}</div>
+				<Caption as='div' size='xl' className='ram-sub'>
+					{month.sub}
+				</Caption>
 			</div>
 
 			{/* Today's fast, only when today is actually in the month being shown —
@@ -45,7 +52,9 @@ export default function RamadanPanel({ days, nowMs, cityName, pending }: Props) 
 			{month.current && (
 				<div className='ram-today'>
 					<div className='ram-today-head'>
-						<span className='ram-today-label'>TODAY’S FAST</span>
+						<Label size='sm' className='ram-today-label'>
+							TODAY’S FAST
+						</Label>
 						<span className='ram-today-val'>{Math.round(month.pct * 100)}%</span>
 					</div>
 					<div className='ram-today-bar'>
@@ -74,7 +83,9 @@ export default function RamadanPanel({ days, nowMs, cityName, pending }: Props) 
 						data-tip={`${d.n} · ${d.imsak} → ${d.maghrib}`}
 						data-tip-above=''
 					>
-						<span className='ram-day-n'>{d.n}</span>
+						<Label size='2xs' className='ram-day-n'>
+							{d.n}
+						</Label>
 						<span className='ram-day-track'>
 							<span
 								className='ram-day-bar'

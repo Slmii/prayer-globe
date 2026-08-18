@@ -15,6 +15,7 @@ import RamadanPanel from './RamadanPanel';
 import HilalPanel from './HilalPanel';
 import type { Criterion } from '../lib/hilal';
 import type { CitySummary } from '../lib/hilal-field';
+import { Caption, Display, Label, Title, Value } from './Typography';
 
 interface SidePanelProps {
 	readout: Readout;
@@ -248,7 +249,9 @@ function DayArc({
 					</>
 				) : (
 					<>
-						<div className='arc-prayer'>{prayer}</div>
+						<Display as='div' size='xl' className='arc-prayer'>
+							{prayer}
+						</Display>
 						<div className='arc-ar'>{ar}</div>
 					</>
 				)}
@@ -270,7 +273,11 @@ function SourceBadge({ readout, times, querying }: SidePanelProps) {
 			<div className='src src-live'>
 				<span className='src-dot' />
 				<span className='src-label'>DIYANET · PUBLISHED</span>
-				{times.district && <span className='src-note'>{times.district.districtName}</span>}
+				{times.district && (
+					<Caption size='sm' className='src-note'>
+						{times.district.districtName}
+					</Caption>
+				)}
 			</div>
 		);
 	}
@@ -279,7 +286,9 @@ function SourceBadge({ readout, times, querying }: SidePanelProps) {
 			<div className='src src-warn'>
 				<span className='src-dot src-dot-warn' />
 				<span className='src-label'>RATE LIMITED</span>
-				<span className='src-note'>100 req / 15 min · solar model meanwhile</span>
+				<Caption size='sm' className='src-note'>
+					100 req / 15 min · solar model meanwhile
+				</Caption>
 			</div>
 		);
 	}
@@ -294,7 +303,9 @@ function SourceBadge({ readout, times, querying }: SidePanelProps) {
 		<div className='src'>
 			<span className='src-dot src-dot-idle' />
 			<span className='src-label'>{querying ? 'FETCHING…' : 'COMPUTED'}</span>
-			<span className='src-note'>{note}</span>
+			<Caption size='sm' className='src-note'>
+				{note}
+			</Caption>
 		</div>
 	);
 }
@@ -350,7 +361,9 @@ function HomeCard({
 						>
 							<span className='home-dot' />
 							<span className='home-city'>{city.n}</span>
-							<span className='home-next'>{when}</span>
+							<Value size='2xs' className='home-next'>
+								{when}
+							</Value>
 						</button>
 						<button
 							type='button'
@@ -529,8 +542,12 @@ export default function SidePanel(props: SidePanelProps) {
 					<DayArc marks={a.arcMarks} nowF={a.nowF} prayer={a.prayer} ar={a.ar} pending={pending} />
 
 					<div className='now-head'>
-						<span className='now-mode'>{a.selMode}</span>
-						<span className='now-hint'>{a.selHint}</span>
+						<Label size='lg' className='now-mode'>
+							{a.selMode}
+						</Label>
+						<Caption size='sm' className='now-hint'>
+							{a.selHint}
+						</Caption>
 					</div>
 
 					<HomeCard
@@ -546,7 +563,9 @@ export default function SidePanel(props: SidePanelProps) {
 						<div className='city-card-main'>
 							<div className='city-card-name'>
 								<span className='city-dot' />
-								<span className='city-name'>{a.city}</span>
+								<Title size='xl' className='city-name'>
+									{a.city}
+								</Title>
 								{!pending && (
 									<button
 										type='button'
@@ -583,7 +602,9 @@ export default function SidePanel(props: SidePanelProps) {
 							</div>
 						</div>
 						<div className='city-card-time'>
-							<div className='city-clock'>{pending ? <Skeleton w={64} /> : a.clock}</div>
+							<Value as='div' size='xl' className='city-clock'>
+								{pending ? <Skeleton w={64} /> : a.clock}
+							</Value>
 							<div className='city-next'>
 								{pending ? (
 									<Skeleton w={92} />
@@ -626,8 +647,12 @@ export default function SidePanel(props: SidePanelProps) {
 
 					<section className='solar' aria-label='Sunrise and sunset from coordinates'>
 						<div className='solar-head'>
-							<span className='solar-title'>FROM COORDINATES</span>
-							<span className='solar-note'>geometric · −0.8°</span>
+							<Label size='sm' className='solar-title'>
+								FROM COORDINATES
+							</Label>
+							<Label size='sm' className='solar-note'>
+								geometric · −0.8°
+							</Label>
 						</div>
 						<div className='solar-row'>
 							<div className='solar-cell'>
@@ -635,14 +660,18 @@ export default function SidePanel(props: SidePanelProps) {
 									<AppIcon name='sunrise' />
 								</span>
 								<span className='solar-label'>Sunrise</span>
-								<span className='solar-time'>{pending ? <Skeleton /> : a.sunriseGeo}</span>
+								<Value size='sm' className='solar-time'>
+									{pending ? <Skeleton /> : a.sunriseGeo}
+								</Value>
 							</div>
 							<div className='solar-cell'>
 								<span className='solar-mark solar-mark-set'>
 									<AppIcon name='sunset' />
 								</span>
 								<span className='solar-label'>Sunset</span>
-								<span className='solar-time'>{pending ? <Skeleton /> : a.sunsetGeo}</span>
+								<Value size='sm' className='solar-time'>
+									{pending ? <Skeleton /> : a.sunsetGeo}
+								</Value>
 							</div>
 						</div>
 					</section>
@@ -706,7 +735,9 @@ export default function SidePanel(props: SidePanelProps) {
 							<span className='body-icon body-icon-sun'>
 								<AppIcon name='sun' filled />
 							</span>
-							<span className='body-title'>SUN OVERHEAD</span>
+							<Label size='md' className='body-title'>
+								SUN OVERHEAD
+							</Label>
 						</div>
 						<span className='body-val'>{a.sunPos}</span>
 					</button>
@@ -728,7 +759,9 @@ export default function SidePanel(props: SidePanelProps) {
 							<span className='body-icon body-icon-moon'>
 								<AppIcon name='moon' filled={a.moonIllum > 0.5} />
 							</span>
-							<span className='body-title'>MOON OVERHEAD</span>
+							<Label size='md' className='body-title'>
+								MOON OVERHEAD
+							</Label>
 						</div>
 						<span className='body-val'>{a.moonPos}</span>
 					</button>
@@ -760,7 +793,9 @@ export default function SidePanel(props: SidePanelProps) {
 									>
 										<span className='tally-tip-dot' style={{ background: c.color }} />
 										<span className='tally-tip-name'>{c.label}</span>
-										<span className='tally-tip-n'>{c.n} cities</span>
+										<Label size='md' className='tally-tip-n'>
+											{c.n} cities
+										</Label>
 									</span>
 								)}
 							</button>

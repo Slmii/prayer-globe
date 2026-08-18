@@ -1,0 +1,65 @@
+// The spacing scale.
+//
+// Four, eight, twelve, sixteen, twenty-four — a 4px grid, and nothing between
+// the steps.
+//
+// It did not start that way. An inventory of the stylesheet found 236 spacing
+// declarations spending 28 distinct values, and between 1px and 16px that was
+// very nearly every whole number: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+// 14, 15, 16, twelve of them used ten times or more. Nothing was wrong on
+// screen, but there was no answer to "how far apart should these be?" — only a
+// value that had looked right beside the one before it.
+//
+// Snapping to the grid moved 171 of 263 uses, none by more than 4px. The old
+// values are gone deliberately: leaving a `$sp-9` next to a `$sp-8` would mean
+// the next person has the same choice to make, and the scale would grow back.
+//
+// THE TWO THINGS THAT ARE NOT STEPS
+//
+// A hairline, and the measurements of the layout itself. Both are here because
+// they are spacing; neither is a rung, and calling them one would be a lie that
+// invites rounding.
+
+// ---------- the scale ----------
+
+$sp-4: 4px;
+$sp-8: 8px;
+$sp-12: 12px;
+$sp-16: 16px;
+$sp-24: 24px;
+$sp-32: 32px;
+
+/// Half a step, and only for the inside of a segmented control.
+///
+/// The mode tabs and the Ramadan day grid separate their cells by a gap so
+/// small it reads as a rule rather than a space. At 4px they stop looking like
+/// one control and start looking like several, which is why this exists rather
+/// than rounding them up.
+$sp-hairline: 2px;
+
+// ---------- pulling back out ----------
+//
+// Negative margins, each cancelling a container's own padding so a strip — the
+// panel footer, a toast's rail — reaches the edge instead of stopping short.
+// They are named after the padding they undo, and snap with it.
+
+$sp-pull-4: -4px;
+$sp-pull-12: -12px;
+$sp-pull-24: -24px;
+$sp-pull-32: -32px;
+
+/// Half a pixel back, to sit a hairline exactly on a boundary. Not a step.
+$sp-pull-hairline: -0.75px;
+
+// ---------- the shape of the app ----------
+//
+// Measurements of this layout rather than steps on the scale, and left off the
+// grid on purpose: the panel is 456px because that is what fits the content,
+// not because it is a multiple of anything.
+
+/// The left panel's width. The globe gets whatever is left.
+$panel-width: 456px;
+/// The panel's own inset.
+$panel-pad-top: 28px;
+$panel-pad-x: 30px;
+$panel-pad-bottom: 24px;

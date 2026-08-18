@@ -1,0 +1,196 @@
+// Type, by role.
+//
+// `font()` is the primitive — it exists so no size, weight or leading is ever
+// written as a literal again, and so `grep '$fs-95'` answers "what uses this
+// size?" in one command.
+//
+// The named roles above it are the part that matters day to day. "Label" means
+// something in this interface — mono, small, tracked wide, quiet — so a new
+// label is written by naming the role, not by copying four properties off a
+// neighbouring rule and nudging them until they look close. That nudging is
+// exactly how 96 distinct combinations came to exist for a dozen jobs.
+
+@use 'tokens' as t;
+
+/// The primitive. Everything else is built from it.
+@mixin font($family, $size, $weight: t.$fw-normal, $leading: t.$lh-1) {
+	font: $weight #{$size}/#{$leading} $family;
+}
+
+// ---------- labels ----------
+//
+// Mono, small, tracked wide, and quiet: the caption over a value, the name of a
+// column, the strip's own status line. They are read once and then skipped.
+
+@mixin label-micro {
+	@include font(t.$ff-mono, t.$fs-85);
+}
+
+@mixin label-tiny {
+	@include font(t.$ff-mono, t.$fs-9);
+	letter-spacing: t.$ls-wider;
+}
+
+@mixin label {
+	@include font(t.$ff-mono, t.$fs-95);
+	letter-spacing: t.$ls-widest;
+}
+
+@mixin label-sm {
+	@include font(t.$ff-mono, t.$fs-10);
+	letter-spacing: t.$ls-wider;
+}
+
+@mixin label-lg {
+	@include font(t.$ff-mono, t.$fs-105);
+	letter-spacing: t.$ls-wider;
+}
+
+/// A label doing duty as a control: uppercase, tracked hard.
+@mixin label-caps {
+	@include font(t.$ff-mono, t.$fs-105, t.$fw-medium);
+	letter-spacing: t.$ls-caps;
+	text-transform: uppercase;
+}
+
+// ---------- values ----------
+//
+// Mono numerals, never tracked, never uppercase. Tracking a number makes it
+// harder to read as a quantity, and these are all quantities.
+
+@mixin value-sm {
+	@include font(t.$ff-mono, t.$fs-11);
+}
+
+@mixin value {
+	@include font(t.$ff-mono, t.$fs-13);
+}
+
+@mixin value-lg {
+	@include font(t.$ff-mono, t.$fs-17);
+}
+
+@mixin value-xl {
+	@include font(t.$ff-mono, t.$fs-21);
+}
+
+/// A time read at a glance.
+@mixin clock {
+	@include font(t.$ff-mono, t.$fs-26);
+}
+
+@mixin clock-xl {
+	@include font(t.$ff-mono, t.$fs-54);
+	letter-spacing: t.$ls-tight;
+}
+
+// ---------- titles ----------
+
+@mixin title-sm {
+	@include font(t.$ff-ui, t.$fs-135, t.$fw-medium, t.$lh-12);
+}
+
+@mixin title {
+	@include font(t.$ff-ui, t.$fs-15, t.$fw-medium);
+}
+
+@mixin title-lg {
+	@include font(t.$ff-ui, t.$fs-18, t.$fw-medium);
+}
+
+@mixin title-xl {
+	@include font(t.$ff-ui, t.$fs-20, t.$fw-medium);
+}
+
+// ---------- display ----------
+//
+// The one big thing on a panel: the prayer's name, the month, the count.
+
+@mixin display-sm {
+	@include font(t.$ff-ui, t.$fs-24, t.$fw-medium);
+	letter-spacing: t.$ls-tight;
+}
+
+@mixin display {
+	@include font(t.$ff-ui, t.$fs-33, t.$fw-medium);
+	letter-spacing: t.$ls-tight-lg;
+}
+
+@mixin display-lg {
+	@include font(t.$ff-ui, t.$fs-44, t.$fw-medium);
+	letter-spacing: t.$ls-tight-lg;
+}
+
+// ---------- body ----------
+//
+// The only text here that runs to more than one line, and so the only text with
+// real leading.
+
+@mixin body-sm {
+	@include font(t.$ff-ui, t.$fs-105, t.$fw-normal, t.$lh-15);
+}
+
+@mixin body {
+	@include font(t.$ff-ui, t.$fs-11, t.$fw-normal, t.$lh-16);
+}
+
+// ---------- captions ----------
+//
+// Interface text, single line, quieter than a title and not a label.
+
+@mixin caption-tiny {
+	@include font(t.$ff-ui, t.$fs-10);
+}
+
+@mixin caption-note {
+	@include font(t.$ff-ui, t.$fs-115);
+}
+
+@mixin caption-sm {
+	@include font(t.$ff-ui, t.$fs-105);
+}
+
+@mixin caption {
+	@include font(t.$ff-ui, t.$fs-11);
+}
+
+@mixin caption-lg {
+	@include font(t.$ff-ui, t.$fs-12);
+}
+
+// ---------- chips ----------
+//
+// Interface text set as a small uppercase control: the mode tabs, the pin
+// button, the chain's prayer buttons.
+
+@mixin chip-tiny {
+	@include font(t.$ff-ui, t.$fs-9, t.$fw-medium);
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+}
+
+@mixin chip-sm {
+	@include font(t.$ff-ui, t.$fs-95, t.$fw-medium);
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+}
+
+@mixin chip {
+	@include font(t.$ff-ui, t.$fs-10, t.$fw-medium);
+	letter-spacing: t.$ls-wider;
+	text-transform: uppercase;
+}
+
+// ---------- arabic ----------
+
+@mixin arabic-sm {
+	@include font(t.$ff-arabic, t.$fs-13);
+}
+
+@mixin arabic {
+	@include font(t.$ff-arabic, t.$fs-15);
+}
+
+@mixin arabic-lg {
+	@include font(t.$ff-arabic, t.$fs-20);
+}

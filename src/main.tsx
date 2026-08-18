@@ -8,7 +8,7 @@ import App from './App';
 // opens.
 const SolarSystem = lazy(() => import('./components/SolarSystem'));
 import 'react-toastify/dist/ReactToastify.css';
-import './styles.css';
+import './styles.scss';
 
 const queryClient = new QueryClient({
 	defaultOptions: {

@@ -11,6 +11,7 @@ import { chainState } from '../lib/chain';
 import type { PhaseTable } from '../lib/phases';
 import type { City } from '../lib/cities';
 import { AppIcon } from './AppIcon';
+import { Arabic, Display, Label, Title } from './Typography';
 
 /**
  * The prayers worth following, as PHASES indices.
@@ -42,15 +43,7 @@ function relative(ms: number, nowMs: number): string {
 	return mins > 0 ? `in ${text}` : `${text} ago`;
 }
 
-export default function ChainPanel({
-	phases,
-	nowMs,
-	chain,
-	onChain,
-	onGoTo,
-	sweeping,
-	onSweep
-}: Props) {
+export default function ChainPanel({ phases, nowMs, chain, onChain, onGoTo, sweeping, onSweep }: Props) {
 	const state = phases ? chainState(phases, chain, nowMs) : null;
 	const phase = PHASES[chain];
 
@@ -75,10 +68,16 @@ export default function ChainPanel({
 
 			<div className='chain-head'>
 				<div className='chain-head-l'>
-					<div className='chain-label'>STANDING IN</div>
+					<Label as='div' size='sm' className='chain-label'>
+						STANDING IN
+					</Label>
 					<div className='chain-name-row'>
-						<span className='chain-name'>{phase.tr}</span>
-						<span className='chain-ar'>{phase.ar}</span>
+						<Display size='md' className='chain-name'>
+							{phase.tr}
+						</Display>
+						<Arabic size='lg' className='chain-ar'>
+							{phase.ar}
+						</Arabic>
 					</div>
 				</div>
 				<div className='chain-head-r'>
@@ -103,7 +102,9 @@ export default function ChainPanel({
 							<span className='chain-edge-kind'>
 								{e.kind === 'entering' ? 'JUST ENTERED' : 'NEXT TO LEAVE'}
 							</span>
-							<span className='chain-edge-city'>{e.city.n}</span>
+							<Title size='md' className='chain-edge-city'>
+								{e.city.n}
+							</Title>
 						</span>
 						<span className='chain-edge-when' style={{ color: phase.c }}>
 							{relative(e.ms, nowMs)}

@@ -16,6 +16,7 @@ import { useRef } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import type { Readout } from '../lib/readout';
 import { SCRUB_MIN, SCRUB_MAX, SWEEP_SPEEDS } from '../hooks/util';
+import { Arabic, Label, Title } from './Typography';
 
 interface Props {
 	readout: Readout;
@@ -75,8 +76,12 @@ export default function TimeBar({
 				<div className='tbar-clock'>{a.clock}</div>
 				<div className='tbar-mid'>
 					<div className='tbar-prayer'>
-						<span className='tbar-prayer-name'>{a.prayer}</span>
-						<span className='tbar-prayer-ar'>{a.ar}</span>
+						<Title size='lg' className='tbar-prayer-name'>
+							{a.prayer}
+						</Title>
+						<Arabic size='md' className='tbar-prayer-ar'>
+							{a.ar}
+						</Arabic>
 					</div>
 					<div className='tbar-label'>
 						{/* With no city the clock is stating UTC, so it says UTC. */}
@@ -94,7 +99,9 @@ export default function TimeBar({
 						than behind a tab.
 					*/}
 					<div className='speed-seg' role='group' aria-label='Clock speed'>
-						<span className='speed-seg-label'>SPEED</span>
+						<Label size='xs' className='speed-seg-label'>
+							SPEED
+						</Label>
 						{SWEEP_SPEEDS.map(s => (
 							<button
 								key={s.seconds}
@@ -108,7 +115,9 @@ export default function TimeBar({
 							</button>
 						))}
 					</div>
-					<span className='tbar-hint'>DRAG ANYWHERE</span>
+					<Label size='sm' className='tbar-hint'>
+						DRAG ANYWHERE
+					</Label>
 					<button
 						type='button'
 						className={'tbar-now' + (atNow ? '' : ' tbar-now-armed')}
