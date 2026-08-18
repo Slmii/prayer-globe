@@ -95,14 +95,18 @@ export default function QiblaFinder({ lat, lon, place, source, setSource }: Prop
 	// The scene, and the frame loop that drives it. Built once.
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		if (!canvas) return;
+		if (!canvas) {
+			return;
+		}
 		const S = buildFinderScene(canvas);
 		sceneRef.current = S;
 		S.resize();
 
 		const host = canvas.parentElement;
 		const ro = new ResizeObserver(() => S.resize());
-		if (host) ro.observe(host);
+		if (host) {
+			ro.observe(host);
+		}
 
 		let raf = 0;
 		let last = performance.now();
@@ -130,8 +134,12 @@ export default function QiblaFinder({ lat, lon, place, source, setSource }: Prop
 					}
 				}
 
-				if (bigRef.current) bigRef.current.textContent = Math.round(shownRef.current) + '°';
-				if (offRef.current) offRef.current.textContent = abs < 0.5 ? 'aligned' : abs.toFixed(1) + '°';
+				if (bigRef.current) {
+					bigRef.current.textContent = Math.round(shownRef.current) + '°';
+				}
+				if (offRef.current) {
+					offRef.current.textContent = abs < 0.5 ? 'aligned' : abs.toFixed(1) + '°';
+				}
 				if (turnRef.current) {
 					turnRef.current.textContent = isLocked
 						? 'hold this direction'
@@ -170,7 +178,9 @@ export default function QiblaFinder({ lat, lon, place, source, setSource }: Prop
 	// opposite sign.
 	useEffect(() => {
 		const S = sceneRef.current;
-		if (S) S.ray.rotation.y = (-geo.bearing * Math.PI) / 180;
+		if (S) {
+			S.ray.rotation.y = (-geo.bearing * Math.PI) / 180;
+		}
 	}, [geo.bearing]);
 
 	/* ── heading sources ─────────────────────────────────────── */
@@ -178,7 +188,9 @@ export default function QiblaFinder({ lat, lon, place, source, setSource }: Prop
 	// Drag, and the arrow keys, turn you rather than the camera.
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		if (!canvas) return;
+		if (!canvas) {
+			return;
+		}
 		let drag: { x: number; h: number } | null = null;
 
 		const setHeading = (deg: number, manual: boolean) => {
@@ -209,14 +221,18 @@ export default function QiblaFinder({ lat, lon, place, source, setSource }: Prop
 			}
 		};
 		const move = (e: PointerEvent) => {
-			if (!drag) return;
+			if (!drag) {
+				return;
+			}
 			setHeading(drag.h + (e.clientX - drag.x) * 0.4, true);
 		};
 		const up = () => {
 			drag = null;
 		};
 		const keys = (e: KeyboardEvent) => {
-			if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+			if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+				return;
+			}
 			e.preventDefault();
 			const step = (e.shiftKey ? 10 : 2) * (e.key === 'ArrowLeft' ? -1 : 1);
 			setHeading(headingRef.current + step, true);
@@ -248,10 +264,14 @@ export default function QiblaFinder({ lat, lon, place, source, setSource }: Prop
 		const DOE = window.DeviceOrientationEvent as
 			| (typeof window.DeviceOrientationEvent & { requestPermission?: () => Promise<string> })
 			| undefined;
-		if (!DOE) return false;
+		if (!DOE) {
+			return false;
+		}
 		if (typeof DOE.requestPermission === 'function') {
 			try {
-				if ((await DOE.requestPermission()) !== 'granted') return false;
+				if ((await DOE.requestPermission()) !== 'granted') {
+					return false;
+				}
 			} catch {
 				return false;
 			}
@@ -266,9 +286,13 @@ export default function QiblaFinder({ lat, lon, place, source, setSource }: Prop
 			const onOrient = (e: DeviceOrientationEvent) => {
 				const ios = (e as DeviceOrientationEvent & { webkitCompassHeading?: number }).webkitCompassHeading;
 				let h: number | null = null;
-				if (typeof ios === 'number') h = ios;
+				if (typeof ios === 'number') {
+					h = ios;
+				}
 				else if (e.absolute && typeof e.alpha === 'number') h = 360 - e.alpha;
-				if (h === null) return;
+				if (h === null) {
+					return;
+				}
 				headingRef.current = (h + 360) % 360;
 				aimedRef.current = true;
 				if (!settled) {
@@ -288,7 +312,9 @@ export default function QiblaFinder({ lat, lon, place, source, setSource }: Prop
 			detachRef.current = detach;
 
 			setTimeout(() => {
-				if (settled) return;
+				if (settled) {
+					return;
+				}
 				settled = true;
 				detach();
 				detachRef.current = null;
@@ -303,9 +329,13 @@ export default function QiblaFinder({ lat, lon, place, source, setSource }: Prop
 	 * its listeners, which went down with the last unmount.
 	 */
 	useEffect(() => {
-		if (source === 'gate') return;
+		if (source === 'gate') {
+			return;
+		}
 		aimedRef.current = true;
-		if (source === 'compass') void startCompass();
+		if (source === 'compass') {
+			void startCompass();
+		}
 		// Mount only: this is the resume, not a reaction to later changes.
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

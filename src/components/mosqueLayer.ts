@@ -6,15 +6,15 @@
 // that rotates the model onto the sphere, then multiplies MapLibre's own
 // projection matrix by it.
 
+import type { CustomLayerInterface, Map as MLMap } from 'maplibre-gl';
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import type { CustomLayerInterface, Map as MLMap } from 'maplibre-gl';
-import { buildMosque, MOSQUE_FOOTPRINT } from '../lib/mosque-model';
 import { buildKaaba, KAABA_FOOTPRINT } from '../lib/kaaba-model';
-import { buildNabawi, NABAWI_FOOTPRINT } from '../lib/nabawi-model';
-import { MOSQUES } from '../lib/mosques';
-import { DESIGN_MOSQUES, buildDesignMosque, measureFootprint } from '../lib/mosques-model';
+import { buildMosque, MOSQUE_FOOTPRINT } from '../lib/mosque-model';
 import type { MosqueModel } from '../lib/mosques';
+import { MOSQUES } from '../lib/mosques';
+import { buildDesignMosque, DESIGN_MOSQUES, measureFootprint } from '../lib/mosques-model';
+import { buildNabawi, NABAWI_FOOTPRINT } from '../lib/nabawi-model';
 
 /** MapLibre's internal earth radius, in metres. */
 const EARTH_RADIUS = 6371008.8;
@@ -37,7 +37,9 @@ const SIZE_BY_ZOOM: [number, number][] = [
 
 function targetPx(zoom: number): number {
 	const stops = SIZE_BY_ZOOM;
-	if (zoom <= stops[0][0]) return stops[0][1];
+	if (zoom <= stops[0][0]) {
+		return stops[0][1];
+	}
 	for (let i = 1; i < stops.length; i++) {
 		const [z1, p1] = stops[i];
 		if (zoom <= z1) {
@@ -88,7 +90,9 @@ function remapDepth(main: THREE.Matrix4): THREE.Matrix4 {
 	const dFar = far.z / far.w;
 	// Hold d = -1 fixed and send dFar to +1: k·(-1) + shift = -1 gives shift = k-1,
 	// and k·dFar + shift = 1 then gives k = 2/(dFar + 1).
-	if (!isFinite(dFar) || dFar <= -1 + 1e-9) return main;
+	if (!isFinite(dFar) || dFar <= -1 + 1e-9) {
+		return main;
+	}
 	const k = 2 / (dFar + 1);
 	const shift = k - 1;
 	// Row-major here; only the z row changes, so x/y projection is untouched.
@@ -112,7 +116,9 @@ function metresPerPixel(map: MLMap): number {
 	const a = map.project([c.lng, c.lat]);
 	const b = map.project([c.lng, c.lat + step]);
 	const px = Math.hypot(b.x - a.x, b.y - a.y);
-	if (!isFinite(px) || px < 1e-3) return 0;
+	if (!isFinite(px) || px < 1e-3) {
+		return 0;
+	}
 	return (step * METRES_PER_DEGREE) / px;
 }
 

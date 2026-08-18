@@ -18,7 +18,19 @@ import { useClock, useSettledValue, SWEEP_MINUTES, SWEEP_SPEEDS } from './hooks/
 import { useTransportKeys } from './hooks/useTransportKeys';
 import { pulse } from './lib/pulse';
 import { buildReadout, citiesInPhase } from './lib/readout';
-import { decodeView, encodeView, loadPinned, savePinned, resolvePin, pinName, MAX_PINNED } from './lib/permalink';
+import {
+	decodeView,
+	encodeView,
+	loadPinned,
+	savePinned,
+	resolvePin,
+	pinName,
+	loadHome,
+	saveHome,
+	locationAsked,
+	markLocationAsked,
+	MAX_PINNED
+} from './lib/permalink';
 import type { Pin } from './lib/permalink';
 import { pad, phaseCentre, skyState } from './lib/astro';
 import { locateDistrict } from './lib/locate';
@@ -41,6 +53,8 @@ const MosqueViewer = lazy(() => import('./components/MosqueViewer'));
 const QiblaViewer = lazy(() => import('./components/QiblaViewer'));
 /** The shortcut sheet: a list of text, and nobody opens it on the first frame. */
 const Shortcuts = lazy(() => import('./components/Shortcuts'));
+/** Only ever seen on a first visit, so it is not worth the first paint. */
+const LocationAsk = lazy(() => import('./components/LocationAsk'));
 
 // Minutes of simulated time per real second while playing — 10 days in ~40s.
 const PLAY_RATE = 360;
@@ -82,7 +96,8 @@ const MODE_NAMES: Record<PanelMode, string | null> = {
 	chain: 'Chain',
 	records: 'Records',
 	ramadan: 'Ramadan',
-	hilal: 'Hilal'
+	hilal: 'Hilal',
+	relay: 'Relay'
 };
 
 /** "41.01° N 28.98° E" — where the reader is, as a toast states it. */
@@ -94,7 +109,9 @@ function coordLabel(lat: number, lon: number): string {
 /** "+2d 06h 15m", or "now" at the present instant. */
 function scrubLabelOf(minutes: number): string {
 	const r = Math.round(minutes);
-	if (r === 0) return 'now';
+	if (r === 0) {
+		return 'now';
+	}
 	const abs = Math.abs(r);
 	const d = Math.floor(abs / 1440);
 	const h = Math.floor((abs % 1440) / 60);
@@ -116,7 +133,7 @@ function scrubLabelOf(minutes: number): string {
 const LINK = decodeView(window.location.hash);
 
 /**
- * The link's city, or nothing at all.
+ * The link's city, then the reader's own, then nothing at all.
  *
  * There is deliberately no fallback to `CITIES[0]`. That used to open every
  * fresh visit on Aalborg — not a choice anyone made, just the first row of an
@@ -127,6 +144,22 @@ const LINK = decodeView(window.location.hash);
  * arbitrary choice in a nicer hat. They are offered instead — as buttons in the
  * empty state, and as a row that stays in view — which is also what makes the
  * empty state something you can leave in one click.
+ *
+ * Home is the exception, and it is not the same kind of thing. It is not a
+ * choice among cities at all: it is where the reader was found to be, written
+ * only by locating. Opening there is the one default that is about them rather
+ * than about the order of a list.
+ */
+const HOME: City | null = loadHome();
+
+/**
+ * Whether this visit is opening on the place the reader was found.
+ *
+ * Worth naming because the green mark and the located city's own record are
+ * otherwise only ever set by pressing the button. Arriving by link skips
+ * locating on purpose — a link that names a city should not be overruled — and
+ * that quietly meant the one city the app knows you are standing in opened
+ * without the dot that says so.
  */
 const INITIAL_CITY: City | null =
 	CITIES.find(c => c.n === LINK.city) ??
@@ -136,7 +169,10 @@ const INITIAL_CITY: City | null =
 	loadPinned()
 		.map(resolvePin)
 		.find(c => c?.n === LINK.city) ??
+	HOME ??
 	null;
+
+const OPENING_AT_HOME = !!HOME && INITIAL_CITY?.n === HOME.n;
 
 interface View {
 	lng: number;
@@ -172,7 +208,11 @@ export default function App() {
 	 * was to ask again. What expires is the pulse — ten seconds of movement to
 	 * catch the eye when it arrives, then a quiet dot that keeps its place.
 	 */
-	const [mark, setMark] = useState<{ lat: number; lon: number } | null>(null);
+	// Seeded when the app opens where the reader lives, so the dot is there on
+	// arrival however they got there — by link, or by simply opening the app.
+	const [mark, setMark] = useState<{ lat: number; lon: number } | null>(
+		OPENING_AT_HOME && HOME ? { lat: HOME.la, lon: HOME.lo } : null
+	);
 	const [markPulsing, setMarkPulsing] = useState(false);
 	const [locating, setLocating] = useState(false);
 	const markTimer = useRef<number | null>(null);
@@ -187,6 +227,14 @@ export default function App() {
 	/** The qibla viewer is open for the selected city. */
 	const [qiblaOpen, setQiblaOpen] = useState(false);
 	const [shortcutsOpen, setShortcutsOpen] = useState(false);
+	/*
+	 * The offer that stands in front of the browser's permission dialog.
+	 *
+	 * Starts closed and is only raised once the permission state is known, so a
+	 * reader who has already granted it never sees a card flash past on the way
+	 * to their own city.
+	 */
+	const [askLocation, setAskLocation] = useState(false);
 	/**
 	 * Which rule the crescent map applies.
 	 *
@@ -232,7 +280,9 @@ export default function App() {
 	 * dot on the globe like any shipped city, so it can still be hovered, read and
 	 * clicked back to after you have gone and looked at somewhere else.
 	 */
-	const [located, setLocated] = useState<City | null>(null);
+	// Likewise: the home district is usually not in the bundle, so this is the
+	// only thing that can turn its name back into a city on a fresh load.
+	const [located, setLocated] = useState<City | null>(OPENING_AT_HOME ? HOME : null);
 
 	// The city now only changes on a deliberate action, so there is no request
 	// storm to guard against — a short settle is enough to coalesce rapid clicks.
@@ -307,8 +357,12 @@ export default function App() {
 	 */
 	const cityByName = useCallback(
 		(name: string | null | undefined): City | null => {
-			if (!name) return null;
-			if (located?.n === name) return located;
+			if (!name) {
+				return null;
+			}
+			if (located?.n === name) {
+				return located;
+			}
 			return CITIES.find(c => c.n === name) ?? pinned.map(resolvePin).find(c => c?.n === name) ?? null;
 		},
 		[located, pinned]
@@ -463,7 +517,9 @@ export default function App() {
 		// to press the button and say nothing at all.
 		const blocked = () =>
 			say({ kind: 'warn', title: 'Clipboard blocked by the browser', detail: `Add ${frag} to this page’s URL` });
-		if (!navigator.clipboard) return blocked();
+		if (!navigator.clipboard) {
+			return blocked();
+		}
 		navigator.clipboard
 			.writeText(url)
 			.then(() => say({ kind: 'link', title: 'Link copied', detail }))
@@ -575,6 +631,8 @@ export default function App() {
 						}
 						setLocated(found.city);
 						selectCity(found.city, false);
+						// So the next visit opens here rather than on a spinning globe.
+						saveHome(found.city);
 						// Which published timetable you are now reading. The design asks
 						// for the nearest city with times and how far off it is; the app
 						// resolves the actual district instead, whose coordinates are the
@@ -619,12 +677,12 @@ export default function App() {
 								kind: 'warn',
 								title: 'Location permission denied',
 								detail: 'Allow it in your browser, or pick a city on the globe'
-						  }
+							}
 						: {
 								kind: 'warn',
 								title: 'Couldn’t get your location',
 								detail: 'Pick a city on the globe instead'
-						  }
+							}
 				);
 			},
 			/*
@@ -642,6 +700,58 @@ export default function App() {
 	}, [queryClient, selectCity]);
 
 	useEffect(() => () => window.clearTimeout(markTimer.current ?? undefined), []);
+
+	/*
+	 * What to do about location, decided once on arrival.
+	 *
+	 * Three outcomes, and only one of them interrupts anybody:
+	 *
+	 *   granted  — nothing to ask. Locate straight away, which is both the most
+	 *              accurate answer and the fastest route to the reader's own city.
+	 *   asked    — they have already had the offer, or a link or a previous visit
+	 *              settled where to open. Say nothing.
+	 *   neither  — raise the card, which is the only thing that ever asks.
+	 *
+	 * `permissions.query` is what makes the first case possible: it reports the
+	 * grant without spending a prompt. Safari did not always support it for
+	 * geolocation, and a throw there simply falls through to the card.
+	 */
+	useEffect(() => {
+		let alive = true;
+		const offer = () => {
+			if (alive && !INITIAL_CITY && !locationAsked()) {
+				setAskLocation(true);
+			}
+		};
+
+		if (LINK.city) {
+			return;
+		}
+		const perms = navigator.permissions;
+		if (!perms?.query) {
+			offer();
+			return;
+		}
+		perms
+			.query({ name: 'geolocation' as PermissionName })
+			.then(status => {
+				if (!alive) {
+					return;
+				}
+				if (status.state === 'granted') {
+					locate();
+					return;
+				}
+				offer();
+			})
+			.catch(offer);
+
+		return () => {
+			alive = false;
+		};
+		// Arrival only: this decides what the app does when it opens.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const onPickPhase = useCallback(
 		(phase: number) => {
@@ -927,7 +1037,7 @@ export default function App() {
 					phases={phases}
 					qiblaMode={qiblaMode}
 					bandPhase={mode === 'chain' ? chain : null}
-					hilal={mode === 'hilal' ? hilal.field?.bands ?? null : null}
+					hilal={mode === 'hilal' ? (hilal.field?.bands ?? null) : null}
 					mark={mark}
 					markPulsing={markPulsing}
 					sweeping={sweeping}
@@ -1008,8 +1118,8 @@ export default function App() {
 								qiblaMode === 'off'
 									? 'Great circles to the Kaaba'
 									: qiblaMode === 'one'
-									? 'Now show every city facing us'
-									: 'Turn the qibla lines off'
+										? 'Now show every city facing us'
+										: 'Turn the qibla lines off'
 							}
 							onClick={() => setQiblaMode(v => (v === 'off' ? 'one' : v === 'one' ? 'many' : 'off'))}
 						>
@@ -1032,8 +1142,8 @@ export default function App() {
 								pathMode === 'off'
 									? "The sun's track across the day"
 									: pathMode === 'sun'
-									? "Add the moon's track"
-									: 'Turn the tracks off'
+										? "Add the moon's track"
+										: 'Turn the tracks off'
 							}
 							onClick={() => setPathMode(v => (v === 'off' ? 'sun' : v === 'sun' ? 'both' : 'off'))}
 						>
@@ -1090,8 +1200,8 @@ export default function App() {
 							{hoveredCity
 								? `${hoveredCity} · click to select`
 								: hoveredSite
-								? `${hoveredSite} · no published timetable · click to look`
-								: mapNote}
+									? `${hoveredSite} · no published timetable · click to look`
+									: mapNote}
 						</div>
 					</div>
 				</div>
@@ -1130,6 +1240,22 @@ export default function App() {
 
 				{/* The globe keeps running behind it, so closing returns to exactly the
 				    view you left rather than to a globe that has drifted on without you. */}
+				{askLocation && (
+					<Suspense fallback={null}>
+						<LocationAsk
+							onLocate={() => {
+								markLocationAsked();
+								setAskLocation(false);
+								locate();
+							}}
+							onDismiss={() => {
+								markLocationAsked();
+								setAskLocation(false);
+							}}
+						/>
+					</Suspense>
+				)}
+
 				{shortcutsOpen && (
 					<Suspense fallback={null}>
 						<Shortcuts onClose={() => setShortcutsOpen(false)} />

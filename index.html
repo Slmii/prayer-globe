@@ -1,15 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Ever-Standing — Prayer Globe</title>
+		<title>Prayer Globe - Prayer, everywhere, always</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Amiri:wght@400;700&display=swap"
 		/>
+
+		<!--
+			The mark, at every size a browser asks for. Paths go through %BASE_URL%
+			rather than a leading slash so the app survives being served from a
+			sub-path, which is the same reason the credit image reads
+			`import.meta.env.BASE_URL`.
+		-->
+		<link rel="icon" href="%BASE_URL%logo/favicon.svg" type="image/svg+xml" />
+		<link rel="icon" href="%BASE_URL%logo/favicon-32.png" sizes="32x32" type="image/png" />
+		<link rel="icon" href="%BASE_URL%logo/favicon-16.png" sizes="16x16" type="image/png" />
+		<link rel="apple-touch-icon" href="%BASE_URL%logo/apple-touch-icon.png" sizes="180x180" />
+		<link rel="manifest" href="%BASE_URL%logo/site.webmanifest" />
+		<meta name="theme-color" content="#08090f" />
+
+		<meta name="description" content="Prayer, everywhere, always" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="Prayer Globe" />
+		<meta property="og:description" content="Prayer, everywhere, always" />
+		<meta property="og:image" content="%BASE_URL%logo/og-image.png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="Prayer Globe" />
+		<meta name="twitter:description" content="Prayer, everywhere, always" />
+		<meta name="twitter:image" content="%BASE_URL%logo/og-image.png" />
 	</head>
 	<body>
 		<div id="root"></div>

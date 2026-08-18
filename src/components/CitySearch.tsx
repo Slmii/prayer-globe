@@ -20,7 +20,9 @@ export default function CitySearch({ onSelect }: CitySearchProps) {
 
 	const results = useMemo(() => {
 		const q = normalize(query);
-		if (!q) return [];
+		if (!q) {
+			return [];
+		}
 		// Prefix matches first — typing "ma" should offer Madinah before Amman.
 		const starts: City[] = [];
 		const contains: City[] = [];

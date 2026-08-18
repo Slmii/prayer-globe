@@ -46,7 +46,9 @@ export type Expect = 'html' | 'json';
  * five-minute stand-down.
  */
 export function isBlockPage(body: string, expect: Expect = 'html'): boolean {
-	if (body.includes('güvenlik kurallarına takılmıştır')) return true;
+	if (body.includes('güvenlik kurallarına takılmıştır')) {
+		return true;
+	}
 	return expect === 'html' ? body.length < 2000 : /^\s*</.test(body);
 }
 

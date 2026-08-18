@@ -100,7 +100,9 @@ export default function TimeBar({
 				const next = fmt(utcHours(new Date(getNowMs())) + offsetRef.current);
 				// Written only on change: an unchanged assignment still dirties the
 				// node for the compositor.
-				if (node.textContent !== next) node.textContent = next;
+				if (node.textContent !== next) {
+					node.textContent = next;
+				}
 			}
 			raf = requestAnimationFrame(frame);
 		};

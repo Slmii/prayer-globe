@@ -3,8 +3,8 @@
 
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { checkCoverage } from './coverage.ts';
 import { CITIES } from '../../src/lib/cities.ts';
+import { checkCoverage } from './coverage.ts';
 import type { SnapshotFile } from './fetch-times.ts';
 
 const OUT = 'public/times';
@@ -82,7 +82,9 @@ const problems = checkCoverage(files, today, HORIZON);
  */
 function checkPhases(): string | null {
 	const path = 'public/phases.json';
-	if (!existsSync(path)) return `${path} is missing — run npm run prayer:phases`;
+	if (!existsSync(path)) {
+		return `${path} is missing — run npm run prayer:phases`;
+	}
 
 	let file: { from?: string; days?: number; cities?: Record<string, unknown> };
 	try {
@@ -90,7 +92,9 @@ function checkPhases(): string | null {
 	} catch (err) {
 		return `${path} is unparseable: ${String(err)}`;
 	}
-	if (!file.from || !file.days || !file.cities) return `${path} is missing from/days/cities`;
+	if (!file.from || !file.days || !file.cities) {
+		return `${path} is missing from/days/cities`;
+	}
 
 	const end = new Date(`${file.from}T00:00:00Z`);
 	end.setUTCDate(end.getUTCDate() + file.days - 1);
@@ -101,13 +105,17 @@ function checkPhases(): string | null {
 	need.setUTCDate(need.getUTCDate() + HORIZON);
 	const required = need.toISOString().slice(0, 10);
 
-	if (file.from > today) return `${path} starts ${file.from}, after today (${today})`;
+	if (file.from > today) {
+		return `${path} starts ${file.from}, after today (${today})`;
+	}
 	if (last < required) {
 		return `${path} covers ${file.from}..${last}, short of ${required} (today+${HORIZON}) — regenerate it`;
 	}
 
 	const missing = CITIES.filter(c => !(c.ilceID in file.cities!)).length;
-	if (missing) return `${path} is missing ${missing} of ${CITIES.length} selected cities`;
+	if (missing) {
+		return `${path} is missing ${missing} of ${CITIES.length} selected cities`;
+	}
 
 	return null;
 }

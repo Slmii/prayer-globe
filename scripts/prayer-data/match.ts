@@ -219,7 +219,9 @@ const formsCache = new Map<string, { full: string; stripped: string; inner: stri
 
 function forms(s: string): { full: string; stripped: string; inner: string } {
 	const hit = formsCache.get(s);
-	if (hit) return hit;
+	if (hit) {
+		return hit;
+	}
 
 	const inner = /\(([^)]+)\)/.exec(s);
 	const out = {

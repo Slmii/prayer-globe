@@ -60,7 +60,7 @@ export interface DayRecord {
  * window, but don't guess further back" degrade `phaseOf` uses, just phrased
  * per-day instead of per-phase.
  */
-function dayBlock(arr: Int32Array, perDay: number, minute: number): number {
+export function dayBlock(arr: Int32Array, perDay: number, minute: number): number {
 	const days = arr.length / perDay;
 	let lo = 0;
 	let hi = days - 1;
@@ -138,7 +138,10 @@ export function dayRecords(table: PhaseTable, nowMs: number): DayRecord[] {
 		 * is now: whose next Fajr comes soonest, and whose next Isha does.
 		 */
 		const soonest = (slot: number): number | null => {
-			for (let i = base + slot; i < arr.length; i += perDay) if (arr[i] > minute) return arr[i] - minute;
+			for (let i = base + slot; i < arr.length; i += perDay)
+				if (arr[i] > minute) {
+					return arr[i] - minute;
+				}
 			return null;
 		};
 		const toFajr = soonest(0);
@@ -184,8 +187,7 @@ export function dayRecords(table: PhaseTable, nowMs: number): DayRecord[] {
 	 * point of these two rows is that the answer is the same everywhere — the next
 	 * city into Fajr is four minutes away whoever is reading.
 	 */
-	const soon = (mins: number) =>
-		mins < 60 ? `in ${Math.max(0, Math.round(mins))}m` : 'in ' + duration(mins);
+	const soon = (mins: number) => (mins < 60 ? `in ${Math.max(0, Math.round(mins))}m` : 'in ' + duration(mins));
 
 	add('longestFast', 'LONGEST FAST', longestFast, duration, '#f4c56a');
 	add('shortestFast', 'SHORTEST FAST', shortestFast, duration, '#7ee0b8');

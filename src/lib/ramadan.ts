@@ -39,11 +39,17 @@ export interface RamadanMonth {
 /** `'3 Rebiulevvel 1448'` → its parts, or null if the shape is not what we expect. */
 function parseHijri(hijri: string): { day: number; month: string; year: number } | null {
 	const parts = hijri.trim().split(/\s+/);
-	if (parts.length !== 3) return null;
+	if (parts.length !== 3) {
+		return null;
+	}
 	const day = Number(parts[0]);
 	const year = Number(parts[2]);
-	if (!Number.isInteger(day) || day < 1 || day > 30) return null;
-	if (!Number.isFinite(year) || year < 1) return null;
+	if (!Number.isInteger(day) || day < 1 || day > 30) {
+		return null;
+	}
+	if (!Number.isFinite(year) || year < 1) {
+		return null;
+	}
 	return { day, month: parts[1], year };
 }
 
@@ -52,10 +58,14 @@ const sameDate = (a: TimetableDay, b: TimetableDay) => a.y === b.y && a.mo === b
 /** 'HH:MM' → fraction of a day, or null for anything that doesn't parse as a clock. */
 function clockFrac(hhmm: string): number | null {
 	const m = /^(\d{1,2}):(\d{2})$/.exec(hhmm.trim());
-	if (!m) return null;
+	if (!m) {
+		return null;
+	}
 	const h = +m[1];
 	const mi = +m[2];
-	if (h > 23 || mi > 59) return null;
+	if (h > 23 || mi > 59) {
+		return null;
+	}
 	return (h + mi / 60) / 24;
 }
 
@@ -92,7 +102,9 @@ export function ramadanMonth(days: TimetableDay[], nowMs: number): RamadanMonth 
 		}
 		g.entries.push({ day, n: parsed.day });
 	}
-	if (!groups.size) return null;
+	if (!groups.size) {
+		return null;
+	}
 
 	const todayDay = dayFor(days, nowMs);
 	const contains = (g: Group) => (todayDay ? g.entries.some(e => sameDate(e.day, todayDay)) : false);
@@ -100,8 +112,8 @@ export function ramadanMonth(days: TimetableDay[], nowMs: number): RamadanMonth 
 	const all = [...groups.values()];
 	const ramazanGroups = all.filter(g => normalize(g.rawMonth) === RAMAZAN);
 	const target = ramazanGroups.length
-		? ramazanGroups.find(contains) ?? ramazanGroups[0]
-		: all.find(contains) ?? all[0];
+		? (ramazanGroups.find(contains) ?? ramazanGroups[0])
+		: (all.find(contains) ?? all[0]);
 
 	const entries = [...target.entries].sort((a, b) => a.n - b.n);
 	const out: RamadanDay[] = [];

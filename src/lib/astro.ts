@@ -169,7 +169,9 @@ export function solarTable(lat: number, dec: number): SolarTable {
 	const rounded = Math.round(lat);
 	const key = rounded + '_' + Math.round(dec * 400);
 	const hit = tableCache.get(key);
-	if (hit) return hit;
+	if (hit) {
+		return hit;
+	}
 	// Computed *at* the rounded latitude, so every caller sharing this key gets
 	// the same answer rather than whichever one happened to ask first.
 	const t = solarTableAt(rounded, dec);
@@ -209,12 +211,24 @@ export function phaseAt(lat: number, st: number, dec: number, table?: SolarTable
 	const t = table || solarTable(lat, dec);
 	const ok = (v: number) => !isNaN(v);
 	const x = ((st % 24) + 24) % 24;
-	if (!ok(t.rise)) return polarPhase(lat, dec);
-	if (ok(t.fajr) && x >= t.fajr && x < t.rise) return 0;
-	if (x >= t.rise && x < t.dhuhr) return 1;
-	if (ok(t.asr) && x >= t.dhuhr && x < t.asr) return 2;
-	if (ok(t.asr) && x >= t.asr && x < t.set) return 3;
-	if (ok(t.isha) && x >= t.set && x < t.isha) return 4;
+	if (!ok(t.rise)) {
+		return polarPhase(lat, dec);
+	}
+	if (ok(t.fajr) && x >= t.fajr && x < t.rise) {
+		return 0;
+	}
+	if (x >= t.rise && x < t.dhuhr) {
+		return 1;
+	}
+	if (ok(t.asr) && x >= t.dhuhr && x < t.asr) {
+		return 2;
+	}
+	if (ok(t.asr) && x >= t.asr && x < t.set) {
+		return 3;
+	}
+	if (ok(t.isha) && x >= t.set && x < t.isha) {
+		return 4;
+	}
 	return 5;
 }
 
@@ -291,7 +305,9 @@ export function greatCircle(from: [number, number], to: [number, number], steps 
 
 	// Coincident, or as near as makes no difference: the interpolation below
 	// divides by sin(arc), so bail before it goes to infinity.
-	if (arc < 1e-9) return [[lo1, la1]];
+	if (arc < 1e-9) {
+		return [[lo1, la1]];
+	}
 
 	const sin = Math.sin(arc);
 	for (let i = 0; i <= steps; i++) {
@@ -418,7 +434,9 @@ export function terminatorLatitude(dec: number, lonDeg: number, subLon: number, 
 	const A = Math.sin(dec);
 	const B = Math.cos(dec) * Math.cos(H);
 	const R = Math.hypot(A, B);
-	if (R < 1e-9) return 0;
+	if (R < 1e-9) {
+		return 0;
+	}
 
 	const s = Math.max(-1, Math.min(1, Math.sin(altDeg * D) / R));
 	const psi = Math.atan2(B, A);
@@ -592,7 +610,9 @@ export function phaseBand(phase: number, dec: number, utcH: number, eot: number,
 		// midnight sun and Isha under a polar night, so the band has to agree or it
 		// simply loses the poles — which is exactly how it first failed, with a
 		// quarter of Dhuhr's ground missing in mid-August.
-		if (!ok(t.rise)) return phase === polarPhase(lat, dec) ? [0, 24] : null;
+		if (!ok(t.rise)) {
+			return phase === polarPhase(lat, dec) ? [0, 24] : null;
+		}
 
 		switch (phase) {
 			case 0:
@@ -784,9 +804,7 @@ export function phaseCap(phase: number, dec: number): [number, number][][] {
 	for (const pole of [1, -1] as const) {
 		if (!isNaN(solarTableAt(pole * CAP_LAT, dec).rise)) continue;
 		if (phase !== polarPhase(pole * CAP_LAT, dec)) continue;
-		out.push(
-			pole === 1 ? capRing(MERCATOR_LIMIT, FILL_LIMIT) : capRing(-FILL_LIMIT, -MERCATOR_LIMIT)
-		);
+		out.push(pole === 1 ? capRing(MERCATOR_LIMIT, FILL_LIMIT) : capRing(-FILL_LIMIT, -MERCATOR_LIMIT));
 	}
 	return out;
 }

@@ -37,7 +37,9 @@ const round = (n: number): number => Math.round(n * 10 ** DP) / 10 ** DP;
 
 /** Coordinates nest to arbitrary depth: Position | Position[] | Position[][]… */
 function roundCoords(c: unknown): unknown {
-	if (typeof c === 'number') return round(c);
+	if (typeof c === 'number') {
+		return round(c);
+	}
 	return Array.isArray(c) ? c.map(roundCoords) : c;
 }
 

@@ -1,5 +1,16 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { encodeView, decodeView, loadPinned, savePinned, resolvePin, pinName } from './permalink';
+import {
+	encodeView,
+	decodeView,
+	loadPinned,
+	savePinned,
+	resolvePin,
+	pinName,
+	loadHome,
+	saveHome,
+	locationAsked,
+	markLocationAsked
+} from './permalink';
 import type { ViewState } from './permalink';
 import type { City } from './cities';
 import { CITIES } from './cities';
@@ -156,5 +167,88 @@ describe('loadPinned / savePinned', () => {
 		vi.stubGlobal('localStorage', undefined);
 		expect(loadPinned()).toEqual([]);
 		expect(() => savePinned(['Amsterdam'])).not.toThrow();
+	});
+});
+
+
+/*
+ * Home is what lets a return visit open where the reader actually is, so the
+ * two halves have to agree: whatever `saveHome` writes, `loadHome` must accept.
+ * A located district is usually not one of the shipped cities, which is exactly
+ * the case a name-only store would lose.
+ */
+describe('home', () => {
+	const memory = () => {
+		const store = new Map<string, string>();
+		vi.stubGlobal('localStorage', {
+			getItem: (k: string) => store.get(k) ?? null,
+			setItem: (k: string, v: string) => void store.set(k, v),
+			removeItem: (k: string) => void store.delete(k)
+		});
+		return store;
+	};
+
+	afterEach(() => {
+		vi.unstubAllGlobals();
+	});
+
+	it('round-trips a district that is not in the shipped list', () => {
+		memory();
+		expect(loadHome()).toBe(null);
+
+		const found: City = {
+			n: 'Haarlem',
+			la: 52.3874,
+			lo: 4.6462,
+			tz: 'Europe/Amsterdam',
+			iso2: 'NL',
+			country: 'NETHERLANDS',
+			pop: 161265,
+			ilceID: '9206',
+			ilceUrl: '/en-US/9206/prayer-time-for-haarlem',
+			p: 'HOLLANDA',
+			d: ['HAARLEM']
+		};
+		expect(CITIES.some(c => c.n === found.n)).toBe(false);
+
+		saveHome(found);
+		expect(loadHome()).toEqual(found);
+	});
+
+	it('clears, and refuses a value that is not a city', () => {
+		const store = memory();
+		saveHome({ n: 'X', la: 1, lo: 2 } as unknown as City);
+		saveHome(null);
+		expect(loadHome()).toBe(null);
+
+		store.set('pg.home', '{"n":"Nowhere"}');
+		expect(loadHome()).toBe(null);
+		store.set('pg.home', 'not json at all');
+		expect(loadHome()).toBe(null);
+	});
+
+	it('remembers that the offer was made, and survives storage throwing', () => {
+		memory();
+		expect(locationAsked()).toBe(false);
+		markLocationAsked();
+		expect(locationAsked()).toBe(true);
+
+		// The browser prompt can only be spent once, but failing to remember must
+		// never break the app — it just means asking again.
+		vi.stubGlobal('localStorage', {
+			getItem: () => {
+				throw new Error('denied');
+			},
+			setItem: () => {
+				throw new Error('denied');
+			},
+			removeItem: () => {
+				throw new Error('denied');
+			}
+		});
+		expect(locationAsked()).toBe(false);
+		expect(() => markLocationAsked()).not.toThrow();
+		expect(loadHome()).toBe(null);
+		expect(() => saveHome(null)).not.toThrow();
 	});
 });

@@ -11,6 +11,7 @@ import type { City } from '../lib/cities';
 import { AppIcon } from './AppIcon';
 import ChainPanel from './ChainPanel';
 import RecordsPanel from './RecordsPanel';
+import RelayPanel from './RelayPanel';
 import RamadanPanel from './RamadanPanel';
 import HilalPanel from './HilalPanel';
 import type { Criterion } from '../lib/hilal';
@@ -81,7 +82,7 @@ interface SidePanelProps {
  * are true whatever you happen to be reading, so they stay put rather than
  * appearing and vanishing under you.
  */
-export type PanelMode = 'now' | 'chain' | 'records' | 'ramadan' | 'hilal';
+export type PanelMode = 'now' | 'chain' | 'records' | 'ramadan' | 'hilal' | 'relay';
 
 const MODES: { id: PanelMode; label: string; hint: string }[] = [
 	{ id: 'now', label: 'Now', hint: 'This city, right now' },
@@ -92,7 +93,8 @@ const MODES: { id: PanelMode; label: string; hint: string }[] = [
 		hint: "The day's extremes across every city"
 	},
 	{ id: 'ramadan', label: 'Ramadan', hint: 'The month of fasting, day by day' },
-	{ id: 'hilal', label: 'Hilal', hint: 'Where tonight’s new crescent can be seen' }
+	{ id: 'hilal', label: 'Hilal', hint: 'Where tonight’s new crescent can be seen' },
+	{ id: 'relay', label: 'Relay', hint: 'The adhan being handed city to city' }
 ];
 
 /** h:mm:ss while there is an hour to go, m:ss inside the last one. */
@@ -297,10 +299,10 @@ function SourceBadge({ readout, times, querying }: SidePanelProps) {
 	const note = querying
 		? 'asking Diyanet for this city'
 		: times.error
-		? 'Diyanet unreachable · solar model'
-		: times.unavailable
-		? 'no Diyanet district · solar model'
-		: 'pick a city to load its times';
+			? 'Diyanet unreachable · solar model'
+			: times.unavailable
+				? 'no Diyanet district · solar model'
+				: 'pick a city to load its times';
 	return (
 		<div className='src'>
 			<span className='src-dot src-dot-idle' />
@@ -337,7 +339,9 @@ function HomeCard({
 	onUnpin(name: string): void;
 }) {
 	const cities = pinned.map(resolvePin).filter((c): c is City => !!c);
-	if (!cities.length) return null;
+	if (!cities.length) {
+		return null;
+	}
 
 	return (
 		<div className='home-list'>
@@ -348,8 +352,8 @@ function HomeCard({
 					mins == null
 						? '—'
 						: mins >= 60
-						? `${PHASES[next!.phase].tr} in ${Math.floor(mins / 60)}h ${mins % 60}m`
-						: `${PHASES[next!.phase].tr} in ${mins}m`;
+							? `${PHASES[next!.phase].tr} in ${Math.floor(mins / 60)}h ${mins % 60}m`
+							: `${PHASES[next!.phase].tr} in ${mins}m`;
 				const here = city.n === activeCity;
 				return (
 					// A row, not a button: the row flies there and the cross unpins, and a
@@ -417,11 +421,13 @@ export default function SidePanel(props: SidePanelProps) {
 	return (
 		<aside className='panel'>
 			<header className='panel-head'>
-				<div className='mark'>
-					<span className='mark-sq' />
-					<span className='mark-sq mark-rot' />
-				</div>
-				<div className='wordmark'>Ever&#8209;Standing</div>
+				{/*
+					The real mark, in place of the two rotated squares that stood in for
+					it. It is the app's own subject: a disc split at the terminator,
+					dawn on one side and night on the other.
+				*/}
+				<img className='mark' src={`${import.meta.env.BASE_URL}logo/logo-mark.svg`} alt='' aria-hidden='true' />
+				<div className='wordmark'>Prayer Globe</div>
 				{/*
 					Where every number in this panel comes from, and the depression
 					angles behind them. It reads as a badge rather than as a footnote
@@ -490,11 +496,10 @@ export default function SidePanel(props: SidePanelProps) {
 			*/}
 			{(props.mode === 'now' || props.mode === 'ramadan') && !a.city && (
 				<div className='no-city'>
-					{/* The wordmark's two squares, opened out and given a dashed orbit —
-					    the app's own mark, standing in for the city that isn't there. */}
+					{/* The mark, given a dashed orbit — the app itself standing in for
+					    the city that isn't there. */}
 					<div className='no-city-mark' aria-hidden='true'>
-						<span className='no-city-sq' />
-						<span className='no-city-sq no-city-sq-rot' />
+						<img className='no-city-disc' src={`${import.meta.env.BASE_URL}logo/logo-mark.svg`} alt='' />
 						<span className='no-city-ring' />
 					</div>
 					<div className='no-city-title'>No city selected</div>
@@ -583,10 +588,10 @@ export default function SidePanel(props: SidePanelProps) {
 											!pinnable
 												? 'Found from your location — held for this session only, so there is nothing lasting to pin yet'
 												: isPinned
-												? 'Unpin this city'
-												: pinsFull
-												? `${MAX_PINNED} cities pinned — unpin one first`
-												: 'Keep this city in view'
+													? 'Unpin this city'
+													: pinsFull
+														? `${MAX_PINNED} cities pinned — unpin one first`
+														: 'Keep this city in view'
 										}
 										onClick={() => pinnable && props.onTogglePin()}
 									>
@@ -707,6 +712,10 @@ export default function SidePanel(props: SidePanelProps) {
 					dateLine={a.dateLine}
 					onGoTo={props.onGoToCity}
 				/>
+			)}
+
+			{props.mode === 'relay' && (
+				<RelayPanel phases={props.phases} nowMs={props.nowMs} onGoTo={props.onGoToCity} />
 			)}
 
 			{props.mode === 'ramadan' && a.city && (

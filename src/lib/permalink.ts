@@ -17,24 +17,34 @@
 // absolute instant would make old links freeze on a moment further and
 // further in the past.
 
-import { SCRUB_MIN, SCRUB_MAX } from '../hooks/util';
-import { CITIES } from './cities';
+import { SCRUB_MAX, SCRUB_MIN } from '../hooks/util';
 import type { City } from './cities';
+import { CITIES } from './cities';
 
 export interface ViewState {
 	/** City name as in cities.ts. */
 	city: string | null;
 	/** Scrub offset in minutes from now, as the app's clock uses. */
 	scrub: number;
-	/** Panel mode: 'now' | 'chain' | 'records' | 'ramadan' | 'hilal'. */
+	/** Panel mode: 'now' | 'chain' | 'records' | 'ramadan' | 'hilal' | 'relay'. */
 	mode: string | null;
 	/** Which prayer the chain mode is following, 0–5. */
 	chain: number | null;
 }
 
 const PREFIX = '#/view';
-const MODES: readonly string[] = ['now', 'chain', 'records', 'ramadan', 'hilal'];
+const MODES: readonly string[] = ['now', 'chain', 'records', 'ramadan', 'hilal', 'relay'];
 const STORAGE_KEY = 'pg.pinnedCity';
+
+/*
+ * Where the reader was last found, and whether they have been asked.
+ *
+ * Separate from the pins on purpose. A pin is a shortlist the reader chose; home
+ * is a fact about them, written by locating and never by hand — which is why it
+ * can open the app when a pin deliberately does not.
+ */
+const HOME_KEY = 'pg.home';
+const ASKED_KEY = 'pg.locationAsked';
 
 /** Fields at their defaults are simply omitted, keeping links short. */
 export function encodeView(v: ViewState): string {
@@ -56,9 +66,13 @@ export function encodeView(v: ViewState): string {
 export function decodeView(hash: string): Partial<ViewState> {
 	const out: Partial<ViewState> = {};
 	try {
-		if (!hash.startsWith(PREFIX)) return out;
+		if (!hash.startsWith(PREFIX)) {
+			return out;
+		}
 		const q = hash.indexOf('?');
-		if (q === -1) return out;
+		if (q === -1) {
+			return out;
+		}
 		const p = new URLSearchParams(hash.slice(q + 1));
 
 		const city = p.get('city');
@@ -106,7 +120,9 @@ export type Pin = string | City;
 
 /** The City a pin refers to, or null if it named one we no longer ship. */
 export function resolvePin(pin: Pin): City | null {
-	if (typeof pin !== 'string') return pin;
+	if (typeof pin !== 'string') {
+		return pin;
+	}
 	return CITIES.find(c => c.n === pin) ?? null;
 }
 
@@ -135,13 +151,74 @@ function isCity(v: unknown): v is City {
 export function loadPinned(): Pin[] {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY);
-		if (!raw) return [];
-		if (!raw.startsWith('[')) return [raw];
+		if (!raw) {
+			return [];
+		}
+		if (!raw.startsWith('[')) {
+			return [raw];
+		}
 		const list: unknown = JSON.parse(raw);
-		if (!Array.isArray(list)) return [];
+		if (!Array.isArray(list)) {
+			return [];
+		}
 		return list.filter((p): p is Pin => (typeof p === 'string' && !!p) || isCity(p)).slice(0, MAX_PINNED);
 	} catch {
 		return [];
+	}
+}
+
+/**
+ * The city the reader was last located to.
+ *
+ * Stored whole rather than by name: a located district is usually not one of the
+ * 891 shipped cities, so a name would resolve to nothing on the next visit —
+ * which is the same reason a pin may hold a whole city.
+ */
+export function loadHome(): City | null {
+	try {
+		const raw = localStorage.getItem(HOME_KEY);
+		if (!raw) {
+			return null;
+		}
+		const v: unknown = JSON.parse(raw);
+		return isCity(v) ? v : null;
+	} catch {
+		return null;
+	}
+}
+
+export function saveHome(city: City | null): void {
+	try {
+		if (city) {
+			localStorage.setItem(HOME_KEY, JSON.stringify(city));
+		} else {
+			localStorage.removeItem(HOME_KEY);
+		}
+	} catch {
+		// Storage unavailable — the app just opens on the globe next time.
+	}
+}
+
+/**
+ * Whether the reader has already been offered the location prompt.
+ *
+ * The browser's own permission dialog can only be spent once — a refusal is
+ * remembered by the origin and cannot be asked again — so the offer in front of
+ * it is only made once too. The toolbar button stays either way.
+ */
+export function locationAsked(): boolean {
+	try {
+		return localStorage.getItem(ASKED_KEY) === '1';
+	} catch {
+		return false;
+	}
+}
+
+export function markLocationAsked(): void {
+	try {
+		localStorage.setItem(ASKED_KEY, '1');
+	} catch {
+		// Not remembering means the offer is made again, which is survivable.
 	}
 }
 

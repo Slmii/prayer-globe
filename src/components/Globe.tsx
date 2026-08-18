@@ -53,7 +53,9 @@ const PHASE_RGB = PHASES.map(p => HEX(p.c));
 
 /** Blend two phase colours, so a dot eases into its next prayer. */
 function mixPhase(a: number, b: number, t: number): string {
-	if (t <= 0 || a === b) return PHASES[a].c;
+	if (t <= 0 || a === b) {
+		return PHASES[a].c;
+	}
 	const x = PHASE_RGB[a];
 	const y = PHASE_RGB[b];
 	const m = (i: number) => Math.round(x[i] + (y[i] - x[i]) * t);
@@ -384,24 +386,32 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 	/** Radius in px of the globe's silhouette, or null when it overflows the view. */
 	function globeRadius(w: number, h: number): number | null {
 		const map = mapRef.current;
-		if (!map) return null;
+		if (!map) {
+			return null;
+		}
 		const cx = w / 2;
 		const cy = h / 2;
 		const onGlobe = (r: number) => {
 			const px = { x: cx, y: cy - r };
-			if (px.y < 0) return false;
+			if (px.y < 0) {
+				return false;
+			}
 			let ll;
 			try {
 				ll = map.unproject([px.x, px.y]);
 			} catch {
 				return false;
 			}
-			if (!ll || !isFinite(ll.lat) || !isFinite(ll.lng)) return false;
+			if (!ll || !isFinite(ll.lat) || !isFinite(ll.lng)) {
+				return false;
+			}
 			const back = map.project(ll);
 			return Math.hypot(back.x - px.x, back.y - px.y) < 2.5;
 		};
 		const limit = cy;
-		if (onGlobe(limit)) return null; // zoomed in far enough that there is no rim
+		if (onGlobe(limit)) {
+			return null; // zoomed in far enough that there is no rim
+		}
 		let lo = 1;
 		let hi = limit;
 		for (let i = 0; i < 18; i++) {
@@ -740,7 +750,9 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 	 */
 	function labelTarget(): { n: string; la: number; lo: number } | undefined {
 		const city = cityNamed(hoveredRef.current);
-		if (city) return city;
+		if (city) {
+			return city;
+		}
 		const site = MOSQUES.find(m => m.name === hoveredSiteRef.current);
 		return site ? { n: site.name, la: site.lat, lo: site.lon } : undefined;
 	}
@@ -1423,7 +1435,9 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 		/** Name of the nearest point in `layer` under a screen point, with a
 		 *  forgiving hit box. */
 		const nearestIn = (layer: string, pt: { x: number; y: number }): string | null => {
-			if (!map.getLayer(layer)) return null;
+			if (!map.getLayer(layer)) {
+				return null;
+			}
 			const box: [maplibregl.PointLike, maplibregl.PointLike] = [
 				[pt.x - 7, pt.y - 7],
 				[pt.x + 7, pt.y + 7]

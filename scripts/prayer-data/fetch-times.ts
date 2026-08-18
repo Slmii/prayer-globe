@@ -17,12 +17,12 @@
 // an existing checkpoint instead of resuming from it (e.g. after the selected
 // cities changed).
 
-import { mkdirSync, writeFileSync, renameSync, readFileSync, existsSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { getText, mapPool, BlockedError } from './http.ts';
-import { parseCityPage } from './parse-page.ts';
-import { CITIES } from '../../src/lib/cities.ts';
 import type { City } from '../../src/lib/cities.ts';
+import { CITIES } from '../../src/lib/cities.ts';
+import { BlockedError, getText, mapPool } from './http.ts';
+import { parseCityPage } from './parse-page.ts';
 
 export type SnapshotDay = [string, string, string, string, string, string, string];
 
@@ -63,7 +63,9 @@ function loadState(): RunState {
 		if (existsSync(STATE)) rmSync(STATE);
 		return { done: [] };
 	}
-	if (!existsSync(STATE)) return { done: [] };
+	if (!existsSync(STATE)) {
+		return { done: [] };
+	}
 	return JSON.parse(readFileSync(STATE, 'utf8')) as RunState;
 }
 

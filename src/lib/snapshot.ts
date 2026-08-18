@@ -34,7 +34,9 @@ export function offsetMinutesFor(tz: string, isoDate: string): number {
 			.find(p => p.type === 'timeZoneName')?.value ?? 'GMT';
 
 	const m = /GMT([+-])(\d{1,2}):?(\d{2})?/.exec(name);
-	if (!m) return 0; // Plain "GMT" — zero offset.
+	if (!m) {
+		return 0; // Plain "GMT" — zero offset.
+	}
 	return (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3] ?? 0));
 }
 
@@ -68,9 +70,13 @@ export function toVakitRows(file: SnapshotFile): VakitRow[] {
 export async function loadTimetable(ilceID: string): Promise<VakitRow[] | null> {
 	try {
 		const res = await fetch(`${base}times/${ilceID}.json`);
-		if (!res.ok) return null;
+		if (!res.ok) {
+			return null;
+		}
 		const file = (await res.json()) as SnapshotFile;
-		if (!file || typeof file !== 'object' || !file.days || !file.tz) return null;
+		if (!file || typeof file !== 'object' || !file.days || !file.tz) {
+			return null;
+		}
 		const rows = toVakitRows(file);
 		return rows.length ? rows : null;
 	} catch {

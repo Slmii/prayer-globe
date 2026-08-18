@@ -112,7 +112,9 @@ function parseDay(row: VakitRow): RawDay | null {
 		offsetMin = (iso[4] === '-' ? -1 : 1) * (+iso[5] * 60 + +iso[6]);
 	} else {
 		const short = DATE_SHORT.exec(row.MiladiTarihKisaIso8601 || row.MiladiTarihKisa || '');
-		if (!short) return null;
+		if (!short) {
+			return null;
+		}
 		d = +short[1];
 		mo = +short[2];
 		y = +short[3];
@@ -224,14 +226,18 @@ export interface Lookup {
 /** Current phase + next boundary at instant `ms`, from real Diyanet data. */
 export function lookup(days: TimetableDay[], ms: number): Lookup | null {
 	const list = boundaries(days);
-	if (!list.length) return null;
+	if (!list.length) {
+		return null;
+	}
 	let i = -1;
 	for (let k = 0; k < list.length; k++) {
 		if (list[k].t <= ms) i = k;
 		else break;
 	}
 	// Outside the window the API covers — caller falls back to local math.
-	if (i < 0 || i >= list.length - 1) return null;
+	if (i < 0 || i >= list.length - 1) {
+		return null;
+	}
 	const current = list[i];
 	const next = list[i + 1];
 	return {
@@ -251,7 +257,9 @@ export function lookup(days: TimetableDay[], ms: number): Lookup | null {
  * date in the district's own offset instead.
  */
 export function dayFor(days: TimetableDay[], ms: number): TimetableDay | null {
-	if (!days.length) return null;
+	if (!days.length) {
+		return null;
+	}
 	const dateAt = (offsetMin: number) => {
 		const d = new Date(ms + offsetMin * 60000);
 		return { y: d.getUTCFullYear(), mo: d.getUTCMonth() + 1, d: d.getUTCDate() };
@@ -262,7 +270,9 @@ export function dayFor(days: TimetableDay[], ms: number): TimetableDay | null {
 	// Probe with any day's offset, then re-check using the matched day's own
 	// offset so a DST changeover inside the window still lands on the right date.
 	const first = find(dateAt(days[0].offsetMin));
-	if (!first) return null;
+	if (!first) {
+		return null;
+	}
 	const refined = dateAt(first.offsetMin);
 	if (refined.y !== first.y || refined.mo !== first.mo || refined.d !== first.d) {
 		return find(refined) ?? first;

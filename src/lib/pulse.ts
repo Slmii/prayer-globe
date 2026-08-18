@@ -24,7 +24,9 @@ export const HOTKEY_ATTR = 'data-hotkey';
 
 export function pulse(name: string) {
 	const el = document.querySelector(`[${HOTKEY_ATTR}="${name}"]`);
-	if (!(el instanceof HTMLElement)) return;
+	if (!(el instanceof HTMLElement)) {
+		return;
+	}
 
 	// Restarting a running animation needs the attribute gone, a reflow read to
 	// commit the removal, and then it back — without the read the browser

@@ -39,7 +39,9 @@ class RouteBoundary extends Component<{ children: ReactNode }, { failed: boolean
 		return { failed: true };
 	}
 	render() {
-		if (!this.state.failed) return this.props.children;
+		if (!this.state.failed) {
+			return this.props.children;
+		}
 		return (
 			<div className='pg-route-error'>
 				<p>Could not load this view.</p>
@@ -56,7 +58,9 @@ function Routes() {
 		window.addEventListener('hashchange', on);
 		return () => window.removeEventListener('hashchange', on);
 	}, []);
-	if (!hash.startsWith('#/solar')) return <App />;
+	if (!hash.startsWith('#/solar')) {
+		return <App />;
+	}
 	return (
 		<RouteBoundary>
 			<Suspense fallback={<div className='pg-route-loading'>Loading…</div>}>

@@ -546,13 +546,17 @@ export function sighting(
 	const sunNoon = sunPosition(noon);
 	const sdec = Math.asin(sin(obliquity(noon)) * sin(sunNoon.lam)) / D;
 	const cosH = (sin(-0.8333) - sin(lat) * sin(sdec)) / (cos(lat) * cos(sdec));
-	if (!(cosH > -1 && cosH < 1)) return null;
+	if (!(cosH > -1 && cosH < 1)) {
+		return null;
+	}
 	const guess = noon + Math.acos(cosH) / D / 360;
 
 	// Bisect the estimate to the second. Altitude falls monotonically through
 	// sunset, so a bracket an hour either side of the guess always contains it.
 	const sunsetJd = setting(t => sunAlt(t, lat, lon), -0.8333, guess - 1 / 24, 2, 10);
-	if (sunsetJd == null) return null;
+	if (sunsetJd == null) {
+		return null;
+	}
 
 	// The moon's own horizon allows for its parallax and its disc: it is "set"
 	// when its upper limb touches the horizon, not its centre.
@@ -563,7 +567,9 @@ export function sighting(
 	};
 	const moonH0 = 0.7275 * (Math.asin(EARTH_KM / track(sunsetJd).dist) / D) - 0.5667;
 	const moonsetJd = setting(trackAlt, moonH0, sunsetJd - 2 / 24, 20);
-	if (moonsetJd == null) return null;
+	if (moonsetJd == null) {
+		return null;
+	}
 
 	const lag = (moonsetJd - sunsetJd) * 1440;
 	// Yallop's best time: four ninths of the way from sunset to moonset, which
@@ -625,27 +631,45 @@ const DANJON = 6.4;
 
 function classify(criterion: Criterion, g: { arcv: number; arcl: number; width: number; lag: number }): Zone {
 	// Nothing to see if it sets with or before the sun, or is inside Danjon.
-	if (g.lag <= 0 || g.arcl < DANJON) return 'none';
+	if (g.lag <= 0 || g.arcl < DANJON) {
+		return 'none';
+	}
 
 	if (criterion === 'istanbul') {
 		// The 1978 conference rule, as Diyanet applies it: both must hold.
-		if (g.arcl >= 8 && g.arcv >= 5) return g.arcl >= 12 && g.arcv >= 8 ? 'easy' : 'visible';
+		if (g.arcl >= 8 && g.arcv >= 5) {
+			return g.arcl >= 12 && g.arcv >= 8 ? 'easy' : 'visible';
+		}
 		// Short of the rule, but the geometry still allows an instrument.
 		return g.arcv >= 3 ? 'optical' : 'none';
 	}
 
 	if (criterion === 'yallop') {
 		const q = yallopQ(g.arcv, g.width);
-		if (q > 0.216) return 'easy';
-		if (q > -0.014) return 'visible';
-		if (q > -0.16) return 'optical-then-eye';
-		if (q > -0.293) return 'optical';
+		if (q > 0.216) {
+			return 'easy';
+		}
+		if (q > -0.014) {
+			return 'visible';
+		}
+		if (q > -0.16) {
+			return 'optical-then-eye';
+		}
+		if (q > -0.293) {
+			return 'optical';
+		}
 		return 'none';
 	}
 
 	const v = odehV(g.arcv, g.width);
-	if (v >= 5.65) return 'easy';
-	if (v >= 2.0) return 'visible';
-	if (v >= -0.96) return 'optical';
+	if (v >= 5.65) {
+		return 'easy';
+	}
+	if (v >= 2.0) {
+		return 'visible';
+	}
+	if (v >= -0.96) {
+		return 'optical';
+	}
 	return 'none';
 }

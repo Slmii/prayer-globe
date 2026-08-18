@@ -81,7 +81,9 @@ export function useClock(minutesPerSecond: number, intervalMs = 200, initialScru
 
 	const read = useCallback(() => {
 		const dir = dirRef.current;
-		if (!dir) return anchor.current.scrub;
+		if (!dir) {
+			return anchor.current.scrub;
+		}
 		const elapsed = (performance.now() - anchor.current.at) / 1000;
 		const s = anchor.current.scrub + dir * elapsed * rateRef.current;
 		// Forward runs to whatever ceiling this run set; rewinding comes back to

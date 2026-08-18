@@ -107,7 +107,9 @@ export function useTransportKeys(t: Transport) {
 		SPAN_KEYS,
 		(_e, hk) => {
 			const i = SPAN_KEYS.indexOf((hk.keys?.[0] ?? '') as (typeof SPAN_KEYS)[number]);
-			if (i >= 0) t.span(i);
+			if (i >= 0) {
+				t.span(i);
+			}
 		},
 		opts,
 		[t.span, t.enabled]

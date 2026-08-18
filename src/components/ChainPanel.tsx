@@ -37,7 +37,9 @@ interface Props {
 /** "in 6m" / "3m ago" — the edges are always within minutes of now. */
 function relative(ms: number, nowMs: number): string {
 	const mins = Math.round((ms - nowMs) / 60000);
-	if (mins === 0) return 'now';
+	if (mins === 0) {
+		return 'now';
+	}
 	const abs = Math.abs(mins);
 	const text = abs >= 60 ? `${Math.floor(abs / 60)}h ${abs % 60}m` : `${abs}m`;
 	return mins > 0 ? `in ${text}` : `${text} ago`;
@@ -150,8 +152,8 @@ export default function ChainPanel({ phases, nowMs, chain, onChain, onGoTo, swee
 					{!state
 						? 'Loading the world’s timetables…'
 						: state.count > 0
-						? `${phase.tr} is being prayed in ${state.count} of these cities right now, and has not stopped all day.`
-						: `No city in this set is at ${phase.tr} this minute — the band is out over the Pacific, where we hold no cities. Scrub on and it comes ashore.`}
+							? `${phase.tr} is being prayed in ${state.count} of these cities right now, and has not stopped all day.`
+							: `No city in this set is at ${phase.tr} this minute — the band is out over the Pacific, where we hold no cities. Scrub on and it comes ashore.`}
 				</p>
 			</div>
 		</div>

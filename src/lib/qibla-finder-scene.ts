@@ -23,6 +23,17 @@
 import * as THREE from 'three';
 import { buildKaaba, KAABA_FOOTPRINT } from './kaaba-model';
 
+/** The compass ring's radius, in scene units. */
+const RING = 50;
+/** How high the camera sits above the plane it is looking at. */
+const ELEVATION = (33 * Math.PI) / 180;
+/** Roughly how far the Kaaba stands above the ring, for framing headroom. */
+const KAABA_TALL = 18;
+/** And how far it reaches out past the ring it stands on. */
+const KAABA_WIDE = 16;
+/** The cardinal letters sit outside the ring, so they set the real extent. */
+const LABEL_R = 58;
+
 /** Signed smallest angle from a to b, in degrees (−180…180]. */
 export function delta(a: number, b: number): number {
 	return ((b - a + 540) % 360) - 180;
@@ -115,9 +126,7 @@ export function buildFinderScene(canvas: HTMLCanvasElement): FinderScene {
 	scene.background = new THREE.Color(0x12151f);
 	scene.fog = new THREE.Fog(0x12151f, 170, 380);
 
-	const camera = new THREE.PerspectiveCamera(46, 1, 0.5, 600);
-	camera.position.set(0, 44, 96);
-	camera.lookAt(0, 6, -14);
+	const camera = new THREE.PerspectiveCamera(46, 1, 0.5, 900);
 
 	/*
 	 * Floodlit, not moonlit: the Kaaba has to read as a lit object, so there is a
@@ -151,7 +160,7 @@ export function buildFinderScene(canvas: HTMLCanvasElement): FinderScene {
 	world.add(plate);
 
 	// Ring and degree ticks, one every 5° with a longer mark at each cardinal.
-	const ring = named(new THREE.Mesh(new THREE.TorusGeometry(50, 0.5, 8, 128), M.ring), 'compass_ring');
+	const ring = named(new THREE.Mesh(new THREE.TorusGeometry(RING, 0.5, 8, 128), M.ring), 'compass_ring');
 	ring.rotation.x = -Math.PI / 2;
 	ring.position.y = 0.2;
 	world.add(ring);
@@ -175,7 +184,7 @@ export function buildFinderScene(canvas: HTMLCanvasElement): FinderScene {
 	for (const [txt, deg, col] of CARDINALS) {
 		const s = label(txt, col);
 		const a = (deg * Math.PI) / 180;
-		s.position.set(Math.sin(a) * 58, 3.4, -Math.cos(a) * 58);
+		s.position.set(Math.sin(a) * LABEL_R, 3.4, -Math.cos(a) * LABEL_R);
 		s.scale.setScalar(deg === 0 ? 11 : 8.5);
 		world.add(s);
 	}
@@ -305,12 +314,41 @@ export function buildFinderScene(canvas: HTMLCanvasElement): FinderScene {
 			haloMat.opacity = on ? 0.34 : 0.18;
 		},
 
+		/*
+		 * Framed on every resize rather than parked at a fixed point.
+		 *
+		 * The design's camera sat inside the ring: on a wide modal the near half
+		 * filled the frame and everything but the far rim was off-screen. Which
+		 * part is lost depends entirely on the canvas shape, so the distance is
+		 * solved for instead — far enough that the whole ring fits across *and*
+		 * down, whichever of the two is the binding constraint.
+		 *
+		 * The ring is flat, so seen from an elevation its height on screen is only
+		 * `R·sin(elevation)`; the Kaaba standing on the far rim is what actually
+		 * sets the vertical requirement, and it is counted separately.
+		 */
 		resize() {
 			const box = canvas.parentElement;
 			const w = box?.clientWidth || canvas.clientWidth || 1;
 			const h = box?.clientHeight || canvas.clientHeight || 1;
 			renderer.setSize(w, h, false);
-			camera.aspect = w / h;
+			const aspect = w / h;
+			camera.aspect = aspect;
+
+			const vHalf = (camera.fov * Math.PI) / 360;
+			const hHalf = Math.atan(Math.tan(vHalf) * aspect);
+
+			// What has to fit. The Kaaba stands *on* the ring rather than inside it,
+			// so it reaches past the radius and sets the horizontal requirement
+			// whenever it happens to lie near the left or right edge.
+			const acrossNeeded = Math.max(LABEL_R + 6, RING + KAABA_WIDE);
+			const downNeeded = LABEL_R * Math.sin(ELEVATION) + KAABA_TALL + 10;
+
+			const dist = Math.max(downNeeded / Math.tan(vHalf), acrossNeeded / Math.tan(hHalf));
+			camera.position.set(0, Math.sin(ELEVATION) * dist, Math.cos(ELEVATION) * dist);
+			// Aimed a little beyond the observer, which lifts the compass clear of
+			// the readout that sits over the bottom of the canvas.
+			camera.lookAt(0, 0, -RING * 0.06);
 			camera.updateProjectionMatrix();
 		},
 
@@ -333,7 +371,9 @@ export function buildFinderScene(canvas: HTMLCanvasElement): FinderScene {
 					material?: THREE.Material | THREE.Material[];
 				};
 				part.geometry?.dispose();
-				if (!part.material) return;
+				if (!part.material) {
+					return;
+				}
 				for (const m of Array.isArray(part.material) ? part.material : [part.material]) {
 					(m as THREE.MeshStandardMaterial | THREE.SpriteMaterial).map?.dispose();
 					m.dispose();

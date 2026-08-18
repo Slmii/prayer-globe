@@ -4,14 +4,14 @@
 // solar model when the API has no coverage, hasn't answered yet, or the scrubbed
 // instant falls outside the 32-day window it returned.
 
-import { D, PHASES, ROWS, fmt, latTxt, lonTxt, phaseAt, skyState, solarTable, qibla, wrap } from './astro';
 import type { PrayerKey } from './astro';
-import { CITIES } from './cities';
+import { D, PHASES, ROWS, fmt, latTxt, lonTxt, phaseAt, qibla, skyState, solarTable, wrap } from './astro';
 import type { City } from './cities';
-import { dayFor, lookup } from './diyanet';
+import { CITIES } from './cities';
 import type { TimetableDay } from './diyanet';
-import { phaseOf } from './phases';
+import { dayFor, lookup } from './diyanet';
 import type { PhaseTable } from './phases';
+import { phaseOf } from './phases';
 
 export interface TimeRow {
 	label: string;
@@ -142,7 +142,9 @@ export function cityPhase(
 ): number {
 	if (phases) {
 		const p = phaseOf(phases, c.ilceID, nowMs);
-		if (p != null) return p;
+		if (p != null) {
+			return p;
+		}
 	}
 	const st = (((utcH + c.lo / 15 + eot / 60) % 24) + 24) % 24;
 	return phaseAt(c.la, st, dec);

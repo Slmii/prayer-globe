@@ -115,7 +115,9 @@ export default function TipLayer() {
 		};
 	}, []);
 
-	if (!tip) return null;
+	if (!tip) {
+		return null;
+	}
 	return createPortal(
 		<div
 			className={'tip tip-on' + (tip.above ? ' tip-above' : '')}

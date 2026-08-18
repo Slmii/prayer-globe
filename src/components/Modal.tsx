@@ -37,7 +37,9 @@ export default function Modal({ label, onClose, children, className }: Props) {
 		const previous = document.activeElement as HTMLElement | null;
 		closeRef.current?.focus();
 		const onKey = (e: KeyboardEvent) => {
-			if (e.key === 'Escape') onClose();
+			if (e.key === 'Escape') {
+				onClose();
+			}
 		};
 		window.addEventListener('keydown', onKey);
 		return () => {

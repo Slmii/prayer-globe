@@ -27,7 +27,7 @@
 // Reads public/times/ but never writes to it — that directory belongs to the
 // crawler.
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
 interface CityRow {
 	n: string;
@@ -70,7 +70,9 @@ function offsetMinutes(tz: string, isoDate: string): number {
 			.formatToParts(probe)
 			.find(p => p.type === 'timeZoneName')?.value ?? 'GMT';
 	const m = /GMT([+-])(\d{1,2}):?(\d{2})?/.exec(name);
-	if (!m) return 0;
+	if (!m) {
+		return 0;
+	}
 	return (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3] ?? 0));
 }
 

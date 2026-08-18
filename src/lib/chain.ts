@@ -8,10 +8,10 @@
 // instants, not a solar approximation, so the chain lines up with what each
 // city's own card shows.
 
+import { wrap } from './astro';
 import type { City } from './cities';
 import { CITIES } from './cities';
 import type { PhaseTable } from './phases';
-import { wrap } from './astro';
 
 export interface ChainEdge {
 	kind: 'entering' | 'leaving';
@@ -50,11 +50,17 @@ function windowFor(
 	perDay: number,
 	minute: number
 ): { phase: number; entryMin: number | null; exitMin: number } | null {
-	if (arr.length === 0) return null;
-	if (minute >= arr[arr.length - 1]) return null;
+	if (arr.length === 0) {
+		return null;
+	}
+	if (minute >= arr[arr.length - 1]) {
+		return null;
+	}
 
 	if (minute < arr[0]) {
-		if (minute < arr[0] - 1440) return null;
+		if (minute < arr[0] - 1440) {
+			return null;
+		}
 		return { phase: 5, entryMin: null, exitMin: arr[0] };
 	}
 

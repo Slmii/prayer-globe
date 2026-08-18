@@ -52,9 +52,13 @@ export function decodePhases(file: PhasesFile): PhaseTable {
 export async function loadPhases(): Promise<PhaseTable | null> {
 	try {
 		const res = await fetch(`${base}phases.json`);
-		if (!res.ok) return null;
+		if (!res.ok) {
+			return null;
+		}
 		const file = (await res.json()) as PhasesFile;
-		if (!file?.cities || !file.perDay) return null;
+		if (!file?.cities || !file.perDay) {
+			return null;
+		}
 		return decodePhases(file);
 	} catch {
 		return null;
@@ -70,10 +74,14 @@ export async function loadPhases(): Promise<PhaseTable | null> {
  */
 export function phaseOf(table: PhaseTable, ilceID: string, ms: number): number | null {
 	const arr = table.byCity.get(ilceID);
-	if (!arr || arr.length === 0) return null;
+	if (!arr || arr.length === 0) {
+		return null;
+	}
 
 	const minute = Math.floor(ms / 60000);
-	if (minute >= arr[arr.length - 1]) return null;
+	if (minute >= arr[arr.length - 1]) {
+		return null;
+	}
 
 	if (minute < arr[0]) {
 		// The hours before the window's very first fajr are still the previous
@@ -93,14 +101,22 @@ export function phaseOf(table: PhaseTable, ilceID: string, ms: number): number |
  */
 export function nextBoundary(table: PhaseTable, ilceID: string, ms: number): { phase: number; ms: number } | null {
 	const arr = table.byCity.get(ilceID);
-	if (!arr || arr.length === 0) return null;
+	if (!arr || arr.length === 0) {
+		return null;
+	}
 
 	const minute = Math.floor(ms / 60000);
-	if (minute >= arr[arr.length - 1]) return null;
-	if (minute < arr[0]) return { phase: 0, ms: arr[0] * 60000 };
+	if (minute >= arr[arr.length - 1]) {
+		return null;
+	}
+	if (minute < arr[0]) {
+		return { phase: 0, ms: arr[0] * 60000 };
+	}
 
 	const k = lastBefore(arr, minute) + 1;
-	if (k >= arr.length) return null;
+	if (k >= arr.length) {
+		return null;
+	}
 	return { phase: k % table.perDay, ms: arr[k] * 60000 };
 }
 
@@ -133,12 +149,18 @@ export function blendOf(
 	window = 15
 ): { phase: number; next: number; t: number } | null {
 	const arr = table.byCity.get(ilceID);
-	if (!arr || arr.length === 0) return null;
+	if (!arr || arr.length === 0) {
+		return null;
+	}
 
 	const minute = Math.floor(ms / 60000);
-	if (minute >= arr[arr.length - 1]) return null;
+	if (minute >= arr[arr.length - 1]) {
+		return null;
+	}
 	if (minute < arr[0]) {
-		if (minute < arr[0] - 1440) return null;
+		if (minute < arr[0] - 1440) {
+			return null;
+		}
 		const gap = arr[0] - minute;
 		// Approaching the window's first fajr out of the previous night's isha.
 		return gap > window ? { phase: 5, next: 5, t: 0 } : { phase: 5, next: 0, t: 1 - gap / window };
@@ -148,6 +170,8 @@ export function blendOf(
 	const phase = k % table.perDay;
 	const gap = arr[k + 1] - minute;
 	const next = (k + 1) % table.perDay;
-	if (gap > window || next === phase) return { phase, next: phase, t: 0 };
+	if (gap > window || next === phase) {
+		return { phase, next: phase, t: 0 };
+	}
 	return { phase, next, t: 1 - gap / window };
 }

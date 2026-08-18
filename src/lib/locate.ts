@@ -21,10 +21,10 @@
 // handful of requests behind a button someone presses on purpose, so the lists
 // are cached for the session and never prefetched.
 
-import { CITIES } from './cities';
-import type { City } from './cities';
-import { normalize } from './diyanet';
 import type { QueryClient } from '@tanstack/react-query';
+import type { City } from './cities';
+import { CITIES } from './cities';
+import { normalize } from './diyanet';
 
 const EZAN = 'https://ezanvakti.emushaf.net';
 const NOMINATIM = 'https://nominatim.openstreetmap.org/reverse';
@@ -93,7 +93,9 @@ async function reverse(qc: QueryClient, lat: number, lon: number): Promise<Place
 	});
 	const a = d.address ?? {};
 	const names = [a.city, a.town, a.village, a.municipality, d.name, a.county].filter((n): n is string => !!n);
-	if (!names.length || !a.country_code) return null;
+	if (!names.length || !a.country_code) {
+		return null;
+	}
 	return { names, iso2: a.country_code.toUpperCase(), country: a.country ?? '' };
 }
 
@@ -118,13 +120,17 @@ function pick(rows: IlceRow[], names: string[]): IlceRow | null {
 	const wanted = names.map(normalize).filter(Boolean);
 	for (const want of wanted) {
 		const exact = rows.find(r => normalize(r.IlceAdiEn) === want || normalize(r.IlceAdi) === want);
-		if (exact) return exact;
+		if (exact) {
+			return exact;
+		}
 	}
 	// Diyanet qualifies some names — "BEEK (Maastricht)", "HENGELO (overijssel)" —
 	// so a district that starts with the town's name is still that town.
 	for (const want of wanted) {
 		const near = rows.find(r => normalize(r.IlceAdiEn).startsWith(want) || normalize(r.IlceAdi).startsWith(want));
-		if (near) return near;
+		if (near) {
+			return near;
+		}
 	}
 	return null;
 }
@@ -145,7 +151,9 @@ function pick(rows: IlceRow[], names: string[]): IlceRow | null {
  * name are capitalised rather than only the first.
  */
 export function titleCase(s: string): string {
-	if (/\p{Ll}/u.test(s)) return s;
+	if (/\p{Ll}/u.test(s)) {
+		return s;
+	}
 	return s.replace(/\p{L}[\p{L}\p{M}]*/gu, w => w[0] + w.slice(1).replace(/İ/g, 'i').toLowerCase());
 }
 
@@ -165,10 +173,14 @@ export interface Located {
  */
 export async function locateDistrict(qc: QueryClient, lat: number, lon: number): Promise<Located | null> {
 	const place = await reverse(qc, lat, lon);
-	if (!place) return null;
+	if (!place) {
+		return null;
+	}
 
 	const ulke = await countryId(qc, place);
-	if (!ulke) return null;
+	if (!ulke) {
+		return null;
+	}
 
 	const provinces = await listQuery<SehirRow[]>(qc, ['diyanet-provinces', ulke], `${EZAN}/sehirler/${ulke}`);
 	for (const province of provinces) {
@@ -183,7 +195,9 @@ export async function locateDistrict(qc: QueryClient, lat: number, lon: number):
 		// Already in the dataset: hand back the real city, so it keeps its
 		// population, timezone and its dot on the globe.
 		const shipped = CITIES.find(c => c.ilceID === hit.IlceID);
-		if (shipped) return { city: shipped, shipped: true };
+		if (shipped) {
+			return { city: shipped, shipped: true };
+		}
 
 		return {
 			shipped: false,
