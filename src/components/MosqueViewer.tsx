@@ -14,7 +14,7 @@ import { useEffect, useRef, useState } from 'react';
 import type * as THREE from 'three';
 import { createStage } from './stage';
 import type { Stage } from './stage';
-import { AppIcon } from './AppIcon';
+import Modal from './Modal';
 import { DESIGN_MOSQUES, buildDesignMosque } from '../lib/mosques-model';
 import { buildKaaba } from '../lib/kaaba-model';
 import { buildNabawi } from '../lib/nabawi-model';
@@ -71,7 +71,6 @@ interface Props {
 export default function MosqueViewer({ model, onClose }: Props) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const stageRef = useRef<Stage | null>(null);
-	const closeRef = useRef<HTMLButtonElement>(null);
 	const railRef = useRef<HTMLDivElement>(null);
 	const [current, setCurrent] = useState<MosqueModel>(model);
 	/** A model is being assembled. True from the first paint, not after it. */
@@ -133,35 +132,10 @@ export default function MosqueViewer({ model, onClose }: Props) {
 		railRef.current?.querySelector('[aria-pressed="true"]')?.scrollIntoView({ block: 'nearest' });
 	}, [current]);
 
-	/*
-	 * Escape closes, and focus is borrowed rather than taken.
-	 *
-	 * The button that opened this sits on a marker on the globe, and that marker
-	 * is gone by the time the viewer closes — so focus is parked on the close
-	 * button while the modal is up and handed back to whatever held it before,
-	 * which keeps the keyboard somewhere sensible either way.
-	 */
-	useEffect(() => {
-		const previous = document.activeElement as HTMLElement | null;
-		closeRef.current?.focus();
-		const onKey = (e: KeyboardEvent) => {
-			if (e.key === 'Escape') onClose();
-		};
-		window.addEventListener('keydown', onKey);
-		return () => {
-			window.removeEventListener('keydown', onKey);
-			previous?.focus?.();
-		};
-	}, [onClose]);
-
 	const entry = ENTRIES.find(e => e.model === current) ?? ENTRIES[0];
 
 	return (
-		// The backdrop closes on a press, but only on its own — a press that
-		// started inside the panel and drifted out is an orbit that overshot, not
-		// a decision to leave.
-		<div className='mv-back' onPointerDown={e => e.target === e.currentTarget && onClose()}>
-			<div className='mv' role='dialog' aria-modal='true' aria-label={`${entry.name} in 3D`}>
+		<Modal label={`${entry.name} in 3D`} onClose={onClose} className='mv'>
 				<div className='mv-rail' ref={railRef}>
 					<h2 className='mv-rail-head'>{ENTRIES.length} mosques</h2>
 					{ENTRIES.map(e => (
@@ -192,10 +166,6 @@ export default function MosqueViewer({ model, onClose }: Props) {
 						</div>
 					)}
 
-					<button type='button' className='mv-close' ref={closeRef} onClick={onClose} aria-label='Close'>
-						<AppIcon name='x' size='small' />
-					</button>
-
 					<p className='mv-note'>Drag to orbit · scroll to zoom · right-drag to pan</p>
 
 					<div className='mv-plate'>
@@ -205,8 +175,7 @@ export default function MosqueViewer({ model, onClose }: Props) {
 						</p>
 						<p className='mv-plate-note'>{entry.note}</p>
 					</div>
-				</div>
 			</div>
-		</div>
+		</Modal>
 	);
 }

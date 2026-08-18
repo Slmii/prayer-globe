@@ -52,6 +52,11 @@ export interface Readout {
 	city: string | null;
 	coord: string;
 	clock: string;
+	/**
+	 * Hours to add to UTC for `clock`, so the same string can be rebuilt at frame
+	 * rate without running this whole function again. See TimeBar.
+	 */
+	offsetHours: number;
 	/** Milliseconds until the next prayer, for a live countdown. */
 	nextMs: number;
 	nextLabel: string;
@@ -296,6 +301,7 @@ export function buildReadout({ city, nowMs, hover, centerLng, days, phases }: Re
 		city: city?.n ?? null,
 		coord: city ? latTxt(ref.la) + ' · ' + lonTxt(ref.lo) : '',
 		clock,
+		offsetHours,
 		nextMs,
 		nextLabel,
 		times: city ? times : [],

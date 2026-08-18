@@ -193,6 +193,7 @@ interface GlobeProps {
 	onNote(note: string): void;
 	/** Copy a link to the current city and moment. */
 	onShare(): void;
+	onShortcuts(): void;
 }
 
 type GlyphKind = 'sun' | 'moon';
@@ -890,6 +891,31 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 					b.dataset.tipEnd = '';
 					b.addEventListener('click', () => propsRef.current.onShare());
 					mountIcon(b, 'share');
+					wrap.appendChild(b);
+					return wrap;
+				},
+				onRemove: () => {}
+			},
+			'top-right'
+		);
+
+		// The shortcuts, directly under Share. Same reasoning: the keys act on the
+		// view and the clock, so the list of them belongs with the view's controls
+		// rather than in the panel.
+		map.addControl(
+			{
+				onAdd: () => {
+					const wrap = document.createElement('div');
+					wrap.className = 'maplibregl-ctrl maplibregl-ctrl-group';
+					const b = document.createElement('button');
+					b.type = 'button';
+					b.className = 'pg-share-ctrl';
+					b.setAttribute('aria-label', 'Keyboard shortcuts');
+					b.setAttribute('data-hotkey', 'shortcuts');
+					b.dataset.tip = 'Keyboard shortcuts · ⌘K';
+					b.dataset.tipEnd = '';
+					b.addEventListener('click', () => propsRef.current.onShortcuts());
+					mountIcon(b, 'keyboard');
 					wrap.appendChild(b);
 					return wrap;
 				},

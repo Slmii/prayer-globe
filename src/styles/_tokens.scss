@@ -62,6 +62,7 @@ $fs-20: 20px;
 $fs-21: 21px;
 $fs-24: 24px;
 $fs-26: 26px;
+$fs-30: 30px;
 $fs-33: 33px;
 $fs-34: 34px;
 $fs-36: 36px;
@@ -74,6 +75,10 @@ $fs-62: 62px;
 
 $fw-normal: 400;
 $fw-medium: 500;
+
+/// Only the finder's lock banner, where the Arabic is the whole message and
+/// Amiri at 500 reads as a caption rather than as an announcement.
+$fw-bold: 700;
 
 // ---------- leading ----------
 //

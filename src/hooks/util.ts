@@ -42,6 +42,14 @@ export interface Clock {
 	play: (dir: 1 | -1, opts?: { rate?: number; limit?: number }) => void;
 	/** Minutes of simulated time per real second, for whatever is running now. */
 	rate: number;
+	/**
+	 * Glide the scrub by `minutes` instead of jumping it.
+	 *
+	 * Repeated calls compose: each one steps from where the last was *heading*,
+	 * not from wherever the glide has got to, so holding a key covers a steady
+	 * distance per press rather than falling behind its own animation.
+	 */
+	stepBy: (minutes: number, ms?: number) => void;
 	stop: () => void;
 }
 
@@ -90,7 +98,27 @@ export function useClock(minutesPerSecond: number, intervalMs = 200, initialScru
 		setScrubSample(at);
 	}, []);
 
-	const stop = useCallback(() => halt(read()), [halt, read]);
+	/*
+	 * A seek in flight, and where it is going.
+	 *
+	 * `play` cannot do this job: its `limit` is a ceiling only — rewinding runs to
+	 * zero and ignores it — so a backward step had nothing to stop it at the
+	 * target. And a run sets `playing`, which would flash RUNNING across the
+	 * console for a third of a second every time an arrow key was pressed.
+	 */
+	const seekRaf = useRef(0);
+	const pending = useRef<number | null>(null);
+
+	const cancelSeek = useCallback(() => {
+		cancelAnimationFrame(seekRaf.current);
+		seekRaf.current = 0;
+		pending.current = null;
+	}, []);
+
+	const stop = useCallback(() => {
+		cancelSeek();
+		halt(read());
+	}, [halt, read, cancelSeek]);
 
 	/**
 	 * Jump the clock to an offset, clamped to the range.
@@ -100,10 +128,76 @@ export function useClock(minutesPerSecond: number, intervalMs = 200, initialScru
 	 * drag target nothing did, and repeated drags could walk the clock past ten
 	 * days — or, with a negative offset, into a past this app does not have.
 	 */
-	const setScrub = useCallback((minutes: number) => halt(Math.max(SCRUB_MIN, Math.min(SCRUB_MAX, minutes))), [halt]);
+	const setScrub = useCallback(
+		(minutes: number) => {
+			cancelSeek();
+			halt(Math.max(SCRUB_MIN, Math.min(SCRUB_MAX, minutes)));
+		},
+		[halt, cancelSeek]
+	);
+
+	/*
+	 * Glide to an absolute offset. Internal: the only way in is `stepBy`.
+	 *
+	 * Returning to the present is deliberately *not* routed through here. It can
+	 * be a ten-day journey, and animating it made the one control whose whole
+	 * point is "put me back" the slowest thing on the page. It snaps.
+	 */
+	const seekTo = useCallback(
+		(minutes: number, ms?: number) => {
+			const from = read();
+			const to = Math.max(SCRUB_MIN, Math.min(SCRUB_MAX, minutes));
+			cancelAnimationFrame(seekRaf.current);
+			pending.current = to;
+
+			// Long steps take a little longer, but not proportionally — a day should
+			// not take twenty-four times as long to travel as an hour.
+			const span = ms ?? 240 + Math.min(280, Math.abs(to - from) / 6);
+			if (span <= 0 || Math.abs(to - from) < 0.01) {
+				cancelSeek();
+				halt(to);
+				return;
+			}
+
+			const t0 = performance.now();
+			// Not a run: the direction stays zero so the console does not call this
+			// playing and the sampler does not try to park it at a limit.
+			dirRef.current = 0;
+			setPlayingState(0);
+
+			const frame = () => {
+				const p = Math.min(1, (performance.now() - t0) / span);
+				// Ease out: leaves immediately, arrives gently.
+				const at = from + (to - from) * (1 - Math.pow(1 - p, 3));
+				anchor.current = { at: performance.now(), scrub: at };
+				// Sampled every frame rather than at the usual 200ms, or the digits
+				// would tick five times across the glide and look like the jump this
+				// exists to remove.
+				setScrubSample(at);
+				if (p < 1) {
+					seekRaf.current = requestAnimationFrame(frame);
+					return;
+				}
+				pending.current = null;
+				seekRaf.current = 0;
+				halt(to);
+			};
+			seekRaf.current = requestAnimationFrame(frame);
+		},
+		[read, halt, cancelSeek]
+	);
+
+	/** Compose against the destination, not the current frame of the glide. */
+	const stepBy = useCallback(
+		(minutes: number, ms?: number) => seekTo((pending.current ?? read()) + minutes, ms),
+		[seekTo, read]
+	);
+
+	useEffect(() => () => cancelAnimationFrame(seekRaf.current), []);
 
 	const play = useCallback(
 		(dir: 1 | -1, opts?: { rate?: number; limit?: number }) => {
+			cancelSeek();
 			const from = read();
 			const ceiling = Math.min(opts?.limit ?? SCRUB_MAX, SCRUB_MAX);
 			// Already parked at that end — nothing to play.
@@ -115,7 +209,7 @@ export function useClock(minutesPerSecond: number, intervalMs = 200, initialScru
 			dirRef.current = dir;
 			setPlayingState(dir);
 		},
-		[read, minutesPerSecond]
+		[read, minutesPerSecond, cancelSeek]
 	);
 
 	// Re-render a few times a second so the panel follows real time as well as
@@ -131,7 +225,7 @@ export function useClock(minutesPerSecond: number, intervalMs = 200, initialScru
 		return () => window.clearInterval(id);
 	}, [read, halt, intervalMs]);
 
-	return { scrub, playing, rate, getNowMs, setScrub, play, stop };
+	return { scrub, playing, rate, getNowMs, setScrub, play, stepBy, stop };
 }
 
 /**

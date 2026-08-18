@@ -37,7 +37,9 @@ import {
 	IconSunriseFilled,
 	IconSunset,
 	IconSunsetFilled,
-	IconX
+	IconX,
+	IconKeyboard,
+	IconKeyboardFilled
 } from '@tabler/icons-react';
 import type { CSSProperties } from 'react';
 
@@ -56,7 +58,8 @@ export type AppIconName =
 	| 'plus'
 	| 'minus'
 	| 'x'
-	| 'locate';
+	| 'locate'
+	| 'keyboard';
 
 type TablerGlyph = typeof IconSun;
 
@@ -82,7 +85,8 @@ const ICONS: Record<AppIconName, IconPair> = {
 	plus: { outline: IconPlus, filled: IconPlus },
 	minus: { outline: IconMinus, filled: IconMinus },
 	x: { outline: IconX, filled: IconX },
-	locate: { outline: IconCurrentLocation, filled: IconCurrentLocationFilled }
+	locate: { outline: IconCurrentLocation, filled: IconCurrentLocationFilled },
+	keyboard: { outline: IconKeyboard, filled: IconKeyboardFilled }
 };
 
 /** Named icon sizes (no free pixel values) — keeps icon sizing consistent across the app. */

@@ -194,3 +194,9 @@
 @mixin arabic-lg {
 	@include font(t.$ff-arabic, t.$fs-20);
 }
+
+/// The one Arabic size the app sets in display rather than in prose: the
+/// finder's lock banner, where القبلة is the whole message.
+@mixin arabic-xl {
+	@include font(t.$ff-arabic, t.$fs-30, t.$fw-bold);
+}

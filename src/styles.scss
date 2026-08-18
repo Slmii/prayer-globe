@@ -2252,6 +2252,12 @@ body {
 	color: #e9e9ed;
 }
 
+/* The mosque viewer's own shape: a rail beside a stage, and wide enough for
+   both. Everything else about the frame is `.modal`, shared. */
+.mv {
+	max-width: 1280px;
+}
+
 /* ---------- the mosque viewer, and the card that opens it ---------- */
 
 /* Its own layer, over the whole stage and above the console strip.
@@ -2361,7 +2367,7 @@ body {
 	color: #fff8e8;
 }
 
-.mv-back {
+.modal-back {
 	position: fixed;
 	inset: 0;
 	z-index: 40;
@@ -2373,7 +2379,10 @@ body {
 	animation: mv-fade 180ms ease both;
 }
 
-.mv {
+.modal {
+	/* The close button and the qibla mode switch are absolute children of the
+	   dialog, so the dialog has to be what they position against. */
+	position: relative;
 	display: flex;
 	width: 100%;
 	height: 100%;
@@ -2483,7 +2492,7 @@ body {
 	outline: none;
 }
 
-.mv-close {
+.modal-close {
 	position: absolute;
 	top: 14px;
 	right: 14px;
@@ -2500,7 +2509,7 @@ body {
 	transition: background 160ms ease, color 160ms ease;
 }
 
-.mv-close:hover {
+.modal-close:hover {
 	background: rgba(233, 233, 237, 0.14);
 	color: #f5f4ff;
 }
@@ -2508,7 +2517,7 @@ body {
 /* The modal parks focus here on open so Escape and Tab start somewhere sensible,
    which means this ring is shown every single time — the platform's default blue
    was the brightest thing on screen. Same treatment the console buttons get. */
-.mv-close:focus-visible,
+.modal-close:focus-visible,
 .mv-rail button:focus-visible,
 .mv-pop-btn:focus-visible {
 	outline: 1px solid rgba(216, 176, 74, 0.8);
@@ -2632,7 +2641,7 @@ body {
 
 /* The rail is unreadable on a phone beside a stage; stack them instead. */
 @media (max-width: 720px) {
-	.mv {
+	.modal {
 		flex-direction: column;
 	}
 
@@ -4481,4 +4490,464 @@ body {
 }
 :where(.t-arabic-lg, .t-arabic-xl, .t-arabic-2xl) {
 	@include ty.arabic-lg;
+}
+
+/* ---------- the qibla viewer ---------- */
+
+/* The bearing in the city card is the way in, so it looks like one. */
+.qibla-open {
+	border: 0;
+	padding: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+	border-bottom: 1px dotted rgba(233, 233, 237, 0.3);
+	transition: color 160ms ease, border-color 160ms ease;
+}
+
+.qibla-open:hover {
+	color: var(--accent-soft);
+	border-bottom-color: var(--accent);
+}
+
+.qibla-open:focus-visible {
+	outline: 1px solid rgba(181, 171, 252, 0.75);
+	outline-offset: sp.$sp-hairline;
+}
+
+.qv {
+	max-width: 880px;
+}
+
+/* ---------- the live qibla finder ---------- */
+/*
+ * The design's `Qibla Finder 3D.html`, fitted to the modal.
+ *
+ * Spacing is snapped to the project's 4px grid rather than kept at the design's
+ * own values, which spent 5, 7, 9, 10, 13, 14, 15, 18, 26 and 30 — the same
+ * every-whole-number drift the scale was introduced to end. Nothing moved by
+ * more than 4px.
+ */
+
+
+.qf {
+	position: relative;
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	user-select: none;
+}
+
+.qf-canvas {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	touch-action: none;
+	cursor: grab;
+}
+
+.qf-canvas:active {
+	cursor: grabbing;
+}
+
+.qf-top {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	z-index: 3;
+	display: flex;
+	align-items: flex-start;
+	gap: sp.$sp-12;
+	/* Clears the close button and the mode switch, both of which live up here. */
+	padding: sp.$sp-16 calc(#{sp.$sp-32} + #{sp.$sp-24}) 0 sp.$sp-16;
+	pointer-events: none;
+}
+
+.qf-plate {
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-4;
+	padding: sp.$sp-8 sp.$sp-12;
+	border-radius: 11px;
+	background: rgba(10, 12, 20, 0.76);
+	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.09);
+	backdrop-filter: blur(12px);
+}
+
+.qf-plate .t-label {
+	text-transform: uppercase;
+	color: rgba(233, 233, 237, 0.4);
+}
+
+.qf-plate .t-value {
+	color: #f5f4ff;
+}
+
+/* The live heading readout. */
+.qf-dial {
+	position: absolute;
+	left: 50%;
+	bottom: 104px;
+	transform: translateX(-50%);
+	z-index: 3;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: sp.$sp-8;
+	text-align: center;
+	pointer-events: none;
+}
+
+.qf-dial .t-label {
+	text-transform: uppercase;
+	color: rgba(233, 233, 237, 0.4);
+}
+
+.qf-dial.locked .t-label {
+	color: rgba(126, 224, 184, 0.6);
+}
+
+.qf-dial-big {
+	@include ty.clock-xl;
+	color: #f5f4ff;
+	transition: color 240ms ease;
+}
+
+.qf-dial-turn {
+	@include ty.chip-sm;
+	color: #c9c1ff;
+	transition: color 240ms ease;
+}
+
+.qf-dial.locked .qf-dial-big,
+.qf-dial.locked .qf-dial-turn {
+	color: #7ee0b8;
+}
+
+/*
+ * The success banner.
+ *
+ * The design centres this, which works on a full-height phone where the Kaaba
+ * projects well above the middle. In a landscape modal dead centre is exactly
+ * where the Kaaba lands, so the banner covered the thing you had just aimed at.
+ * It sits in the empty band above it instead.
+ */
+.qf-lock {
+	position: absolute;
+	left: 50%;
+	top: 24%;
+	z-index: 4;
+	transform: translate(-50%, -50%) scale(0.94);
+	opacity: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: sp.$sp-8;
+	padding: sp.$sp-24 sp.$sp-32;
+	border-radius: 16px;
+	background: rgba(10, 20, 17, 0.82);
+	box-shadow: inset 0 0 0 1px rgba(126, 224, 184, 0.4), 0 30px 80px rgba(0, 0, 0, 0.6);
+	backdrop-filter: blur(14px);
+	pointer-events: none;
+	transition: opacity 260ms ease, transform 320ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.qf-lock.on {
+	opacity: 1;
+	transform: translate(-50%, -50%) scale(1);
+}
+
+.qf-lock-ar {
+	@include ty.arabic-xl;
+	color: #7ee0b8;
+}
+
+.qf-lock-en {
+	@include ty.label-caps;
+	color: rgba(126, 224, 184, 0.86);
+}
+
+.qf-lock-sub {
+	@include ty.label-lg;
+	color: rgba(233, 233, 237, 0.44);
+}
+
+/* The bottom strip. */
+.qf-strip {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 3;
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-16;
+	padding: sp.$sp-12 sp.$sp-16;
+	background: linear-gradient(180deg, rgba(10, 12, 20, 0), rgba(10, 12, 20, 0.92) 46%);
+}
+
+.qf-cell {
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-4;
+}
+
+.qf-cell .t-label {
+	text-transform: uppercase;
+	color: rgba(233, 233, 237, 0.4);
+}
+
+.qf-cell .t-value {
+	color: #f5f4ff;
+}
+
+.qf-hint {
+	margin-left: auto;
+	max-width: 46%;
+	text-align: right;
+	color: rgba(233, 233, 237, 0.34);
+	text-wrap: pretty;
+}
+
+.qf-ctl {
+	flex: none;
+	min-width: 44px;
+	height: 32px;
+	padding: 0 sp.$sp-12;
+	border: 0;
+	border-radius: 9px;
+	background: rgba(10, 12, 20, 0.8);
+	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.1);
+	color: rgba(233, 233, 237, 0.78);
+	cursor: pointer;
+	@include ty.label-sm;
+	text-transform: uppercase;
+	transition: background 170ms ease, color 170ms ease;
+}
+
+.qf-ctl:hover {
+	background: rgba(150, 138, 224, 0.26);
+	color: #f5f4ff;
+}
+
+/* The permission gate. */
+.qf-gate {
+	position: absolute;
+	inset: 0;
+	z-index: 6;
+	display: grid;
+	place-items: center;
+	padding: sp.$sp-24;
+	background: rgba(8, 10, 16, 0.9);
+	backdrop-filter: blur(10px);
+}
+
+.qf-gate-card {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: sp.$sp-16;
+	max-width: 380px;
+	padding: sp.$sp-24;
+	border-radius: 16px;
+	background: #11141f;
+	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.1), 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.qf-gate-card h1 {
+	margin: 0;
+	@include ty.title-lg;
+	color: #f5f4ff;
+}
+
+.qf-gate-card p {
+	margin: 0;
+	@include ty.body;
+	color: rgba(233, 233, 237, 0.56);
+	text-wrap: pretty;
+}
+
+.qf-gate-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: sp.$sp-8;
+	margin-top: sp.$sp-4;
+}
+
+.qf-gate-row button {
+	min-height: 44px;
+	padding: 0 sp.$sp-16;
+	border: 0;
+	border-radius: 10px;
+	cursor: pointer;
+	@include ty.label-caps;
+	transition: background 170ms ease;
+}
+
+.qf-gate-go {
+	background: rgba(150, 138, 224, 0.26);
+	box-shadow: inset 0 0 0 1px rgba(150, 138, 224, 0.44);
+	color: #efeeff;
+}
+
+.qf-gate-go:hover {
+	background: rgba(150, 138, 224, 0.4);
+}
+
+.qf-gate-alt {
+	background: rgba(233, 233, 237, 0.06);
+	color: rgba(233, 233, 237, 0.66);
+}
+
+.qf-gate-alt:hover {
+	background: rgba(233, 233, 237, 0.12);
+}
+
+.qf-gate-fine {
+	color: rgba(233, 233, 237, 0.3);
+}
+
+/* ---------- the shortcut sheet ---------- */
+/*
+ * A short list of text, so the dialog is sized to the reading rather than
+ * stretched to the 100%/100% the mosque and qibla viewers want for their canvas.
+ */
+
+.sc {
+	width: auto;
+	height: auto;
+	max-width: min(520px, 100%);
+	max-height: 100%;
+	overflow: auto;
+}
+
+.sc-body {
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-24;
+	padding: sp.$sp-32;
+}
+
+.sc-head {
+	margin: 0;
+	color: #f5f4ff;
+}
+
+.sc-group {
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-12;
+}
+
+.sc-group h2 {
+	margin: 0;
+	text-transform: uppercase;
+	color: rgba(233, 233, 237, 0.4);
+}
+
+.sc-list {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-8;
+}
+
+.sc-row {
+	display: flex;
+	align-items: baseline;
+	gap: sp.$sp-16;
+}
+
+/* A fixed column, so the descriptions line up however wide the keys are. */
+.sc-row dt {
+	flex: none;
+	width: 116px;
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-4;
+}
+
+.sc-row dd {
+	margin: 0;
+	@include ty.body-sm;
+	color: rgba(233, 233, 237, 0.72);
+}
+
+.sc-row kbd {
+	display: inline-grid;
+	place-items: center;
+	min-width: 22px;
+	height: 22px;
+	padding: 0 sp.$sp-4;
+	border-radius: 6px;
+	background: rgba(233, 233, 237, 0.07);
+	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.14);
+	color: #e9e9ed;
+	@include ty.label-sm;
+}
+
+.sc-range {
+	@include ty.label-sm;
+	color: rgba(233, 233, 237, 0.4);
+}
+
+.sc-note {
+	margin: 0;
+	@include ty.caption-sm;
+	color: rgba(233, 233, 237, 0.42);
+	text-wrap: pretty;
+}
+
+/* ---------- a key ringing its button ---------- */
+/*
+ * The ripple a shortcut leaves on the control it pressed. See `lib/pulse.ts`.
+ *
+ * Drawn on a pseudo-element so it cannot disturb the button's own background,
+ * border or pressed state — several of these buttons already change colour when
+ * they are on, and the ripple has to read on top of that rather than replace it.
+ */
+
+[data-pulse] {
+	position: relative;
+}
+
+[data-pulse]::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
+	animation: hk-ripple 460ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+@keyframes hk-ripple {
+	from {
+		background: rgba(150, 138, 224, 0.34);
+		box-shadow: 0 0 0 0 rgba(150, 138, 224, 0.5);
+	}
+	to {
+		background: rgba(150, 138, 224, 0);
+		box-shadow: 0 0 0 9px rgba(150, 138, 224, 0);
+	}
+}
+
+/* Kept still for anyone who has asked the system for less movement — the colour
+   flash alone still answers "was that heard?". */
+@media (prefers-reduced-motion: reduce) {
+	[data-pulse]::after {
+		animation: hk-flash 300ms ease-out both;
+	}
+
+	@keyframes hk-flash {
+		from {
+			background: rgba(150, 138, 224, 0.34);
+		}
+		to {
+			background: rgba(150, 138, 224, 0);
+		}
+	}
 }

@@ -14,7 +14,9 @@ import { CITIES } from './lib/cities';
 import type { City } from './lib/cities';
 import { useWorldGeo, usePrayerTimes, usePhases } from './hooks/queries';
 import { useQueryClient } from '@tanstack/react-query';
-import { useClock, useSettledValue, SWEEP_MINUTES } from './hooks/util';
+import { useClock, useSettledValue, SWEEP_MINUTES, SWEEP_SPEEDS } from './hooks/util';
+import { useTransportKeys } from './hooks/useTransportKeys';
+import { pulse } from './lib/pulse';
 import { buildReadout, citiesInPhase } from './lib/readout';
 import { decodeView, encodeView, loadPinned, savePinned, resolvePin, pinName, MAX_PINNED } from './lib/permalink';
 import type { Pin } from './lib/permalink';
@@ -34,6 +36,11 @@ import type { Criterion } from './lib/hilal';
  * same reason — putting this in the initial bundle would undo that.
  */
 const MosqueViewer = lazy(() => import('./components/MosqueViewer'));
+
+/** The qibla scene, fetched when asked for — it pulls in three.js and the Kaaba. */
+const QiblaViewer = lazy(() => import('./components/QiblaViewer'));
+/** The shortcut sheet: a list of text, and nobody opens it on the first frame. */
+const Shortcuts = lazy(() => import('./components/Shortcuts'));
 
 // Minutes of simulated time per real second while playing — 10 days in ~40s.
 const PLAY_RATE = 360;
@@ -177,6 +184,9 @@ export default function App() {
 	const [hoveredSite, setHoveredSite] = useState<string | null>(null);
 	/** Which building the 3D viewer is showing, or null while it is closed. */
 	const [viewer, setViewer] = useState<MosqueModel | null>(null);
+	/** The qibla viewer is open for the selected city. */
+	const [qiblaOpen, setQiblaOpen] = useState(false);
+	const [shortcutsOpen, setShortcutsOpen] = useState(false);
 	/**
 	 * Which rule the crescent map applies.
 	 *
@@ -250,6 +260,13 @@ export default function App() {
 	const sweeping = sweepOn && playing !== 0;
 	/** The speed keys as a multiplier: ½×, 1×, 2×, 4×. */
 	const speedMul = BASE_SECONDS / sweepSeconds;
+	/*
+	 * The live speed behind the key that steps through it. React state lags a
+	 * frame behind a burst of keydowns; this does not, and it is resynced from the
+	 * rendered truth below. (The scrub's equivalent lives in the clock, which owns
+	 * the glide those presses now compose against.)
+	 */
+	const speedRef = useRef(sweepSeconds);
 	/** Which prayer the chain mode follows. Fajr is the one people picture moving. */
 	const [chain, setChain] = useState(LINK.chain ?? 0);
 
@@ -677,6 +694,115 @@ export default function App() {
 		[clock, speedMul]
 	);
 
+	/**
+	 * Change how fast whatever is running goes, without moving where it stops.
+	 *
+	 * Lifted out of the time bar's prop when the keyboard needed it as well: a
+	 * chain circuit and a run of Play are the same clock, and both are re-paced
+	 * from here.
+	 */
+	const setSpeed = useCallback(
+		(seconds: number) => {
+			speedRef.current = seconds;
+			setSweepSeconds(seconds);
+			const r = run.current;
+			if (playing && r) clock.play(1, { rate: r.base * (BASE_SECONDS / seconds), limit: r.limit });
+		},
+		[clock, playing]
+	);
+
+	/** Play if stopped, stop if running — the strip's Play button, as a key. */
+	const playToggle = useCallback(() => {
+		if (!playing) {
+			startPlay(playDays);
+			return;
+		}
+		clock.stop();
+		run.current = null;
+	}, [clock, playing, playDays, startPlay]);
+
+	/**
+	 * One rung along the speed strip, stopping at either end.
+	 *
+	 * Read from a ref rather than from the rendered value: two presses inside one
+	 * frame both see the same state, so holding the key stepped once and then sat
+	 * there repeating a move it had already made.
+	 */
+	const stepSpeed = useCallback(
+		(dir: -1 | 1) => {
+			const i = SWEEP_SPEEDS.findIndex(s => s.seconds === speedRef.current);
+			const next = SWEEP_SPEEDS[Math.min(SWEEP_SPEEDS.length - 1, Math.max(0, (i < 0 ? 1 : i) + dir))];
+			if (!next) return;
+			setSpeed(next.seconds);
+			// The segment that ends up chosen, which at either end is the one already
+			// lit — a ripple that goes nowhere still says the key was heard.
+			pulse('speed' + next.seconds);
+		},
+		[setSpeed]
+	);
+
+	/**
+	 * Nudge the scrubber.
+	 *
+	 * The clock does the composing either way: repeated presses step from where
+	 * the last one was heading, so a held key covers a steady distance per press
+	 * instead of chasing its own animation. A zero duration is an instant step
+	 * that still composes. Seeking by hand stops a run, as dragging does.
+	 */
+	const stepScrub = useCallback(
+		(minutes: number, glide: boolean) => clock.stepBy(minutes, glide ? undefined : 0),
+		[clock]
+	);
+
+	const pickSpan = useCallback(
+		(i: number) => {
+			const o = PLAY_OPTIONS[i];
+			if (!o) return;
+			setPlayDays(o.days);
+			startPlay(o.days);
+		},
+		[startPlay]
+	);
+
+	useTransportKeys({
+		// A modal owns the keyboard while it is up: the qibla finder turns its
+		// compass with the arrows, and the clock must not move underneath it.
+		enabled: !viewer && !qiblaOpen && !shortcutsOpen,
+		/*
+		 * Each of these rings its own button on the way past. Only the keyboard
+		 * path does — a click already shows itself, and pressing a button that is
+		 * flashing because you pressed it is just noise.
+		 */
+		playToggle: useCallback(() => {
+			pulse('play');
+			playToggle();
+		}, [playToggle]),
+		step: stepScrub,
+		now: useCallback(() => {
+			pulse('now');
+			clock.setScrub(0);
+		}, [clock]),
+		speed: stepSpeed,
+		span: useCallback(
+			(i: number) => {
+				pulse('span' + (i + 1));
+				pickSpan(i);
+			},
+			[pickSpan]
+		),
+		spin: useCallback(() => {
+			pulse('spin');
+			setSpin(v => !v);
+		}, []),
+		// A toggle, so the same chord that opens the sheet puts it away again.
+		shortcuts: useCallback(() => {
+			pulse('shortcuts');
+			setShortcutsOpen(v => !v);
+		}, [])
+	});
+
+	speedRef.current = sweepSeconds;
+
 	const onView = useCallback((v: View) => setView(v), []);
 	const onNote = useCallback((n: string) => setNote(n), []);
 
@@ -778,6 +904,7 @@ export default function App() {
 				hilalCity={activeCity}
 				hilalBusy={hilal.busy}
 				hilalSummary={hilal.summary}
+				onOpenQibla={() => setQiblaOpen(true)}
 				conjunctionMs={hilal.field?.conjunctionMs ?? null}
 				onStep={(d: number) => setHilalDays(v => v + d)}
 				onNextCrescent={nextCrescent}
@@ -813,6 +940,7 @@ export default function App() {
 					onOpenViewer={setViewer}
 					onNote={onNote}
 					onShare={share}
+					onShortcuts={() => setShortcutsOpen(true)}
 				/>
 
 				{/*
@@ -829,7 +957,8 @@ export default function App() {
 						<button
 							className={'con-btn' + (spin ? ' con-btn-on' : '')}
 							aria-pressed={spin}
-							data-tip='Auto-rotate the earth'
+							data-hotkey='spin'
+							data-tip='Auto-rotate the earth · S'
 							onClick={() => setSpin(v => !v)}
 						>
 							<span className={'con-switch' + (spin ? ' con-switch-on' : '')}>
@@ -843,12 +972,9 @@ export default function App() {
 						<button
 							className={'con-btn' + (playing ? ' con-btn-on' : '')}
 							aria-pressed={playing !== 0}
-							data-tip='Run the clock forward'
-							onClick={() => {
-								if (!playing) return startPlay(playDays);
-								clock.stop();
-								run.current = null;
-							}}
+							data-hotkey='play'
+							data-tip='Run the clock forward · Space'
+							onClick={playToggle}
 						>
 							<span className={'con-play' + (playing ? ' con-play-on' : '')} />
 							{playing ? 'Running' : 'Play'}
@@ -856,16 +982,17 @@ export default function App() {
 
 						{/* How far a run goes, every choice on show. */}
 						<span className='con-keys'>
-							{PLAY_OPTIONS.map(o => (
+							{PLAY_OPTIONS.map((o, i) => (
 								<button
 									key={o.days}
 									className={'con-key' + (o.days === playDays ? ' con-key-on' : '')}
+									data-hotkey={'span' + (i + 1)}
 									aria-pressed={o.days === playDays}
-									data-tip={o.days === 1 ? 'Run one day forward' : `Run ${o.days} days forward`}
-									onClick={() => {
-										setPlayDays(o.days);
-										startPlay(o.days);
-									}}
+									data-tip={
+										(o.days === 1 ? 'Run one day forward' : `Run ${o.days} days forward`) +
+										` · ${i + 1}`
+									}
+									onClick={() => pickSpan(i)}
 								>
 									{o.days}d
 								</button>
@@ -1003,6 +1130,23 @@ export default function App() {
 
 				{/* The globe keeps running behind it, so closing returns to exactly the
 				    view you left rather than to a globe that has drifted on without you. */}
+				{shortcutsOpen && (
+					<Suspense fallback={null}>
+						<Shortcuts onClose={() => setShortcutsOpen(false)} />
+					</Suspense>
+				)}
+
+				{qiblaOpen && activeCity && (
+					<Suspense fallback={<div className='modal-back' />}>
+						<QiblaViewer
+							lat={activeCity.la}
+							lon={activeCity.lo}
+							place={activeCity.n}
+							onClose={() => setQiblaOpen(false)}
+						/>
+					</Suspense>
+				)}
+
 				{viewer && (
 					/* The fallback is the modal's own shape — backdrop, panel, and a
 					   rail column of the same width — so the chunk arriving fills the
@@ -1048,15 +1192,8 @@ export default function App() {
 					onScrubbingChange={setScrubbing}
 					scrubLabel={scrubLabel}
 					sweepSeconds={sweepSeconds}
-					onSweepSpeed={secs => {
-						setSweepSeconds(secs);
-						// Keep the same destination: a pace change mid-run should change how
-						// fast it finishes, not where it stops. Whatever is running gets
-						// re-paced — a chain circuit and a run of Play are the same clock,
-						// and the keys used to reach only the first of them.
-						const r = run.current;
-						if (playing && r) clock.play(1, { rate: r.base * (BASE_SECONDS / secs), limit: r.limit });
-					}}
+					onSweepSpeed={setSpeed}
+					getNowMs={getNowMs}
 				/>
 			</main>
 		</div>

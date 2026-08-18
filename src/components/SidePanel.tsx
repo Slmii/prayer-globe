@@ -69,6 +69,8 @@ interface SidePanelProps {
 	tonightMs: number;
 	/** Cities per crescent zone, and the best-placed one. */
 	hilalSummary: CitySummary;
+	/** Show the direction to the Kaaba from the selected city, in 3D. */
+	onOpenQibla(): void;
 }
 
 /**
@@ -598,7 +600,15 @@ export default function SidePanel(props: SidePanelProps) {
 								)}
 							</div>
 							<div className='city-card-sub'>
-								{a.coord} · qibla {a.qibla}
+								{a.coord} ·{' '}
+								<button
+									type='button'
+									className='qibla-open'
+									data-tip='See which way that is, in 3D'
+									onClick={props.onOpenQibla}
+								>
+									qibla {a.qibla}
+								</button>
 							</div>
 						</div>
 						<div className='city-card-time'>
