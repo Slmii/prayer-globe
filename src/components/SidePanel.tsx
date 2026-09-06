@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Readout, ArcMark } from '../lib/readout';
+import { peopleTxt } from '../lib/readout';
 import type { PrayerTimes } from '../hooks/queries';
 import type { PhaseTable } from '../lib/phases';
 import { nextBoundary } from '../lib/phases';
@@ -71,7 +72,6 @@ interface SidePanelProps {
 	/** Cities per crescent zone, and the best-placed one. */
 	hilalSummary: CitySummary;
 	/** Show the direction to the Kaaba from the selected city, in 3D. */
-	onOpenQibla(): void;
 }
 
 /**
@@ -96,6 +96,27 @@ const MODES: { id: PanelMode; label: string; hint: string }[] = [
 	{ id: 'hilal', label: 'Hilal', hint: 'Where tonight’s new crescent can be seen' },
 	{ id: 'relay', label: 'Relay', hint: 'The adhan being handed city to city' }
 ];
+
+/**
+ * Which way a tally tooltip should hang, from where its segment sits in the bar.
+ *
+ * A centred tooltip needs half its width either side, and the segments are
+ * proportional — Dhuhr can be a sliver hard against the left edge on the same
+ * day Isha is half the bar. Anything in the outer quarter is pinned to that
+ * edge and grows inwards; the rest is centred.
+ */
+function tipAlign(counts: { flex: number }[], i: number): string {
+	const total = counts.reduce((n, c) => n + c.flex, 0) || 1;
+	const before = counts.slice(0, i).reduce((n, c) => n + c.flex, 0);
+	const centre = (before + counts[i].flex / 2) / total;
+	if (centre < 0.25) {
+		return ' tally-tip-first';
+	}
+	if (centre > 0.75) {
+		return ' tally-tip-last';
+	}
+	return '';
+}
 
 /** h:mm:ss while there is an hour to go, m:ss inside the last one. */
 function countdown(ms: number): string {
@@ -604,17 +625,7 @@ export default function SidePanel(props: SidePanelProps) {
 									</button>
 								)}
 							</div>
-							<div className='city-card-sub'>
-								{a.coord} ·{' '}
-								<button
-									type='button'
-									className='qibla-open'
-									data-tip='See which way that is, in 3D'
-									onClick={props.onOpenQibla}
-								>
-									qibla {a.qibla}
-								</button>
-							</div>
+							<div className='city-card-sub'>{a.coord}</div>
 						</div>
 						<div className='city-card-time'>
 							<Value as='div' size='xl' className='city-clock'>
@@ -804,16 +815,20 @@ export default function SidePanel(props: SidePanelProps) {
 								<span className='tally-seg' style={{ background: c.color }} />
 								{segment === i && (
 									<span
-										className={
-											'tally-tip' +
-											(i === 0 ? ' tally-tip-first' : '') +
-											(i === a.counts.length - 1 ? ' tally-tip-last' : '')
-										}
+										/*
+										 * Aligned by where the cell sits in the bar, not by its
+										 * index. Keying off first/last only ever protected the two
+										 * ends, so a narrow segment near an edge — Dhuhr, most of
+										 * the day — centred a tooltip wider than the room left and
+										 * had its name clipped off. The centre fraction is known
+										 * from the flex values, so no measuring is needed.
+										 */
+										className={'tally-tip' + tipAlign(a.counts, i)}
 									>
 										<span className='tally-tip-dot' style={{ background: c.color }} />
 										<span className='tally-tip-name'>{c.label}</span>
 										<Label size='md' className='tally-tip-n'>
-											{c.n} cities
+											{c.n} cities · {peopleTxt(c.people)}
 										</Label>
 									</span>
 								)}
@@ -823,6 +838,26 @@ export default function SidePanel(props: SidePanelProps) {
 					<div className='tally-foot'>
 						<span>CITIES BY PRAYER</span>
 						<span>{a.countLead}</span>
+					</div>
+					{/*
+						The same tally weighted by who lives there, on its own line so the
+						two can be read against each other. They disagree often: a hundred
+						small cities entering Isha are a hundred cities and not many
+						people, while a dozen entering Maghrib can be a third of everyone
+						the app follows.
+
+						The tooltip names the base, because "1.0bn" invites being read as
+						the world rather than as the cities this app happens to carry.
+					*/}
+					<div
+						className='tally-foot'
+						data-tip={`Across the ${CITIES.length} cities the app follows — about ${peopleTxt(
+							a.peopleTotal
+						)} people, not the whole world`}
+						data-tip-above=''
+					>
+						<span>PEOPLE BY PRAYER</span>
+						<span>{a.peopleLead}</span>
 					</div>
 				</div>
 			</footer>

@@ -29,6 +29,14 @@ export interface CountChip {
 	/** Index into PHASES, so a click can ask the globe for these cities. */
 	phase: number;
 	n: number;
+	/**
+	 * How many people live in those cities.
+	 *
+	 * A count of cities weights Reykjavík and Shanghai the same. This does not,
+	 * and the two disagree often enough to be worth showing: the prayer holding
+	 * the most cities is frequently not the one holding the most people.
+	 */
+	people: number;
 	/** Share of the 143 cities, for the proportional bar. */
 	flex: number;
 	title: string;
@@ -91,6 +99,21 @@ export interface Readout {
 	nowF: number;
 	/** Which prayer holds the most cities right now. */
 	countLead: string;
+	/** And which holds the most people, which is frequently a different one. */
+	peopleLead: string;
+	/** Everyone in the cities the app follows, for the line that says so. */
+	peopleTotal: number;
+}
+
+/** "24M", "1.0bn" — a population, at the precision a glance can use. */
+export function peopleTxt(n: number): string {
+	if (n >= 1e9) {
+		return (n / 1e9).toFixed(1) + 'bn';
+	}
+	if (n >= 1e6) {
+		return Math.round(n / 1e6) + 'M';
+	}
+	return Math.round(n / 1e3) + 'k';
 }
 
 /** Nearest city to the pointer, or to the centre of the globe when not hovering. */
@@ -244,13 +267,19 @@ export function buildReadout({ city, nowMs, hover, centerLng, days, phases }: Re
 		color: PHASES[i].c,
 		phase: i,
 		n: 0,
+		people: 0,
 		flex: 1,
 		title: ''
 	}));
 	for (const c of CITIES) {
 		const p = cityPhase(c, nowMs, phases, utcH, eot, dec);
 		const slot = countIdx[p];
-		if (slot !== undefined) counts[slot].n++;
+		if (slot !== undefined) {
+			counts[slot].n++;
+			// One city ships without a population; treat it as nobody rather than
+			// as NaN, which would poison the whole total.
+			counts[slot].people += c.pop || 0;
+		}
 	}
 
 	// Where each prayer and "now" sit on the day arc, as a fraction of the local
@@ -276,6 +305,8 @@ export function buildReadout({ city, nowMs, hover, centerLng, days, phases }: Re
 
 	const total = counts.reduce((sum, c) => sum + c.n, 0) || 1;
 	const lead = counts.reduce((best, c) => (c.n > best.n ? c : best), counts[0]);
+	const peopleTotal = counts.reduce((sum, c) => sum + c.people, 0);
+	const peopleLead = counts.reduce((best, c) => (c.people > best.people ? c : best), counts[0]);
 	for (const c of counts) {
 		c.flex = Math.max(c.n, 0.4);
 		c.title = `${c.label} · ${c.n} cities`;
@@ -301,7 +332,20 @@ export function buildReadout({ city, nowMs, hover, centerLng, days, phases }: Re
 		prayer: city ? PHASES[phase].tr : '',
 		ar: city ? PHASES[phase].ar : '',
 		city: city?.n ?? null,
-		coord: city ? latTxt(ref.la) + ' · ' + lonTxt(ref.lo) : '',
+		/*
+		 * Where the city is, and how many are there.
+		 *
+		 * The population sits on the record already and is the first thing anyone
+		 * wants of a city they have never heard of — whether Kısıklı is a suburb or
+		 * a metropolis changes what the rest of the panel means. Omitted rather
+		 * than shown as zero for the one city that ships without one.
+		 */
+		coord: city
+			? latTxt(ref.la) +
+				' · ' +
+				lonTxt(ref.lo) +
+				(city.pop ? ' · ' + peopleTxt(city.pop) + ' people' : '')
+			: '',
 		clock,
 		offsetHours,
 		nextMs,
@@ -328,7 +372,9 @@ export function buildReadout({ city, nowMs, hover, centerLng, days, phases }: Re
 		stamp,
 		arcMarks: city ? arcMarks : [],
 		nowF,
-		countLead: `${lead.label.toUpperCase()} LEADS · ${Math.round((lead.n / total) * 100)}%`
+		countLead: `${lead.label.toUpperCase()} LEADS · ${Math.round((lead.n / total) * 100)}%`,
+		peopleLead: `${peopleLead.label.toUpperCase()} LEADS · ${peopleTxt(peopleLead.people)}`,
+		peopleTotal
 	};
 }
 

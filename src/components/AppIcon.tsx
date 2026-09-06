@@ -39,7 +39,10 @@ import {
 	IconSunsetFilled,
 	IconX,
 	IconKeyboard,
-	IconKeyboardFilled
+	IconKeyboardFilled,
+	IconCompass,
+	IconCompassFilled,
+	IconInfinity
 } from '@tabler/icons-react';
 import type { CSSProperties } from 'react';
 
@@ -59,7 +62,9 @@ export type AppIconName =
 	| 'minus'
 	| 'x'
 	| 'locate'
-	| 'keyboard';
+	| 'keyboard'
+	| 'compass'
+	| 'infinity';
 
 type TablerGlyph = typeof IconSun;
 
@@ -86,7 +91,10 @@ const ICONS: Record<AppIconName, IconPair> = {
 	minus: { outline: IconMinus, filled: IconMinus },
 	x: { outline: IconX, filled: IconX },
 	locate: { outline: IconCurrentLocation, filled: IconCurrentLocationFilled },
-	keyboard: { outline: IconKeyboard, filled: IconKeyboardFilled }
+	keyboard: { outline: IconKeyboard, filled: IconKeyboardFilled },
+	compass: { outline: IconCompass, filled: IconCompassFilled },
+	// The analemma's own shape, which is the only glyph it could reasonably have.
+	infinity: { outline: IconInfinity, filled: IconInfinity }
 };
 
 /** Named icon sizes (no free pixel values) — keeps icon sizing consistent across the app. */

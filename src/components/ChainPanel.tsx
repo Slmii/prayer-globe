@@ -88,31 +88,40 @@ export default function ChainPanel({ phases, nowMs, chain, onChain, onGoTo, swee
 				</div>
 			</div>
 
+			{/*
+				Arriving and leaving, coloured apart rather than both in the phase
+				colour. The two rows are near-identical in shape, so the glyph and the
+				time were the only things carrying the difference and they were saying
+				it in the same violet — green in, red out reads before the words do.
+			*/}
 			<div className='chain-edges'>
-				{state?.edges.map(e => (
-					<button
-						key={e.kind}
-						type='button'
-						className='chain-edge'
-						onClick={() => onGoTo(e.city)}
-						data-tip={`Fly to ${e.city.n}`}
-					>
-						<span className='chain-edge-glyph' style={{ color: phase.c }}>
-							<AppIcon name={e.kind === 'entering' ? 'arrow-right' : 'arrow-down-right'} />
-						</span>
-						<span className='chain-edge-mid'>
-							<span className='chain-edge-kind'>
-								{e.kind === 'entering' ? 'JUST ENTERED' : 'NEXT TO LEAVE'}
+				{state?.edges.map(e => {
+					const c = e.kind === 'entering' ? 'var(--enter)' : 'var(--leave)';
+					return (
+						<button
+							key={e.kind}
+							type='button'
+							className='chain-edge'
+							onClick={() => onGoTo(e.city)}
+							data-tip={`Fly to ${e.city.n}`}
+						>
+							<span className='chain-edge-glyph' style={{ color: c }}>
+								<AppIcon name={e.kind === 'entering' ? 'arrow-right' : 'arrow-down-right'} />
 							</span>
-							<Title size='md' className='chain-edge-city'>
-								{e.city.n}
-							</Title>
-						</span>
-						<span className='chain-edge-when' style={{ color: phase.c }}>
-							{relative(e.ms, nowMs)}
-						</span>
-					</button>
-				))}
+							<span className='chain-edge-mid'>
+								<span className='chain-edge-kind'>
+									{e.kind === 'entering' ? 'JUST ENTERED' : 'NEXT TO LEAVE'}
+								</span>
+								<Title size='md' className='chain-edge-city'>
+									{e.city.n}
+								</Title>
+							</span>
+							<span className='chain-edge-when' style={{ color: c }}>
+								{relative(e.ms, nowMs)}
+							</span>
+						</button>
+					);
+				})}
 			</div>
 
 			<div className='chain-foot'>

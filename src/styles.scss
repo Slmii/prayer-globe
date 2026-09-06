@@ -26,6 +26,15 @@
 	--ink-ghost: rgba(233, 233, 237, 0.3);
 	--glass: rgba(12, 14, 20, 0.78);
 	--mono: ui-monospace, Menlo, monospace;
+	/*
+	 * Arriving and departing, the one pair in the app that reads as a direction
+	 * rather than a category. Desaturated well past the usual UI green and red:
+	 * against a #0c0e14 panel a pure #22c55e or #ef4444 sits in front of the
+	 * violet rather than beside it, and the relay board is meant to be scanned,
+	 * not alarmed at. The green is the one the toasts already use.
+	 */
+	--enter: #7ee0b8;
+	--leave: #f08d84;
 }
 
 * {
@@ -196,12 +205,16 @@ body {
 	border-radius: 9px;
 	background: rgba(233, 233, 237, 0.045);
 	box-shadow: 0 0 0 1px rgba(233, 233, 237, 0.14);
-	transition: box-shadow 0.18s ease, background 0.18s ease;
+	transition:
+		box-shadow 0.18s ease,
+		background 0.18s ease;
 }
 
 .city-chip-on {
 	background: rgba(150, 138, 224, 0.18);
-	box-shadow: 0 0 0 1px rgba(181, 171, 252, 0.9), 0 0 22px 2px rgba(150, 138, 224, 0.35);
+	box-shadow:
+		0 0 0 1px rgba(181, 171, 252, 0.9),
+		0 0 22px 2px rgba(150, 138, 224, 0.35);
 }
 
 .city-dot {
@@ -391,7 +404,9 @@ body {
 
 .arc-mark {
 	stroke-width: 1.5;
-	transition: r 300ms ease, fill 300ms ease;
+	transition:
+		r 300ms ease,
+		fill 300ms ease;
 }
 
 /* Matched to the panel's tick so the dot glides continuously instead of
@@ -404,7 +419,9 @@ body {
 	   rotation depends on it. */
 	transform-box: view-box;
 	transform-origin: 0 0;
-	transition: transform 200ms linear, opacity 240ms ease;
+	transition:
+		transform 200ms linear,
+		opacity 240ms ease;
 	animation: pg-arc-in 380ms ease;
 }
 
@@ -494,8 +511,12 @@ body {
 	border-radius: 11px;
 	overflow: hidden;
 	background: rgba(150, 138, 224, 0.14);
-	box-shadow: 0 0 0 1px rgba(181, 171, 252, 0.5), 0 0 22px -6px rgba(181, 171, 252, 0.4);
-	transition: box-shadow 220ms ease, background 220ms ease;
+	box-shadow:
+		0 0 0 1px rgba(181, 171, 252, 0.5),
+		0 0 22px -6px rgba(181, 171, 252, 0.4);
+	transition:
+		box-shadow 220ms ease,
+		background 220ms ease;
 }
 
 .city-card::before {
@@ -510,7 +531,9 @@ body {
 
 .city-card:hover {
 	background: rgba(150, 138, 224, 0.19);
-	box-shadow: 0 0 0 1px rgba(181, 171, 252, 0.75), 0 0 34px -4px rgba(181, 171, 252, 0.55);
+	box-shadow:
+		0 0 0 1px rgba(181, 171, 252, 0.75),
+		0 0 34px -4px rgba(181, 171, 252, 0.55);
 }
 
 .city-card:hover::before {
@@ -664,7 +687,9 @@ body {
 	width: 100%;
 	height: 4px;
 	border-radius: 2px;
-	transition: height 160ms ease, filter 160ms ease;
+	transition:
+		height 160ms ease,
+		filter 160ms ease;
 }
 
 .tally-cell-on .tally-seg {
@@ -988,7 +1013,9 @@ body {
 .body-card-go {
 	background: transparent;
 	cursor: pointer;
-	transition: border-color 0.15s ease, background 0.15s ease;
+	transition:
+		border-color 0.15s ease,
+		background 0.15s ease;
 }
 
 .body-card-go:hover {
@@ -1113,6 +1140,15 @@ body {
 /* `right` reserves the corner for the map's own controls. The strip is one bar
    rather than a row of pills, so it wraps as a whole; on a narrow window the
    segments run onto a second line and keep their dividers. */
+/*
+ * The column stretches the width of the globe so its contents can align left,
+ * which means it lies across a wide band of earth. It must not take the clicks
+ * meant for that earth — each child that is actually interactive turns pointer
+ * events back on for itself.
+ *
+ * This was always true; it stopped being invisible when the two deep views
+ * moved in here and made the band a couple of hundred pixels taller.
+ */
 .controls {
 	position: absolute;
 	left: 26px;
@@ -1122,6 +1158,7 @@ body {
 	flex-direction: column;
 	align-items: flex-start;
 	z-index: 2;
+	pointer-events: none;
 }
 
 /* One bar, hairline-divided, with nothing floating beside it. The overflow clip
@@ -1131,6 +1168,7 @@ body {
 	flex-wrap: wrap;
 	align-items: stretch;
 	max-width: 100%;
+	pointer-events: auto;
 	border-radius: 6px;
 	background: rgba(10, 12, 18, 0.9);
 	border: 1px solid rgba(233, 233, 237, 0.14);
@@ -1152,7 +1190,9 @@ body {
 	text-transform: uppercase;
 	white-space: nowrap;
 	cursor: pointer;
-	transition: background 180ms ease, color 180ms ease;
+	transition:
+		background 180ms ease,
+		color 180ms ease;
 }
 
 .con-btn:hover:not(:disabled) {
@@ -1215,7 +1255,9 @@ body {
 	height: 10px;
 	border-radius: 1px;
 	background: rgba(233, 233, 237, 0.34);
-	transition: left 200ms cubic-bezier(0.2, 0.8, 0.2, 1), background 200ms ease;
+	transition:
+		left 200ms cubic-bezier(0.2, 0.8, 0.2, 1),
+		background 200ms ease;
 }
 
 .con-switch-on .con-switch-knob {
@@ -1243,7 +1285,9 @@ body {
 	flex: none;
 	border-radius: 50%;
 	background: rgba(233, 233, 237, 0.22);
-	transition: background 180ms ease, box-shadow 180ms ease;
+	transition:
+		background 180ms ease,
+		box-shadow 180ms ease;
 }
 
 .con-sky-on {
@@ -1294,7 +1338,9 @@ body {
 	letter-spacing: normal;
 	text-transform: none;
 	cursor: pointer;
-	transition: background 180ms ease, color 180ms ease;
+	transition:
+		background 180ms ease,
+		color 180ms ease;
 }
 
 .con-key:hover {
@@ -1324,7 +1370,10 @@ body {
 	border-radius: 8px;
 	padding: sp.$sp-8 sp.$sp-12;
 	cursor: pointer;
-	transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+	transition:
+		border-color 0.15s ease,
+		color 0.15s ease,
+		background 0.15s ease;
 }
 
 .btn {
@@ -1404,7 +1453,9 @@ body {
 	border: 1px solid rgba(233, 233, 237, 0.16);
 	border-radius: 8px;
 	padding: sp.$sp-8 sp.$sp-12;
-	transition: border-color 0.15s ease, width 0.2s ease;
+	transition:
+		border-color 0.15s ease,
+		width 0.2s ease;
 }
 
 .search-input::placeholder {
@@ -1642,7 +1693,9 @@ body {
 /* ---------- maplibre overrides ---------- */
 
 .maplibregl-ctrl-attrib {
-	font: 400 9.5px Inter, sans-serif !important;
+	font:
+		400 9.5px Inter,
+		sans-serif !important;
 	background: rgba(12, 14, 20, 0.72) !important;
 	color: rgba(233, 233, 237, 0.5) !important;
 }
@@ -2057,7 +2110,9 @@ body {
 	background: linear-gradient(180deg, rgba(24, 26, 40, 0.82), rgba(8, 9, 14, 0.88));
 	border: 1px solid rgba(150, 138, 224, 0.26);
 	backdrop-filter: blur(14px);
-	transition: background 180ms ease, color 180ms ease;
+	transition:
+		background 180ms ease,
+		color 180ms ease;
 }
 
 .ss-back:hover {
@@ -2078,7 +2133,9 @@ body {
 	border-radius: 999px;
 	background: rgba(12, 20, 30, 0.55);
 	border: 1px solid rgba(216, 176, 74, 0.32);
-	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+	box-shadow:
+		0 10px 30px rgba(0, 0, 0, 0.4),
+		inset 0 1px 0 rgba(255, 255, 255, 0.08);
 	backdrop-filter: blur(14px) saturate(1.3);
 }
 
@@ -2096,7 +2153,9 @@ body {
 	gap: sp.$sp-8;
 	padding: sp.$sp-12 sp.$sp-16;
 	cursor: pointer;
-	transition: background 160ms ease, color 160ms ease;
+	transition:
+		background 160ms ease,
+		color 160ms ease;
 }
 
 .ss-tools button + button {
@@ -2155,7 +2214,9 @@ body {
 	border-radius: 999px;
 	background: linear-gradient(180deg, rgba(24, 26, 40, 0.82), rgba(8, 9, 14, 0.88));
 	border: 1px solid rgba(150, 138, 224, 0.26);
-	box-shadow: 0 16px 44px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(210, 206, 253, 0.12);
+	box-shadow:
+		0 16px 44px rgba(0, 0, 0, 0.6),
+		inset 0 1px 0 rgba(210, 206, 253, 0.12);
 	backdrop-filter: blur(16px) saturate(1.4);
 }
 
@@ -2172,7 +2233,10 @@ body {
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
 	color: rgba(233, 233, 237, 0.66);
-	transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+	transition:
+		background 180ms ease,
+		color 180ms ease,
+		transform 180ms ease;
 }
 
 .ss-rail button:hover {
@@ -2277,7 +2341,9 @@ body {
 	padding: sp.$sp-12 sp.$sp-12 sp.$sp-12;
 	border-radius: 11px;
 	background: linear-gradient(180deg, rgba(24, 26, 40, 0.94), rgba(8, 9, 14, 0.96));
-	box-shadow: 0 18px 44px rgba(0, 0, 0, 0.62), inset 0 1px 0 rgba(255, 255, 255, 0.06),
+	box-shadow:
+		0 18px 44px rgba(0, 0, 0, 0.62),
+		inset 0 1px 0 rgba(255, 255, 255, 0.06),
 		inset 0 0 0 1px rgba(216, 176, 74, 0.3);
 	backdrop-filter: blur(16px) saturate(1.3);
 	white-space: nowrap;
@@ -2349,7 +2415,9 @@ body {
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	cursor: pointer;
-	transition: background 160ms ease, color 160ms ease;
+	transition:
+		background 160ms ease,
+		color 160ms ease;
 }
 
 .mv-pop-btn:hover {
@@ -2366,7 +2434,20 @@ body {
 	padding: 4vmin;
 	background: rgba(4, 5, 9, 0.72);
 	backdrop-filter: blur(3px);
-	animation: mv-fade 180ms ease both;
+	/*
+	 * Deliberately not animated.
+	 *
+	 * Every modal here is code-split, so React shows a Suspense fallback — itself
+	 * a backdrop — throws it away when the chunk arrives, and mounts the real one.
+	 * Two elements, so a fade replays: the backdrop darkened, dropped back to
+	 * nothing partway through, and darkened again. Measured at 85ms for the qibla
+	 * finder and 194ms for the analemma, which is exactly long enough to read as
+	 * the window flickering rather than opening.
+	 *
+	 * With no fade the two mounts are indistinguishable and the seam disappears,
+	 * whatever the chunk takes. The panel still rises, so the opening is not
+	 * abrupt — the motion just belongs to the thing that moves.
+	 */
 }
 
 .modal {
@@ -2495,7 +2576,9 @@ body {
 	color: rgba(233, 233, 237, 0.7);
 	cursor: pointer;
 	backdrop-filter: blur(10px);
-	transition: background 160ms ease, color 160ms ease;
+	transition:
+		background 160ms ease,
+		color 160ms ease;
 }
 
 .modal-close:hover {
@@ -2693,7 +2776,9 @@ body {
 	color: rgba(233, 233, 237, 0.55);
 	@include ty.chip-sm;
 	cursor: pointer;
-	transition: background 180ms ease, color 180ms ease;
+	transition:
+		background 180ms ease,
+		color 180ms ease;
 }
 
 .mode-btn:hover {
@@ -2728,7 +2813,9 @@ body {
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
 	cursor: pointer;
-	transition: background 180ms ease, color 180ms ease;
+	transition:
+		background 180ms ease,
+		color 180ms ease;
 }
 
 .pin-btn:hover:not([aria-disabled='true']) {
@@ -2807,7 +2894,9 @@ body {
 	background: linear-gradient(180deg, rgba(22, 26, 38, 0.96), rgba(10, 12, 18, 0.97));
 	/* The ring is an inset shadow rather than a border: a border would sit
 	   outside the radius and clip the accent rail's top and bottom corners. */
-	box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06),
+	box-shadow:
+		0 20px 50px rgba(0, 0, 0, 0.6),
+		inset 0 1px 0 rgba(255, 255, 255, 0.06),
 		inset 0 0 0 1px var(--toast-edge);
 	backdrop-filter: blur(18px) saturate(1.3);
 	color: var(--ink-bright);
@@ -2981,7 +3070,9 @@ body {
 	color: rgba(233, 233, 237, 0.6);
 	@include ty.chip;
 	cursor: pointer;
-	transition: background 180ms ease, color 180ms ease;
+	transition:
+		background 180ms ease,
+		color 180ms ease;
 }
 
 .chain-chip:hover {
@@ -3231,7 +3322,9 @@ body {
 	letter-spacing: 0.09em;
 	text-transform: uppercase;
 	cursor: pointer;
-	transition: background 180ms ease, color 180ms ease;
+	transition:
+		background 180ms ease,
+		color 180ms ease;
 }
 
 .no-city-btn:hover {
@@ -3334,7 +3427,9 @@ body {
 	padding: sp.$sp-8 sp.$sp-16;
 	border-radius: 999px;
 	background: linear-gradient(180deg, rgba(24, 26, 40, 0.9), rgba(8, 9, 14, 0.94));
-	box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(233, 233, 237, 0.12);
+	box-shadow:
+		0 14px 36px rgba(0, 0, 0, 0.55),
+		inset 0 0 0 1px rgba(233, 233, 237, 0.12);
 	backdrop-filter: blur(14px);
 	color: rgba(233, 233, 237, 0.7);
 	@include ty.label-caps;
@@ -3367,7 +3462,9 @@ body {
 	color: rgba(233, 233, 237, 0.72);
 	@include ty.font(t.$ff-ui, t.$fs-17);
 	cursor: pointer;
-	transition: background 160ms ease, color 160ms ease;
+	transition:
+		background 160ms ease,
+		color 160ms ease;
 }
 
 .hil-nav-btn:hover {
@@ -3621,6 +3718,17 @@ body {
 /* ---------- records ---------- */
 
 .recs {
+	/*
+	 * Never shrink below what it holds.
+	 *
+	 * The panel is a scrolling flex column, and a flex item with no `flex` of its
+	 * own will happily be squeezed under its content — which does not then
+	 * overflow the panel, it overflows *inside* the squeezed item, where the
+	 * scrollbar cannot reach it. The last of these records sat fifty pixels
+	 * behind the pinned footer with no way to scroll to it. Same fault the city
+	 * card and the mode divider had.
+	 */
+	flex: none;
 	gap: sp.$sp-12;
 }
 
@@ -3967,7 +4075,9 @@ body {
 	color: rgba(233, 233, 237, 0.28);
 	cursor: pointer;
 	opacity: 0;
-	transition: opacity 160ms ease, color 160ms ease;
+	transition:
+		opacity 160ms ease,
+		color 160ms ease;
 }
 
 .home-card:hover .home-drop,
@@ -4029,7 +4139,9 @@ body {
 	color: rgba(233, 233, 237, 0.6);
 	@include ty.chip-tiny;
 	cursor: pointer;
-	transition: background 180ms ease, color 180ms ease;
+	transition:
+		background 180ms ease,
+		color 180ms ease;
 }
 
 .chain-foot-head .sweep-btn:hover {
@@ -4144,7 +4256,9 @@ body {
 	color: rgba(233, 233, 237, 0.4);
 	@include ty.chip-sm;
 	cursor: pointer;
-	transition: background 180ms ease, color 180ms ease;
+	transition:
+		background 180ms ease,
+		color 180ms ease;
 }
 
 .tbar-now-armed {
@@ -4197,7 +4311,9 @@ body {
 	height: 13px;
 	border-radius: 50%;
 	background: var(--ink-bright);
-	box-shadow: 0 0 0 5px rgba(181, 171, 252, 0.18), 0 0 16px 3px rgba(181, 171, 252, 0.5);
+	box-shadow:
+		0 0 0 5px rgba(181, 171, 252, 0.18),
+		0 0 16px 3px rgba(181, 171, 252, 0.5);
 }
 
 /* The sweep's pace, as a segmented control: every option visible and the chosen
@@ -4231,7 +4347,9 @@ body {
 	color: rgba(233, 233, 237, 0.42);
 	@include ty.font(t.$ff-ui, t.$fs-11, t.$fw-medium);
 	cursor: pointer;
-	transition: background 180ms ease, color 180ms ease;
+	transition:
+		background 180ms ease,
+		color 180ms ease;
 }
 
 .speed-seg-btn:hover {
@@ -4341,7 +4459,9 @@ body {
 	height: 32px;
 	background: transparent;
 	color: rgba(233, 233, 237, 0.6);
-	transition: background 180ms ease, color 180ms ease;
+	transition:
+		background 180ms ease,
+		color 180ms ease;
 }
 
 .maplibregl-ctrl-top-right .maplibregl-ctrl button:hover {
@@ -4479,28 +4599,149 @@ body {
 	@include ty.arabic-lg;
 }
 
-/* ---------- the qibla viewer ---------- */
+/* ---------- the two deep views ---------- */
+/*
+ * Rows rather than the words-in-a-line they were. Each carries its own colour —
+ * violet for the qibla, gold for the sun — so the pair reads as two doors to two
+ * different subjects rather than as one control with two settings.
+ */
 
-/* The bearing in the city card is the way in, so it looks like one. */
-.qibla-open {
-	border: 0;
-	padding: 0;
-	background: none;
+/*
+ * A card standing on the globe, under the console's own column — so it follows
+ * the strip down however many lines the status happens to run to, rather than
+ * being pinned at a guessed offset.
+ *
+ * `pointer-events` is set back on explicitly: the column it sits in lets clicks
+ * through to the earth underneath, which is right for a status line and wrong
+ * for a pair of buttons.
+ */
+.gtools {
+	margin-top: sp.$sp-24;
+	width: 380px;
+	max-width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-8;
+	padding: sp.$sp-16;
+	border-radius: sp.$sp-16;
+	background: rgba(10, 12, 18, 0.86);
+	border: 1px solid rgba(233, 233, 237, 0.1);
+	backdrop-filter: blur(12px);
+	pointer-events: auto;
+}
+
+.gtools-head {
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-8;
+	padding: 0 sp.$sp-4 sp.$sp-4;
+}
+
+.gtools-dot {
+	flex: none;
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: rgba(233, 233, 237, 0.45);
+}
+
+.gtools-city {
+	color: #f5f4ff;
+	text-transform: uppercase;
+}
+
+.gtools-time {
+	margin-left: auto;
+	color: rgba(233, 233, 237, 0.45);
+}
+
+.tool {
+	--tool: #{'#b5abfc'};
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-12;
+	width: 100%;
+	padding: sp.$sp-12;
+	border: 1px solid color-mix(in srgb, var(--tool) 30%, transparent);
+	border-radius: sp.$sp-12;
+	background: color-mix(in srgb, var(--tool) 10%, transparent);
 	color: inherit;
-	font: inherit;
 	cursor: pointer;
-	border-bottom: 1px dotted rgba(233, 233, 237, 0.3);
-	transition: color 160ms ease, border-color 160ms ease;
+	text-align: left;
+	transition:
+		background 170ms ease,
+		border-color 170ms ease;
 }
 
-.qibla-open:hover {
-	color: var(--accent-soft);
-	border-bottom-color: var(--accent);
+.tool:hover {
+	background: color-mix(in srgb, var(--tool) 18%, transparent);
+	border-color: color-mix(in srgb, var(--tool) 48%, transparent);
 }
 
-.qibla-open:focus-visible {
-	outline: 1px solid rgba(181, 171, 252, 0.75);
+.tool:focus-visible {
+	outline: 1px solid var(--tool);
 	outline-offset: sp.$sp-hairline;
+}
+
+.tool-qibla {
+	--tool: #{'#b5abfc'};
+}
+
+.tool-sun {
+	--tool: #{'#f4c56a'};
+}
+
+.tool-icon {
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+	background: color-mix(in srgb, var(--tool) 18%, transparent);
+	color: var(--tool);
+}
+
+.tool-text {
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-4;
+	min-width: 0;
+}
+
+.tool-name {
+	@include ty.title;
+	color: var(--tool);
+}
+
+.tool-sub {
+	@include ty.label-lg;
+	color: rgba(233, 233, 237, 0.45);
+}
+
+/* The affordance, kept quiet until the row is under the pointer. */
+.tool-go {
+	flex: none;
+	margin-left: auto;
+	color: color-mix(in srgb, var(--tool) 60%, transparent);
+	transition:
+		transform 170ms ease,
+		color 170ms ease;
+}
+
+.tool:hover .tool-go {
+	color: var(--tool);
+	transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tool-go {
+		transition: color 170ms ease;
+	}
+
+	.tool:hover .tool-go {
+		transform: none;
+	}
 }
 
 .qv {
@@ -4516,7 +4757,6 @@ body {
  * every-whole-number drift the scale was introduced to end. Nothing moved by
  * more than 4px.
  */
-
 
 .qf {
 	position: relative;
@@ -4640,7 +4880,9 @@ body {
 	box-shadow: inset 0 0 0 1px rgba(126, 224, 184, 0.4);
 	backdrop-filter: blur(14px);
 	pointer-events: none;
-	transition: opacity 260ms ease, transform 320ms cubic-bezier(0.2, 0.9, 0.2, 1);
+	transition:
+		opacity 260ms ease,
+		transform 320ms cubic-bezier(0.2, 0.9, 0.2, 1);
 }
 
 .qf-lock.on {
@@ -4713,7 +4955,9 @@ body {
 	cursor: pointer;
 	@include ty.label-sm;
 	text-transform: uppercase;
-	transition: background 170ms ease, color 170ms ease;
+	transition:
+		background 170ms ease,
+		color 170ms ease;
 }
 
 .qf-ctl:hover {
@@ -4998,7 +5242,9 @@ body {
 		color-mix(in srgb, var(--rly-c) 4%, transparent)
 	);
 	box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rly-c) 26%, transparent);
-	transition: background 200ms ease, box-shadow 200ms ease;
+	transition:
+		background 200ms ease,
+		box-shadow 200ms ease;
 	overflow: hidden;
 }
 
@@ -5069,10 +5315,13 @@ body {
 
 @keyframes rly-called {
 	0% {
-		box-shadow: inset 0 0 0 1px var(--rly-c), 0 0 0 0 color-mix(in srgb, var(--rly-c) 55%, transparent);
+		box-shadow:
+			inset 0 0 0 1px var(--rly-c),
+			0 0 0 0 color-mix(in srgb, var(--rly-c) 55%, transparent);
 	}
 	100% {
-		box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rly-c) 40%, transparent),
+		box-shadow:
+			inset 0 0 0 1px color-mix(in srgb, var(--rly-c) 40%, transparent),
 			0 0 0 12px color-mix(in srgb, var(--rly-c) 0%, transparent);
 	}
 }
@@ -5295,4 +5544,555 @@ body {
 	@include ty.caption-sm;
 	color: rgba(233, 233, 237, 0.34);
 	text-wrap: pretty;
+}
+
+/* ---------- the sun's year ---------- */
+/*
+ * A plate rather than a chart: the figure is the subject, so it gets a framed
+ * sky of its own and everything else is a caption to it. See `Analemma.tsx`.
+ */
+
+/*
+ * Two columns, as the design has it: the plate, and a rail that reads it. The
+ * plate is the subject and takes whatever room is left; the rail is a fixed
+ * measure because its rows are a table and tables should not reflow.
+ */
+.ana {
+	max-width: 1040px;
+}
+
+.ana-plot {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.ana-head {
+	flex: none;
+	display: flex;
+	align-items: flex-end;
+	gap: sp.$sp-16;
+	padding: sp.$sp-16 sp.$sp-16 sp.$sp-12 sp.$sp-24;
+}
+
+.ana-kicker {
+	display: block;
+	color: rgba(233, 233, 237, 0.4);
+	text-transform: uppercase;
+}
+
+.ana-place {
+	margin-top: sp.$sp-4;
+	@include ty.title-lg;
+	color: #f5f4ff;
+}
+
+/* True / ×2 / ×3 — how far the bearing is stretched. */
+.ana-seg {
+	margin-left: auto;
+	display: flex;
+	border: 1px solid rgba(233, 233, 237, 0.14);
+	border-radius: sp.$sp-8;
+	overflow: hidden;
+}
+
+.ana-seg button {
+	border: 0;
+	background: none;
+	color: rgba(233, 233, 237, 0.5);
+	cursor: pointer;
+	padding: sp.$sp-8 sp.$sp-12;
+	@include ty.chip-sm;
+	transition:
+		background 160ms ease,
+		color 160ms ease;
+}
+
+.ana-seg button:hover {
+	color: #efeeff;
+}
+
+.ana-seg button[aria-pressed='true'] {
+	background: rgba(150, 138, 224, 0.2);
+	color: #efeeff;
+}
+
+/* Sends the sun round the year, which is the one thing the still picture cannot say. */
+.ana-play {
+	margin-left: auto;
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-8;
+	padding: sp.$sp-8 sp.$sp-12;
+	border: 1px solid rgba(244, 197, 106, 0.34);
+	border-radius: sp.$sp-8;
+	background: rgba(244, 197, 106, 0.1);
+	color: #f4c56a;
+	cursor: pointer;
+	@include ty.chip-sm;
+	text-transform: uppercase;
+	transition: background 170ms ease;
+}
+
+.ana-play:hover {
+	background: rgba(244, 197, 106, 0.2);
+}
+
+/* Play, then pause: the glyph is drawn in borders so it needs no second asset. */
+.ana-play-glyph {
+	width: 0;
+	height: 0;
+	border-left: 7px solid currentColor;
+	border-top: 4.5px solid transparent;
+	border-bottom: 4.5px solid transparent;
+}
+
+.ana-play-on .ana-play-glyph {
+	width: 8px;
+	height: 9px;
+	border-left: 3px solid currentColor;
+	border-right: 3px solid currentColor;
+	border-top: 0;
+	border-bottom: 0;
+}
+
+/* The row for the crossing the sun is passing right now. */
+.ana-cross-list li.is-near {
+	background: rgba(244, 197, 106, 0.12);
+}
+
+.ana-svg {
+	display: block;
+	width: 100%;
+	height: auto;
+	flex: 1;
+	min-height: 0;
+}
+
+/*
+ * SVG text is set by hand rather than through a type mixin: the paint is `fill`
+ * rather than `color`, and the mixins' line-height means nothing here.
+ */
+.ana-ax {
+	font-family: t.$ff-mono;
+	font-size: t.$fs-9;
+	letter-spacing: t.$ls-wide;
+	fill: rgba(233, 233, 237, 0.32);
+}
+
+.ana-ax-lit {
+	fill: rgba(181, 171, 252, 0.55);
+}
+
+.ana-pray-txt {
+	font-family: t.$ff-ui;
+	font-size: t.$fs-9;
+	font-weight: t.$fw-medium;
+	letter-spacing: t.$ls-caps-lg;
+	opacity: 0.85;
+}
+
+.ana-mon {
+	font-family: t.$ff-ui;
+	font-size: t.$fs-95;
+	font-weight: t.$fw-medium;
+	letter-spacing: t.$ls-widest;
+}
+
+/* ---------- the rail ---------- */
+
+.ana-rail {
+	flex: none;
+	width: 302px;
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+	overflow: auto;
+	border-left: 1px solid rgba(233, 233, 237, 0.1);
+}
+
+/*
+ * Sticky, and opaque, because the close button floats over this column: without
+ * it the rows scroll under the button and whichever value is passing gets a
+ * cross drawn through it. Pinning the one line that already reserves room for
+ * the button keeps that zone permanently occupied by something that can afford
+ * to be covered.
+ */
+.ana-rail-head {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	flex: none;
+	padding: sp.$sp-16 sp.$sp-32 sp.$sp-12 sp.$sp-16;
+	background: #05070d;
+	border-bottom: 1px solid rgba(233, 233, 237, 0.08);
+	color: rgba(233, 233, 237, 0.4);
+	text-transform: uppercase;
+}
+
+/* Which prayer is in force at the hour drawn — the app's own rule, applied. */
+.ana-now {
+	flex: none;
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-12;
+	padding: sp.$sp-12 sp.$sp-16;
+	border-bottom: 1px solid rgba(233, 233, 237, 0.08);
+}
+
+.ana-now-dot {
+	flex: none;
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	background: var(--ph);
+}
+
+.ana-now-name {
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-4;
+	min-width: 0;
+	@include ty.title-lg;
+	color: #f5f4ff;
+}
+
+.ana-now-hint {
+	@include ty.caption-tiny;
+	color: rgba(233, 233, 237, 0.4);
+}
+
+.ana-now-ar {
+	margin-left: auto;
+	color: var(--ph);
+}
+
+.ana-sec {
+	flex: none;
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-12;
+	padding: sp.$sp-16;
+	border-bottom: 1px solid rgba(233, 233, 237, 0.08);
+}
+
+.ana-sec-row {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: sp.$sp-12;
+}
+
+.ana-sec-title {
+	color: #f4c56a;
+	text-transform: uppercase;
+}
+
+.ana-sec-title-pale {
+	color: #f5f4ff;
+}
+
+.ana-sec-aside {
+	color: rgba(233, 233, 237, 0.4);
+	text-transform: uppercase;
+	min-width: fit-content;
+}
+
+.ana-strip {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.ana-tick {
+	font-family: t.$ff-mono;
+	font-size: t.$fs-85;
+	fill: rgba(233, 233, 237, 0.3);
+}
+
+.ana-wobble {
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-8;
+}
+
+/* Which colour is which prayer, wrapped to whatever width the rail has. */
+.ana-key {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-wrap: wrap;
+	gap: sp.$sp-4 sp.$sp-12;
+}
+
+.ana-key li {
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-4;
+	@include ty.caption-tiny;
+	color: rgba(233, 233, 237, 0.55);
+}
+
+.ana-key-dot {
+	flex: none;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+}
+
+/* Stacked rather than wrapped, where each entry is a phrase and not a word. */
+.ana-key-block {
+	flex-direction: column;
+	gap: sp.$sp-4;
+}
+
+
+.ana-sec-note {
+	margin: 0;
+	@include ty.caption-sm;
+	color: rgba(233, 233, 237, 0.45);
+	text-wrap: pretty;
+}
+
+.ana-cross-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-4;
+}
+
+.ana-cross-list li {
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-8;
+	padding: sp.$sp-8;
+	border-radius: sp.$sp-8;
+	background: rgba(233, 233, 237, 0.04);
+}
+
+.ana-cross-dot {
+	flex: none;
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+}
+
+.ana-cross-name {
+	@include ty.body-sm;
+	color: #f5f4ff;
+}
+
+.ana-cross-verb {
+	@include ty.caption-tiny;
+	color: rgba(233, 233, 237, 0.4);
+}
+
+.ana-cross-date {
+	margin-left: auto;
+	@include ty.value-sm;
+}
+
+.ana-rows {
+	margin: 0;
+	flex: none;
+}
+
+.ana-row {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: sp.$sp-12;
+	padding: sp.$sp-12 sp.$sp-16;
+	border-bottom: 1px solid rgba(233, 233, 237, 0.06);
+}
+
+.ana-row dt {
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-4;
+	min-width: 0;
+}
+
+.ana-row dt b {
+	@include ty.body-sm;
+	font-weight: t.$fw-medium;
+	color: rgba(233, 233, 237, 0.74);
+}
+
+.ana-row dt span {
+	@include ty.caption-tiny;
+	color: rgba(233, 233, 237, 0.36);
+}
+
+.ana-row dd {
+	margin: 0;
+	white-space: nowrap;
+}
+
+/*
+ * The figure draws itself, once. `pathLength="1"` normalises every run to the
+ * same length, so a short arc below the horizon and the long sweep above it
+ * finish together instead of the dash animation racing away on whichever
+ * happens to be shorter.
+ */
+.ana-line {
+	animation: ana-draw 1400ms cubic-bezier(0.35, 0, 0.2, 1) both;
+	stroke-dashoffset: 0;
+}
+
+@keyframes ana-draw {
+	from {
+		stroke-dasharray: 0 1;
+	}
+	to {
+		stroke-dasharray: 1 0;
+	}
+}
+
+/* The sun, the months and the crossings arrive after the line they sit on. */
+.ana-sun,
+.ana-months,
+.ana-cross {
+	animation: ana-in 600ms ease-out both;
+	animation-delay: 900ms;
+}
+
+@keyframes ana-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.ana-note {
+	margin: 0;
+	padding: sp.$sp-16;
+	@include ty.body-sm;
+	color: rgba(233, 233, 237, 0.55);
+	text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ana-line,
+	.ana-sun,
+	.ana-months,
+	.ana-cross {
+		animation: none;
+	}
+}
+
+/* ---------- where the rules break ---------- */
+/*
+ * The other kind of extreme in the records panel: not the largest value but the
+ * missing one. Set apart from the records above it because it is a different
+ * claim — those are facts about the sun, this is a fact about a rule running out.
+ */
+
+.edge {
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-12;
+	margin-top: sp.$sp-16;
+	padding-top: sp.$sp-16;
+	border-top: 1px solid rgba(233, 233, 237, 0.1);
+}
+
+.edge-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: sp.$sp-12;
+}
+
+.edge-title {
+	color: #f4c56a;
+}
+
+.edge-count {
+	@include ty.value-sm;
+	color: rgba(233, 233, 237, 0.4);
+}
+
+.edge-note {
+	margin: 0;
+	@include ty.caption-sm;
+	color: rgba(233, 233, 237, 0.45);
+	text-wrap: pretty;
+}
+
+.edge-note-lit {
+	color: rgba(244, 197, 106, 0.6);
+}
+
+/* Column heading for the list below, set faint enough to read as furniture. */
+.edge-cols {
+	display: flex;
+	justify-content: space-between;
+	padding: 0 sp.$sp-8 sp.$sp-4;
+	@include ty.caption-tiny;
+	color: rgba(233, 233, 237, 0.3);
+	letter-spacing: 0.04em;
+}
+
+.edge-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-4;
+}
+
+.edge-list li {
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-hairline;
+	padding: sp.$sp-8;
+	border-radius: sp.$sp-8;
+	background: rgba(244, 197, 106, 0.05);
+}
+
+.edge-list button {
+	display: flex;
+	align-items: baseline;
+	gap: sp.$sp-8;
+	width: 100%;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	cursor: pointer;
+	text-align: left;
+}
+
+.edge-city {
+	@include ty.body-sm;
+	color: #f5f4ff;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.edge-lat {
+	@include ty.label-sm;
+	color: rgba(233, 233, 237, 0.4);
+}
+
+.edge-times {
+	margin-left: auto;
+	@include ty.value-sm;
+	color: #f4c56a;
+	white-space: nowrap;
+}
+
+/* Why this city is on the list — the whole point of the row. */
+.edge-why {
+	@include ty.caption-tiny;
+	color: rgba(233, 233, 237, 0.4);
 }

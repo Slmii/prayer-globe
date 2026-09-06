@@ -7,6 +7,7 @@ import type { PanelMode } from './components/SidePanel';
 import Legend from './components/Legend';
 import TipLayer from './components/TipLayer';
 import { AppIcon } from './components/AppIcon';
+import { Label, Value } from './components/Typography';
 import { ToastContainer } from 'react-toastify';
 import { say, amend, TOAST_MS } from './components/Toast';
 import type { Note } from './components/Toast';
@@ -49,8 +50,26 @@ import type { Criterion } from './lib/hilal';
  */
 const MosqueViewer = lazy(() => import('./components/MosqueViewer'));
 
+/*
+ * The two the globe card opens, kept as named imports so they can be fetched
+ * *before* they are asked for.
+ *
+ * A chunk that arrives after the click makes the modal open twice: React shows
+ * the Suspense fallback, which is a backdrop mid-fade, then throws it away and
+ * mounts the real backdrop, which starts its fade again from nothing. Measured
+ * at 85ms for the qibla and 194ms for the analemma — long enough to read as the
+ * window flickering rather than opening.
+ *
+ * Warming the import on hover or on the press that precedes the click means the
+ * module is usually already there, so nothing suspends and the modal opens once.
+ */
+const loadQibla = () => import('./components/QiblaViewer');
+const loadAnalemma = () => import('./components/Analemma');
+
 /** The qibla scene, fetched when asked for — it pulls in three.js and the Kaaba. */
-const QiblaViewer = lazy(() => import('./components/QiblaViewer'));
+const QiblaViewer = lazy(loadQibla);
+/** A year of solar positions and an SVG — worth its own chunk. */
+const Analemma = lazy(loadAnalemma);
 /** The shortcut sheet: a list of text, and nobody opens it on the first frame. */
 const Shortcuts = lazy(() => import('./components/Shortcuts'));
 /** Only ever seen on a first visit, so it is not worth the first paint. */
@@ -226,6 +245,7 @@ export default function App() {
 	const [viewer, setViewer] = useState<MosqueModel | null>(null);
 	/** The qibla viewer is open for the selected city. */
 	const [qiblaOpen, setQiblaOpen] = useState(false);
+	const [analemmaOpen, setAnalemmaOpen] = useState(false);
 	const [shortcutsOpen, setShortcutsOpen] = useState(false);
 	/*
 	 * The offer that stands in front of the browser's permission dialog.
@@ -584,11 +604,11 @@ export default function App() {
 				setLocating(false);
 				const { latitude: lat, longitude: lon, accuracy } = pos.coords;
 				setSpin(false);
-				// Closer than the old 4.5. At that zoom a town and the border ten
-				// kilometres from it are a few pixels apart, so the mark could not show
-				// which of them it was on — the same distance that made a coarse fix
-				// look like a misplaced one.
-				globe.current?.flyTo(lon, lat, 6.5, 2200);
+				// Travel there, but at whatever zoom you were already at — the same
+				// bargain a click on a dot makes. Pulling the camera in to a fixed 6.5
+				// threw away the view the reader had set up, and answered "where am I
+				// on this earth" by removing the earth from around the answer.
+				globe.current?.flyTo(lon, lat, viewRef.current.zoom, 2200);
 				/*
 				 * Where you are, said at once — and filled in below with whose
 				 * timetable that turns out to be.
@@ -875,9 +895,22 @@ export default function App() {
 	);
 
 	useTransportKeys({
-		// A modal owns the keyboard while it is up: the qibla finder turns its
-		// compass with the arrows, and the clock must not move underneath it.
+		/*
+		 * A modal owns the keyboard while it is up: the qibla finder turns its
+		 * compass with the arrows, and the clock must not move underneath it.
+		 *
+		 * The analemma is the exception, and deliberately so. It is a picture *of*
+		 * the clock — step the hour and the figure swings east to west and tilts as
+		 * it goes — so taking the transport keys away from it would remove the one
+		 * thing it is there to show. It binds no keys of its own, so nothing
+		 * collides.
+		 *
+		 * Only the clock keys, though. The rest act on a globe the modal is
+		 * covering: `S` set it spinning and `1`–`5` changed how far a run would go,
+		 * both with nothing on screen to show for it until the modal closed.
+		 */
 		enabled: !viewer && !qiblaOpen && !shortcutsOpen,
+		clockOnly: analemmaOpen,
 		/*
 		 * Each of these rings its own button on the way past. Only the keyboard
 		 * path does — a click already shows itself, and pressing a button that is
@@ -1014,7 +1047,6 @@ export default function App() {
 				hilalCity={activeCity}
 				hilalBusy={hilal.busy}
 				hilalSummary={hilal.summary}
-				onOpenQibla={() => setQiblaOpen(true)}
 				conjunctionMs={hilal.field?.conjunctionMs ?? null}
 				onStep={(d: number) => setHilalDays(v => v + d)}
 				onNextCrescent={nextCrescent}
@@ -1204,6 +1236,71 @@ export default function App() {
 									: mapNote}
 						</div>
 					</div>
+
+					{/*
+						The two deep views, on the globe rather than in the panel.
+
+						They were words inside the panel's coordinates line — "qibla 126°"
+						and "sun's year" — which made the app's two richest screens its two
+						smallest targets. Here they are cards, and they carry their own
+						heading because at this distance from the panel there is nothing
+						else on screen saying which city they would open on.
+
+						Inside the console's own column, so they stack under it without
+						anyone having to guess how tall it is today.
+					*/}
+					{activeCity && (
+						<div className='gtools'>
+							<div className='gtools-head'>
+								<span className='gtools-dot' />
+								<Label size='sm' className='gtools-city'>
+									{activeCity.n}
+								</Label>
+								<Value size='xs' className='gtools-time'>
+									{readout.clock}
+								</Value>
+							</div>
+
+							<button
+								type='button'
+								className='tool tool-qibla'
+								onClick={() => setQiblaOpen(true)}
+								/* Fetch it on the way to the click, not after it. */
+								onPointerEnter={loadQibla}
+								onPointerDown={loadQibla}
+								onFocus={loadQibla}
+								data-tip='Turn until the arrow points away from you'
+							>
+								<span className='tool-icon'>
+									<AppIcon name='compass' />
+								</span>
+								<span className='tool-text'>
+									<span className='tool-name'>Qibla finder</span>
+									<span className='tool-sub'>live compass · {readout.qibla}</span>
+								</span>
+								<AppIcon name='arrow-right' size='small' className='tool-go' />
+							</button>
+
+							<button
+								type='button'
+								className='tool tool-sun'
+								onClick={() => setAnalemmaOpen(true)}
+								onPointerEnter={loadAnalemma}
+								onPointerDown={loadAnalemma}
+								onFocus={loadAnalemma}
+								data-tip='Where the sun stands at this time, every day of the year'
+							>
+								<span className='tool-icon'>
+									<AppIcon name='infinity' />
+								</span>
+								<span className='tool-text'>
+									<span className='tool-name'>Analemma</span>
+									<span className='tool-sub'>prayers across the year</span>
+								</span>
+								<AppIcon name='arrow-right' size='small' className='tool-go' />
+							</button>
+						</div>
+					)}
 				</div>
 
 				{/*
@@ -1269,6 +1366,21 @@ export default function App() {
 							lon={activeCity.lo}
 							place={activeCity.n}
 							onClose={() => setQiblaOpen(false)}
+						/>
+					</Suspense>
+				)}
+
+				{analemmaOpen && activeCity && (
+					<Suspense fallback={<div className='modal-back' />}>
+						<Analemma
+							place={activeCity.n}
+							lat={activeCity.la}
+							lon={activeCity.lo}
+							// The offset the panel's own clock is using, so the plate is
+							// drawn for the hour the reader is actually looking at.
+							offsetHours={readout.offsetHours}
+							nowMs={nowMs}
+							onClose={() => setAnalemmaOpen(false)}
 						/>
 					</Suspense>
 				)}

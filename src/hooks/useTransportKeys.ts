@@ -39,6 +39,15 @@ import type { Options } from 'react-hotkeys-hook';
 export interface Transport {
 	/** False while a modal owns the keyboard. */
 	enabled: boolean;
+	/**
+	 * Only the keys that move the clock: Space, the arrows, N, and the pace pair.
+	 *
+	 * For the analemma, which is a picture *of* the clock and wants those keys,
+	 * but has no use for the ones that act on a globe it is covering. Leaving all
+	 * of them live meant `S` quietly span an earth nobody could see and `1`–`5`
+	 * changed how far a run went, with no visible effect until the modal closed.
+	 */
+	clockOnly?: boolean;
 	/** Space. */
 	playToggle(): void;
 	/**
@@ -66,6 +75,8 @@ const SPAN_KEYS = ['1', '2', '3', '4', '5'] as const;
 
 export function useTransportKeys(t: Transport) {
 	const opts: Options = { enabled: t.enabled, preventDefault: true };
+	// The keys that act on the globe rather than on the clock.
+	const globe: Options = { enabled: t.enabled && !t.clockOnly, preventDefault: true };
 
 	useHotkeys(
 		'space',
@@ -92,7 +103,7 @@ export function useTransportKeys(t: Transport) {
 	useHotkeys('bracketleft', () => t.speed(-1), opts, [t.speed, t.enabled]);
 	useHotkeys('bracketright', () => t.speed(1), opts, [t.speed, t.enabled]);
 
-	useHotkeys('s', t.spin, opts, [t.spin, t.enabled]);
+	useHotkeys('s', t.spin, globe, [t.spin, t.enabled, t.clockOnly]);
 
 	/*
 	 * The one chord here, and the one binding that stays live while a modal is
@@ -111,7 +122,7 @@ export function useTransportKeys(t: Transport) {
 				t.span(i);
 			}
 		},
-		opts,
-		[t.span, t.enabled]
+		globe,
+		[t.span, t.enabled, t.clockOnly]
 	);
 }
