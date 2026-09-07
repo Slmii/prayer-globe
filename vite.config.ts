@@ -3,6 +3,18 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
 	plugins: [react()],
+	/*
+	 * Reachable from a phone on the same network, and through a tunnel.
+	 *
+	 * Vite refuses requests whose Host header it does not recognise, so an ngrok
+	 * or Cloudflare URL pointed at the dev server answers with a blocked-host
+	 * page rather than the app. Listed here so testing the globe on a real
+	 * handset does not mean editing this file first.
+	 */
+	server: {
+		host: true,
+		allowedHosts: ['.ngrok-free.app', '.ngrok.io', '.trycloudflare.com', '.loca.lt']
+	},
 	optimizeDeps: {
 		/*
 		 * MapLibre loads its worker as a file sitting next to its own entry point.
