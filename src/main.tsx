@@ -6,7 +6,7 @@ import App from './App';
 // Only reachable at #/solar, and it pulls in three.js. Loading it eagerly put
 // the whole model viewer in the globe's critical path for a route almost nobody
 // opens.
-const SolarSystem = lazy(() => import('./components/SolarSystem'));
+const SolarSystem = lazy(() => import('./components/SolarSystem').then(module => ({ default: module.SolarSystem })));
 import 'react-toastify/dist/ReactToastify.css';
 import './styles.scss';
 

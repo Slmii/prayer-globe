@@ -45,7 +45,7 @@ function roundCoords(c: unknown): unknown {
 
 interface Feature {
 	type: string;
-	properties?: unknown;
+	properties?: { CONTINENT: string; ISO_A2_EH: string; NAME: string };
 	geometry: { type: string; coordinates: unknown } | null;
 }
 
@@ -74,6 +74,23 @@ async function main() {
 
 	const json = JSON.stringify(out);
 	writeFileSync(OUT, json);
+	writeFileSync(
+		'src/data/continents.json',
+		JSON.stringify(
+			src.features
+				.filter(feature => feature.geometry)
+				.map(feature => ({
+					continent:
+						feature.properties!.CONTINENT === 'Seven seas (open ocean)'
+							? 'Antarctica'
+							: feature.properties!.CONTINENT,
+					iso: feature.properties!.ISO_A2_EH,
+					name: feature.properties!.NAME
+				})),
+			null,
+			2
+		) + '\n'
+	);
 
 	const pct = (1 - json.length / raw.length) * 100;
 	console.log(

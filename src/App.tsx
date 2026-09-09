@@ -64,7 +64,7 @@ const MosqueViewer = lazy(() => import('./components/MosqueViewer'));
  * module is usually already there, so nothing suspends and the modal opens once.
  */
 const loadQibla = () => import('./components/QiblaViewer');
-const loadAnalemma = () => import('./components/Analemma');
+const loadAnalemma = () => import('./components/Analemma').then(module => ({ default: module.Analemma }));
 
 /** The qibla scene, fetched when asked for — it pulls in three.js and the Kaaba. */
 const QiblaViewer = lazy(loadQibla);
@@ -1069,7 +1069,7 @@ export default function App() {
 					phases={phases}
 					qiblaMode={qiblaMode}
 					bandPhase={mode === 'chain' ? chain : null}
-					hilal={mode === 'hilal' ? (hilal.field?.bands ?? null) : null}
+					hilal={mode === 'hilal' ? hilal.field?.bands ?? null : null}
 					mark={mark}
 					markPulsing={markPulsing}
 					sweeping={sweeping}

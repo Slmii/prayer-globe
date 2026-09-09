@@ -2566,6 +2566,17 @@ body {
 	position: absolute;
 	top: 14px;
 	right: 14px;
+	/*
+	 * Above whatever the dialog is showing, always.
+	 *
+	 * Every way out of a modal is a keystroke or a press somewhere specific, and
+	 * this button is the only one that is simply *there* — so it cannot be a
+	 * thing each viewer has to remember not to cover. Without a z-index it lost
+	 * to any positioned descendant: the analemma's sticky rail header at 1 hid
+	 * it completely, and the mosque viewer's popover layer at 5 would have too.
+	 * Higher than anything a panel has reason to stack inside itself.
+	 */
+	z-index: 10;
 	display: grid;
 	place-items: center;
 	width: 32px;
@@ -2708,6 +2719,48 @@ body {
 	to {
 		opacity: 1;
 		transform: none;
+	}
+}
+
+/*
+ * Leaving, which the backdrop may now animate.
+ *
+ * The reason it is not animated on the way *in* — two backdrops, the Suspense
+ * fallback's and the real one, so a fade replays as a flicker — does not apply
+ * here. By the time anything closes the chunk is long since loaded and there is
+ * only ever the one element, so it can fade out without the seam.
+ *
+ * Quicker than the 220ms entrance and eased the other way: an opening window is
+ * arriving and can afford to settle, while a closing one has already been
+ * dismissed and only has to get out of the way.
+ */
+@keyframes mv-sink {
+	to {
+		opacity: 0;
+		transform: translateY(8px) scale(0.99);
+	}
+}
+
+@keyframes mv-back-out {
+	to {
+		opacity: 0;
+	}
+}
+
+.modal-back-closing {
+	animation: mv-back-out 160ms ease both;
+	/* Already on its way out: a second press should not reopen or re-close it. */
+	pointer-events: none;
+}
+
+.modal-back-closing .modal {
+	animation: mv-sink 160ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.modal-back-closing,
+	.modal-back-closing .modal {
+		animation: none;
 	}
 }
 
@@ -5848,7 +5901,6 @@ body {
 	gap: sp.$sp-4;
 }
 
-
 .ana-sec-note {
 	margin: 0;
 	@include ty.caption-sm;
@@ -6095,4 +6147,538 @@ body {
 .edge-why {
 	@include ty.caption-tiny;
 	color: rgba(233, 233, 237, 0.4);
+}
+
+/* Hallmark · component: analemma sky · theme: existing night palette */
+.ana {
+	--color-ana-ink: #f5f4ff;
+	--color-ana-muted: #b7b9cb;
+	--color-ana-accent: #f4c56a;
+	--color-ana-surface: #080d18;
+	--color-ana-rule: #30374a;
+}
+.ana-head {
+	flex-wrap: wrap;
+	align-items: center;
+}
+.ana-head > div:first-child {
+	flex: 1 1 100%;
+	padding-right: sp.$sp-24;
+	min-width: 0;
+}
+.ana-place {
+	overflow-wrap: anywhere;
+}
+.ana-head .ana-play {
+	margin-left: 0;
+}
+.ana-head button,
+.ana-sky button {
+	min-height: 44px;
+	white-space: nowrap;
+}
+.ana-sky {
+	position: relative;
+	flex: 1 1 420px;
+	min-height: 320px;
+	background: var(--color-ana-surface);
+	color: var(--color-ana-ink);
+	overflow: clip;
+}
+.ana-sky canvas {
+	display: block;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	inset: 0;
+	touch-action: none;
+}
+.ana-sky-caption {
+	position: absolute;
+	bottom: 12px;
+	left: 16px;
+	right: 16px;
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-12;
+	pointer-events: none;
+	color: var(--color-ana-muted);
+	@include ty.caption-sm;
+}
+.ana-sky-caption button {
+	pointer-events: auto;
+	flex: none;
+}
+.ana-sky-status {
+	position: absolute;
+	inset: 30% 24px auto;
+	text-align: center;
+}
+.ana-scrubber {
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-4;
+	padding: sp.$sp-16 sp.$sp-24;
+	color: var(--color-ana-muted);
+	@include ty.caption-sm;
+}
+.ana-scrubber > span {
+	display: flex;
+	justify-content: space-between;
+	gap: sp.$sp-12;
+}
+.ana-scrubber b {
+	color: var(--color-ana-accent);
+	font-weight: 500;
+}
+.ana-scrubber input {
+	width: 100%;
+	min-width: 0;
+	height: 44px;
+	margin: 0;
+	accent-color: var(--color-ana-accent);
+	cursor: pointer;
+}
+.ana button:focus-visible,
+.ana input:focus-visible {
+	outline: 2px solid var(--color-ana-accent);
+	outline-offset: 2px;
+}
+.ana button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+.ana button:active:not(:disabled) {
+	transform: translateY(1px);
+}
+.ana-line,
+.ana-sun,
+.ana-months,
+.ana-cross {
+	animation: none;
+}
+@media (max-width: 768px) {
+	.modal.ana {
+		flex-direction: column;
+		overflow-y: auto;
+	}
+	.ana-plot {
+		flex: none;
+	}
+	.ana-rail {
+		width: auto;
+		overflow: visible;
+		border-left: 0;
+	}
+	.ana-sky {
+		flex: none;
+		height: 400px;
+	}
+	.ana-svg {
+		flex: none;
+	}
+	.ana-head {
+		padding: sp.$sp-16;
+		gap: sp.$sp-8;
+	}
+	.ana-scrubber {
+		padding: sp.$sp-12 sp.$sp-16;
+	}
+}
+@media (max-width: 414px) {
+	.ana-sky {
+		height: 340px;
+	}
+	.ana-sky-caption {
+		align-items: flex-end;
+		font-size: 10px;
+	}
+	.ana-sec-row {
+		flex-direction: column;
+		gap: sp.$sp-4;
+	}
+}
+
+/* Hallmark · component: celestial viewers · theme: existing night palette */
+.ss,
+.earth-exploded,
+.earth-loading {
+	--color-space: #080d18;
+	--color-space-ink: #f5f4ff;
+	--color-space-muted: #b7b9cb;
+	--color-space-accent: #f4c56a;
+	--color-space-rule: #30374a;
+	--color-space-selected: #333345;
+	color: var(--color-space-ink);
+	background: var(--color-space);
+}
+.ss-view-tabs {
+	position: absolute;
+	top: 72px;
+	left: 24px;
+	display: flex;
+	gap: sp.$sp-4;
+	flex-wrap: wrap;
+}
+.ss-view-tabs button,
+.earth-exploded button,
+.earth-loading button {
+	min-height: 44px;
+	border: 1px solid var(--color-space-rule);
+	border-radius: 8px;
+	padding: sp.$sp-8 sp.$sp-12;
+	background: var(--color-space);
+	color: var(--color-space-ink);
+	cursor: pointer;
+	white-space: nowrap;
+	@include ty.chip-sm;
+}
+.ss-view-tabs button[aria-pressed='true'],
+.earth-exploded button[aria-pressed='true'] {
+	background: var(--color-space-selected);
+	color: var(--color-space-accent);
+}
+.ss button:focus-visible,
+.earth-exploded button:focus-visible,
+.earth-exploded input:focus-visible {
+	outline: 2px solid var(--color-space-accent);
+	outline-offset: 2px;
+}
+.earth-exploded button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+.earth-exploded button:active:not(:disabled),
+.ss-view-tabs button:active {
+	transform: translateY(1px);
+}
+.ss-error {
+	position: absolute;
+	top: 40%;
+	width: 100%;
+	text-align: center;
+}
+.modal.earth-exploded {
+	width: min(1240px, calc(100vw - 24px));
+	max-width: 1240px;
+	height: min(800px, calc(100dvh - 48px));
+}
+.earth-stage {
+	flex: 1;
+	position: relative;
+	min-width: 0;
+}
+.earth-stage canvas {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display: block;
+	touch-action: none;
+}
+.earth-stage-note {
+	position: absolute;
+	bottom: 20px;
+	left: 24px;
+	right: 24px;
+	pointer-events: none;
+	color: var(--color-space-muted);
+	@include ty.caption-sm;
+}
+.earth-status {
+	position: absolute;
+	inset: 40% 24px auto;
+	text-align: center;
+}
+.earth-controls {
+	width: 280px;
+	padding: sp.$sp-32 sp.$sp-24 sp.$sp-24;
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-12;
+	overflow: auto;
+	border-left: 1px solid var(--color-space-rule);
+}
+.earth-controls h2 {
+	margin: 0;
+	@include ty.title-lg;
+	overflow-wrap: anywhere;
+}
+.earth-controls p,
+.earth-controls small {
+	margin: 0;
+	color: var(--color-space-muted);
+	@include ty.caption-sm;
+}
+.earth-continent-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: sp.$sp-4;
+}
+.earth-controls label {
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-8;
+	@include ty.caption-sm;
+}
+.earth-controls input {
+	width: 100%;
+	min-width: 0;
+	min-height: 44px;
+	padding: sp.$sp-8;
+	border: 1px solid var(--color-space-rule);
+	border-radius: 8px;
+	background: var(--color-space);
+	color: var(--color-space-ink);
+}
+.earth-city-list {
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-4;
+}
+.earth-city-list button {
+	text-align: left;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.earth-loading {
+	position: fixed;
+	inset: 20% 20%;
+	z-index: 100;
+	display: grid;
+	place-content: center;
+	gap: sp.$sp-16;
+	border: 1px solid var(--color-space-rule);
+}
+@media (hover: hover) {
+	.ss-view-tabs button:hover,
+	.earth-exploded button:hover {
+		background: var(--color-space-selected);
+	}
+}
+@media (max-width: 768px) {
+	.modal.earth-exploded {
+		flex-direction: column;
+		overflow-y: auto;
+	}
+	.earth-stage {
+		flex: none;
+		height: 420px;
+	}
+	.earth-controls {
+		width: auto;
+		overflow: visible;
+		border-left: 0;
+		padding: sp.$sp-24;
+	}
+	.ss-view-tabs {
+		left: 12px;
+		right: 12px;
+		top: 72px;
+	}
+	.ss-tools {
+		flex-wrap: wrap;
+	}
+	.ss-hud {
+		max-height: 42dvh;
+		overflow-y: auto;
+	}
+}
+@media (max-width: 414px) {
+	.earth-stage {
+		height: 340px;
+	}
+}
+
+.ss-note {
+	top: 132px;
+	bottom: auto;
+	left: 24px;
+	color: var(--color-space-muted);
+}
+.ss-tools {
+	left: auto;
+	right: 16px;
+	transform: none;
+	max-width: calc(100% - 140px);
+	border-radius: 12px;
+}
+.ss-tools button {
+	white-space: nowrap;
+	min-height: 44px;
+	letter-spacing: 0.04em;
+	padding: sp.$sp-8 sp.$sp-12;
+}
+.ss-plate,
+.ss-rail {
+	border-radius: 16px;
+}
+.ss-hud {
+	pointer-events: auto;
+}
+@media (max-width: 768px) {
+	.ss-tools {
+		top: 120px;
+		left: 12px;
+		right: 12px;
+		max-width: none;
+		width: fit-content;
+	}
+	.ss-note {
+		top: 196px;
+		left: 16px;
+		right: 16px;
+		max-width: none;
+	}
+	.ss-plate {
+		flex-direction: column;
+		align-items: flex-start;
+		width: 100%;
+	}
+	.ss-plate dl {
+		gap: sp.$sp-8 sp.$sp-16;
+	}
+	.ss-hud {
+		padding: 0 sp.$sp-12;
+		bottom: 12px;
+	}
+}
+
+/* Continent navigation stays inside the map; the prayer panel remains interactive. */
+/*
+ * The one control the exploded earth needs, floating on the globe itself.
+ *
+ * Raised clear of the other globe overlays. The bar this replaces sat at
+ * `z-index: 4`, low enough that anything above it in the corner it chose came
+ * out on top, which is how it surfaced half-covered.
+ */
+.continent-reset {
+	position: absolute;
+	left: 16px;
+	bottom: 104px;
+	z-index: 12;
+	padding: sp.$sp-8 sp.$sp-16;
+	border: 1px solid rgba(150, 138, 224, 0.24);
+	border-radius: 9px;
+	background: var(--glass);
+	color: rgba(233, 233, 237, 0.72);
+	@include ty.label-caps;
+	letter-spacing: 0.13em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	cursor: pointer;
+	backdrop-filter: blur(10px);
+	transition:
+		background 180ms ease,
+		color 180ms ease;
+}
+
+.continent-reset:hover {
+	background: rgba(233, 233, 237, 0.14);
+	color: #f5f4ff;
+}
+
+.continent-reset:focus-visible {
+	outline: 1px solid rgba(216, 176, 74, 0.8);
+	outline-offset: -2px;
+}
+
+.continent-navigation {
+	position: absolute;
+	left: 16px;
+	right: 56px;
+	bottom: 104px;
+	z-index: 4;
+	max-width: 720px;
+	padding: sp.$sp-12;
+	border: 1px solid var(--line, #30374a);
+	border-radius: 12px;
+	background: var(--bg, #080d18);
+	color: var(--text, #f5f4ff);
+}
+.continent-navigation-label {
+	display: block;
+	margin-bottom: sp.$sp-8;
+	@include ty.caption-sm;
+}
+.continent-navigation > div {
+	display: flex;
+	flex-wrap: wrap;
+	gap: sp.$sp-4;
+}
+.continent-navigation button {
+	min-height: 44px;
+	padding: sp.$sp-8 sp.$sp-12;
+	border: 1px solid var(--line, #30374a);
+	border-radius: 8px;
+	background: transparent;
+	color: inherit;
+	white-space: nowrap;
+	cursor: pointer;
+	@include ty.chip-sm;
+}
+.continent-navigation button[aria-pressed='true'] {
+	color: var(--gold, #f4c56a);
+	border-color: currentColor;
+}
+.continent-navigation button:focus-visible {
+	outline: 2px solid var(--gold, #f4c56a);
+	outline-offset: 2px;
+}
+.continent-navigation button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+.continent-navigation button:active:not(:disabled) {
+	transform: translateY(1px);
+}
+@media (hover: hover) {
+	.continent-navigation button:hover {
+		color: var(--gold, #f4c56a);
+	}
+}
+@media (max-width: 768px) {
+	.continent-navigation {
+		left: 8px;
+		right: 8px;
+		bottom: 100px;
+		padding: sp.$sp-8;
+	}
+	.continent-navigation > div {
+		flex-wrap: nowrap;
+		overflow-x: auto;
+	}
+	.continent-navigation button {
+		flex: none;
+	}
+}
+
+.inline-earth {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background: var(--bg, #080d18);
+	color: var(--text, #f5f4ff);
+}
+.inline-earth > canvas {
+	display: block;
+	width: 100%;
+	height: 100%;
+	touch-action: none;
+	cursor: grab;
+}
+.inline-earth-tip {
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
+	pointer-events: none;
+}
+.inline-earth-loading {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	display: grid;
+	place-content: center;
+	gap: sp.$sp-12;
+	background: var(--bg, #080d18);
 }

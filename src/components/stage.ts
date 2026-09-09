@@ -16,6 +16,8 @@ export interface Stage {
 	/** Show an object, framing the camera to it and resting it on the ground. */
 	setObject(object: THREE.Object3D): void;
 	resize(): void;
+	setLightDirection(x: number, y: number, z: number): void;
+	setAnimationEnabled(isEnabled: boolean): void;
 	/** Turntable until the viewer touches it, as the design's `autorotate`. */
 	setAutoRotate(on: boolean): void;
 	exportObj(basename: string): Promise<void>;
@@ -34,7 +36,8 @@ function download(blob: Blob, filename: string) {
 	setTimeout(() => URL.revokeObjectURL(url), 4000);
 }
 
-export function createStage(canvas: HTMLCanvasElement): Stage {
+export function createStage(canvas: HTMLCanvasElement, options: { isSpace?: boolean } = {}): Stage {
+	const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
 	const renderer = new THREE.WebGLRenderer({
 		canvas,
 		antialias: true,
@@ -52,7 +55,7 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
 	camera.position.set(3, 2.2, 4);
 
 	const controls = new OrbitControls(camera, canvas);
-	controls.enableDamping = true;
+	controls.enableDamping = !motion.matches;
 	controls.dampingFactor = 0.08;
 	controls.autoRotateSpeed = 1.2;
 	controls.addEventListener('start', () => {
@@ -62,23 +65,26 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
 	// Neutral studio: a soft sky/ground wash, a shadow-casting key, and a dim
 	// fill from behind so silhouettes never go black. No environment map, so
 	// high metalness has nothing to reflect — which is why the design caps it.
-	scene.add(new THREE.HemisphereLight(0xffffff, 0xd8d2c4, 1.0));
+	scene.add(new THREE.HemisphereLight(0xffffff, 0xd8d2c4, options.isSpace ? 0.12 : 1.0));
 	const key = new THREE.DirectionalLight(0xffffff, 2.2);
 	key.position.set(4, 7, 5);
 	key.castShadow = true;
 	key.shadow.mapSize.set(2048, 2048);
 	key.shadow.bias = -0.0002;
 	scene.add(key);
-	const fill = new THREE.DirectionalLight(0xfff4e6, 0.5);
+	const fill = new THREE.DirectionalLight(0xfff4e6, options.isSpace ? 0.05 : 0.5);
 	fill.position.set(-5, 3, -4);
 	scene.add(fill);
 
 	const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.ShadowMaterial({ opacity: 0.18 }));
 	ground.rotation.x = -Math.PI / 2;
 	ground.receiveShadow = true;
+	ground.visible = !options.isSpace;
 	scene.add(ground);
 
 	let object: THREE.Object3D | null = null;
+	let isAnimationEnabled = true;
+	let lastFrame = performance.now();
 
 	const resize = () => {
 		const box = canvas.parentElement;
@@ -91,6 +97,14 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
 	resize();
 
 	renderer.setAnimationLoop(() => {
+		const now = performance.now();
+		const delta = Math.min((now - lastFrame) / 1000, 0.05);
+		lastFrame = now;
+		if (document.hidden) return;
+		if (isAnimationEnabled && !motion.matches && typeof object?.userData.animate === 'function')
+			object.userData.animate(delta);
+		controls.enableDamping = !motion.matches;
+		if (motion.matches) controls.autoRotate = false;
 		controls.update();
 		renderer.render(scene, camera);
 	});
@@ -99,7 +113,7 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
 	function release(root: THREE.Object3D) {
 		root.traverse(o => {
 			const mesh = o as THREE.Mesh;
-			if (!mesh.isMesh) return;
+			if (!mesh.isMesh && !(o instanceof THREE.Line)) return;
 			mesh.geometry.dispose();
 			for (const m of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
 				const std = m as THREE.MeshStandardMaterial;
@@ -147,6 +161,7 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
 			}
 			object = next;
 			next.traverse(o => {
+				o.userData.isPaused = !isAnimationEnabled;
 				const mesh = o as THREE.Mesh;
 				if (!mesh.isMesh) return;
 				mesh.castShadow = true;
@@ -158,7 +173,8 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
 				// Rest the object on the ground without moving its origin.
 				ground.position.y = box.min.y;
 				const sphere = box.getBoundingSphere(new THREE.Sphere());
-				const dist = (sphere.radius / Math.tan((camera.fov * Math.PI) / 360)) * 1.35;
+				const dist =
+					((sphere.radius / Math.tan((camera.fov * Math.PI) / 360)) * 1.35) / Math.min(camera.aspect, 1);
 				const dir = new THREE.Vector3(1, 0.55, 1.25).normalize();
 				camera.position.copy(sphere.center).add(dir.multiplyScalar(dist));
 				camera.near = Math.max(dist / 100, 0.01);
@@ -178,9 +194,18 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
 		},
 
 		resize,
+		setLightDirection(x, y, z) {
+			key.position.set(x, y, z);
+		},
+		setAnimationEnabled(isEnabled) {
+			isAnimationEnabled = isEnabled;
+			object?.traverse(child => {
+				child.userData.isPaused = !isEnabled;
+			});
+		},
 
 		setAutoRotate(on) {
-			controls.autoRotate = on;
+			controls.autoRotate = on && !motion.matches;
 		},
 
 		async exportObj(basename) {
@@ -216,6 +241,9 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
 			renderer.setAnimationLoop(null);
 			controls.dispose();
 			if (object) release(object);
+			ground.geometry.dispose();
+			ground.material.dispose();
+			key.shadow.map?.dispose();
 			renderer.dispose();
 		}
 	};

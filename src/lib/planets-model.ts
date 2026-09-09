@@ -1,22 +1,34 @@
-// The solar bodies from the design's `planets-model.js`, ported off the
-// <three-d-stage> viewer shell so they can be dropped into any scene.
-//
-// Drawing recipes — colour stops, seeds, counts, alphas, ellipse coordinates,
-// band counts, wobble values — are unchanged from the design; every surface
-// is a procedural texture painted onto a 1024x512 canvas at build time. Earth
-// is deliberately omitted: the app's globe already *is* the earth, so its
-// continent atlas and cloud shell have no user here. Materials and textures
-// are built fresh on every `buildBody()` call, never cached at module scope.
-
 import * as THREE from 'three';
+import { buildEarth } from './earth-model';
 
 /** Radius every body is modelled at. Callers scale from this. */
 export const PLANET_RADIUS = 2;
 
-export type BodyId = 'sun' | 'mercury' | 'venus' | 'moon' | 'mars' | 'jupiter' | 'saturn' | 'uranus' | 'neptune';
+export type BodyId =
+	| 'sun'
+	| 'mercury'
+	| 'venus'
+	| 'earth'
+	| 'moon'
+	| 'mars'
+	| 'jupiter'
+	| 'saturn'
+	| 'uranus'
+	| 'neptune';
 
 /** Ids above, in the order they're drawn. */
-export const BODY_IDS: BodyId[] = ['sun', 'mercury', 'venus', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
+export const BODY_IDS: BodyId[] = [
+	'sun',
+	'mercury',
+	'venus',
+	'earth',
+	'moon',
+	'mars',
+	'jupiter',
+	'saturn',
+	'uranus',
+	'neptune'
+];
 
 /* ---------- procedural surface textures ---------- */
 
@@ -440,6 +452,7 @@ function ringMesh(inner: number, outer: number, thin: boolean | undefined, name:
 
 /** One solar body — sun or planet — built fresh, in the same units as `PLANET_RADIUS`. */
 export function buildBody(id: BodyId): THREE.Group {
+	if (id === 'earth') return buildEarth();
 	const b = BODIES.find(x => x.id === id);
 	if (!b) throw new Error(`unknown body id: ${id}`);
 
@@ -589,7 +602,9 @@ export function buildBody(id: BodyId): THREE.Group {
 		flares.forEach(reseat);
 
 		/* one authored clock drives granulation drift, corona breath, and the flare cycle */
+		const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
 		globe.onBeforeRender = () => {
+			if (motion.matches || g.userData.isPaused) return;
 			const now = performance.now() / 1000;
 			mapTex.offset.x = (now * 0.008) % 1;
 			mat.emissiveIntensity = 0.78 + Math.sin(now * 1.7) * 0.09 + Math.sin(now * 4.3) * 0.04;

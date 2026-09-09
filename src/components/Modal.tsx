@@ -9,9 +9,19 @@
 // inside — belongs to the caller. This owns the frame and the behaviour, and
 // nothing else.
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { AppIcon } from './AppIcon';
+
+/**
+ * How long the closing animation is given before the dialog is really gone.
+ *
+ * Kept in step with `mv-sink` in the stylesheet. A timer rather than an
+ * `animationend` listener because the animation is switched off entirely under
+ * `prefers-reduced-motion`, and an event that never fires would leave the modal
+ * on screen for good.
+ */
+const CLOSE_MS = 160;
 
 interface Props {
 	/** Names the dialog for assistive tech. Not shown. */
@@ -26,6 +36,26 @@ export default function Modal({ label, onClose, children, className }: Props) {
 	const closeRef = useRef<HTMLButtonElement>(null);
 
 	/*
+	 * Closing is a state, not an event.
+	 *
+	 * The panel rises on the way in, and used to vanish on the way out, because
+	 * calling `onClose` unmounts it on the same frame and there is nothing left
+	 * to animate. So every route out — Escape, the backdrop, the button — only
+	 * marks the dialog as closing; the caller is told once the animation has had
+	 * its time.
+	 */
+	const [closing, setClosing] = useState(false);
+	const beginClose = useCallback(() => setClosing(true), []);
+
+	useEffect(() => {
+		if (!closing) {
+			return;
+		}
+		const id = window.setTimeout(onClose, CLOSE_MS);
+		return () => window.clearTimeout(id);
+	}, [closing, onClose]);
+
+	/*
 	 * Escape closes, and focus is borrowed rather than taken.
 	 *
 	 * Whatever opened this may well be gone by the time it closes — a card on a
@@ -38,7 +68,7 @@ export default function Modal({ label, onClose, children, className }: Props) {
 		closeRef.current?.focus();
 		const onKey = (e: KeyboardEvent) => {
 			if (e.key === 'Escape') {
-				onClose();
+				beginClose();
 			}
 		};
 		window.addEventListener('keydown', onKey);
@@ -46,16 +76,19 @@ export default function Modal({ label, onClose, children, className }: Props) {
 			window.removeEventListener('keydown', onKey);
 			previous?.focus?.();
 		};
-	}, [onClose]);
+	}, [beginClose]);
 
 	return (
 		// The backdrop closes on a press, but only on one that started on it — a
 		// press that began inside the panel and drifted out is a drag that
 		// overshot, not a decision to leave.
-		<div className='modal-back' onPointerDown={e => e.target === e.currentTarget && onClose()}>
+		<div
+			className={'modal-back' + (closing ? ' modal-back-closing' : '')}
+			onPointerDown={e => e.target === e.currentTarget && beginClose()}
+		>
 			<div className={'modal' + (className ? ' ' + className : '')} role='dialog' aria-modal='true' aria-label={label}>
 				{children}
-				<button type='button' className='modal-close' ref={closeRef} onClick={onClose} aria-label='Close'>
+				<button type='button' className='modal-close' ref={closeRef} onClick={beginClose} aria-label='Close'>
 					<AppIcon name='x' size='small' />
 				</button>
 			</div>

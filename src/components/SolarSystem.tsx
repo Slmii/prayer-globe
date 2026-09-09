@@ -1,20 +1,10 @@
-// The design's `Solar System 3D.html`, as a page in this app.
-//
-// The original is a standalone document: a full-viewport <three-d-stage> with a
-// HUD docked to the bottom — a plate naming the body and listing four facts, and
-// a rail of buttons to switch between them. That structure is kept exactly; what
-// changed is that the stage is now `createStage` (see stage.ts) and the rail is
-// React state rather than buttons appended in a loop.
-//
-// Earth is absent on purpose. In this app the globe *is* the earth, so the
-// design's default selection moves to the sun.
-
 import { useEffect, useRef, useState } from 'react';
 import { AppIcon } from './AppIcon';
 import { createStage } from './stage';
 import type { Stage } from './stage';
 import { buildBody, BODY_IDS } from '../lib/planets-model';
 import type { BodyId } from '../lib/planets-model';
+import { buildSolarSystem, buildSeasons } from '../lib/solar-system-model';
 
 interface BodyInfo {
 	name: string;
@@ -25,6 +15,16 @@ interface BodyInfo {
 }
 
 const INFO: Record<BodyId, BodyInfo> = {
+	earth: {
+		name: 'Earth',
+		swatch: '#8bc5dc',
+		facts: [
+			['Radius', '6,371 km'],
+			['Axial tilt', '23.44°'],
+			['Orbit', '365.25 d'],
+			['Moon', '1']
+		]
+	},
 	sun: {
 		name: 'Sun',
 		swatch: '#ffcf5c',
@@ -117,20 +117,31 @@ const INFO: Record<BodyId, BodyInfo> = {
 	}
 };
 
-export default function SolarSystem() {
+export function SolarSystem() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const stageRef = useRef<Stage | null>(null);
-	const [body, setBody] = useState<BodyId>('sun');
+	const [body, setBody] = useState<BodyId>('earth');
 	const [busy, setBusy] = useState(false);
+	const [view, setView] = useState<'system' | 'body' | 'seasons'>('system');
+	const [season, setSeason] = useState(0);
+	const [hasError, setHasError] = useState(false);
+	const [isTurning, setIsTurning] = useState(false);
+	const [isMoving, setIsMoving] = useState(true);
 
 	// The stage outlives every selection: building it per body would throw away
 	// the WebGL context and the viewer's camera on each click.
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
-		const stage = createStage(canvas);
+		let stage: Stage;
+		try {
+			stage = createStage(canvas, { isSpace: true });
+		} catch {
+			setHasError(true);
+			return;
+		}
 		stageRef.current = stage;
-		stage.setAutoRotate(true);
+		stage.setAutoRotate(false);
 
 		const host = canvas.parentElement;
 		const ro = new ResizeObserver(() => stage.resize());
@@ -148,18 +159,59 @@ export default function SolarSystem() {
 	useEffect(() => {
 		const stage = stageRef.current;
 		if (!stage) return;
-		stage.setObject(buildBody(body));
-		stage.setAutoRotate(true);
-	}, [body]);
+		try {
+			stage.setObject(
+				view === 'system' ? buildSolarSystem() : view === 'seasons' ? buildSeasons() : buildBody(body)
+			);
+			stage.setAutoRotate(false);
+			setIsTurning(false);
+			setHasError(false);
+		} catch {
+			setHasError(true);
+		}
+	}, [body, view]);
+	useEffect(() => {
+		const angle = (season * Math.PI) / 2;
+		if (view === 'seasons') stageRef.current?.setLightDirection(8 * Math.cos(angle), 0, 8 * Math.sin(angle));
+		else stageRef.current?.setLightDirection(4, 3, 5);
+	}, [season, view]);
 
-	const info = INFO[body];
+	const info =
+		view === 'system'
+			? {
+					name: 'The solar system',
+					facts: [
+						['View', 'Eight planets'],
+						['Distances', 'Compressed'],
+						['Planet sizes', 'Enlarged'],
+						['Motion', '1 Earth year / 40 s']
+					]
+				}
+			: view === 'seasons'
+				? {
+						name: 'Earth, through the seasons',
+						facts: [
+							['Axis', '23.44° tilt'],
+							[
+								'Sunlight',
+								['June solstice', 'September equinox', 'December solstice', 'March equinox'][season]
+							],
+							['North', ['Summer', 'Autumn', 'Winter', 'Spring'][season]],
+							['South', ['Winter', 'Spring', 'Summer', 'Autumn'][season]]
+						]
+					}
+				: INFO[body];
 
 	const save = async (kind: 'obj' | 'glb') => {
 		const stage = stageRef.current;
 		if (!stage || busy) return;
 		setBusy(true);
 		try {
-			await (kind === 'obj' ? stage.exportObj(body) : stage.exportGlb(body));
+			await (kind === 'obj'
+				? stage.exportObj(view === 'body' ? body : view)
+				: stage.exportGlb(view === 'body' ? body : view));
+		} catch {
+			setHasError(true);
 		} finally {
 			setBusy(false);
 		}
@@ -167,9 +219,44 @@ export default function SolarSystem() {
 
 	return (
 		<div className='ss'>
-			<canvas ref={canvasRef} className='ss-canvas' />
+			<canvas ref={canvasRef} className='ss-canvas' aria-label={info.name + ', interactive 3D view'} />
+			{hasError && (
+				<p className='ss-error' role='status'>
+					This 3D view could not load. Try reopening the solar system.
+				</p>
+			)}
+			<div className='ss-view-tabs' role='group' aria-label='Solar system view'>
+				{(['system', 'body', 'seasons'] as const).map(value => (
+					<button key={value} type='button' aria-pressed={view === value} onClick={() => setView(value)}>
+						{value === 'system' ? 'Overview' : value === 'body' ? 'Planet detail' : 'Earth & seasons'}
+					</button>
+				))}
+			</div>
 
 			<div className='ss-tools'>
+				{view === 'system' && (
+					<button
+						type='button'
+						aria-pressed={isMoving}
+						onClick={() => {
+							setIsMoving(value => !value);
+							stageRef.current?.setAnimationEnabled(!isMoving);
+						}}
+					>
+						{isMoving ? 'Pause planets' : 'Play planets'}
+					</button>
+				)}
+				<button
+					type='button'
+					aria-pressed={isTurning}
+					onClick={() => {
+						const next = !isTurning;
+						setIsTurning(next);
+						stageRef.current?.setAutoRotate(next);
+					}}
+				>
+					{isTurning ? 'Stop orbit' : 'Orbit view'}
+				</button>
 				{/* These buttons write a file, so they say so — the dot they used to
 				    carry said nothing at all. */}
 				<button type='button' onClick={() => save('obj')} disabled={busy}>
@@ -190,7 +277,15 @@ export default function SolarSystem() {
 				<AppIcon name='arrow-left' size='small' />
 				Globe
 			</a>
-			<p className='ss-note'>Drag to orbit · scroll to zoom · right-drag to pan</p>
+			<p className='ss-note'>
+				Drag to orbit · Scroll to zoom
+				<br />
+				{view === 'system'
+					? 'Illustrative starting positions. Sizes and distances are not to scale.'
+					: view === 'seasons'
+						? 'The axis stays tilted as the direction of sunlight changes.'
+						: 'Geographic Earth model · Illustrative planetary surfaces'}
+			</p>
 
 			<div className='ss-hud'>
 				<div className='ss-plate'>
@@ -205,13 +300,36 @@ export default function SolarSystem() {
 					</dl>
 				</div>
 
-				<div className='ss-rail'>
-					{BODY_IDS.map(id => (
-						<button key={id} type='button' aria-pressed={id === body} onClick={() => setBody(id)}>
-							<span className='ss-swatch' style={{ background: INFO[id].swatch }} />
-							{INFO[id].name}
-						</button>
-					))}
+				<div className='ss-rail' role='group' aria-label={view === 'seasons' ? 'Season' : 'Planet'}>
+					{view === 'seasons' ? (
+						['June', 'September', 'December', 'March'].map((label, index) => (
+							<button
+								key={label}
+								type='button'
+								aria-pressed={season === index}
+								onClick={() => setSeason(index)}
+							>
+								{label}
+							</button>
+						))
+					) : (
+						<>
+							{BODY_IDS.map(id => (
+								<button
+									key={id}
+									type='button'
+									aria-pressed={id === body}
+									onClick={() => {
+										setBody(id);
+										setView('body');
+									}}
+								>
+									<span className='ss-swatch' style={{ background: INFO[id].swatch }} />
+									{INFO[id].name}
+								</button>
+							))}
+						</>
+					)}
 				</div>
 			</div>
 		</div>

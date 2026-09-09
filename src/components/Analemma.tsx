@@ -33,6 +33,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 import Modal from './Modal';
+import { AnalemmaSky } from './AnalemmaSky.component';
 import { analemma, eotWords, hhmm, compassPoint, PRAYER_LINES } from '../lib/analemma';
 import { SUN_EDGE_DEG, PHASES, phaseAt } from '../lib/astro';
 import type { Analemma as Fig, AnalemmaPoint } from '../lib/analemma';
@@ -154,7 +155,7 @@ function Wobble({
 	);
 }
 
-export default function Analemma({ place, lat, lon, offsetHours, nowMs, onClose }: Props) {
+export function Analemma({ place, lat, lon, offsetHours, nowMs, onClose }: Props) {
 	/*
 	 * The figure is tall and narrow — forty degrees of altitude against a dozen
 	 * of bearing — so the design offers to stretch it sideways. At ×1 it is true
@@ -163,6 +164,16 @@ export default function Analemma({ place, lat, lon, offsetHours, nowMs, onClose 
 	 * the fact the shape exists to show.
 	 */
 	const [ex, setEx] = useState(2);
+	const [isSkyView, setIsSkyView] = useState(true);
+	const [isReducedMotion, setIsReducedMotion] = useState(
+		() => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+	);
+	useEffect(() => {
+		const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const update = () => setIsReducedMotion(media.matches);
+		media.addEventListener('change', update);
+		return () => media.removeEventListener('change', update);
+	}, []);
 
 	/*
 	 * Walking the year.
@@ -177,7 +188,7 @@ export default function Analemma({ place, lat, lon, offsetHours, nowMs, onClose 
 	 * cursor rather than adding a second source of truth for it.
 	 */
 	const [walk, setWalk] = useState<number | null>(null);
-	const [playing, setPlaying] = useState(false);
+	const [isPlaying, setPlaying] = useState(false);
 
 	const clockHour = (((nowMs / 3600000 + offsetHours) % 24) + 24) % 24;
 	const clockMin = clockHour * 60;
@@ -348,7 +359,7 @@ export default function Analemma({ place, lat, lon, offsetHours, nowMs, onClose 
 	const DAYS_PER_SECOND = 32;
 
 	useEffect(() => {
-		if (!playing) {
+		if (!isPlaying || isReducedMotion) {
 			return;
 		}
 		const n = fig.points.length;
@@ -356,7 +367,7 @@ export default function Analemma({ place, lat, lon, offsetHours, nowMs, onClose 
 		let last = performance.now();
 		let at = walk ?? fig.today.day;
 		const frame = (now: number) => {
-			at = (at + ((now - last) / 1000) * DAYS_PER_SECOND) % n;
+			at = (at + (Math.min(now - last, 80) / 1000) * DAYS_PER_SECOND) % n;
 			last = now;
 			setWalk(at);
 			raf = requestAnimationFrame(frame);
@@ -366,7 +377,7 @@ export default function Analemma({ place, lat, lon, offsetHours, nowMs, onClose 
 		// `walk` is the seed, not a trigger: listing it would restart the lap on
 		// every frame it sets.
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [playing, fig.points.length]);
+	}, [isPlaying, isReducedMotion, fig.points.length]);
 
 	/*
 	 * Where the cursor is. The readouts come from a real sample so nothing is
@@ -444,7 +455,7 @@ export default function Analemma({ place, lat, lon, offsetHours, nowMs, onClose 
 		 *
 		 * They used to be rebuilt whenever the clock line or the cursor moved,
 		 * which is every render — several a second at rest and every frame while
-		 * the year is playing. That is 22KB of path string thrown away and
+		 * the year is isPlaying. That is 22KB of path string thrown away and
 		 * rewritten each time for two lines that could be positioned in two
 		 * multiplications. Those two are computed below instead, where they are
 		 * cheap.
@@ -482,16 +493,17 @@ export default function Analemma({ place, lat, lon, offsetHours, nowMs, onClose 
 					</div>
 					<button
 						type='button'
-						className={'ana-play' + (playing ? ' ana-play-on' : '')}
-						aria-pressed={playing}
+						disabled={isReducedMotion}
+						className={'ana-play' + (isPlaying ? ' ana-play-on' : '')}
+						aria-pressed={isPlaying}
 						onClick={() => setPlaying(v => !v)}
 						data-tip='Send the sun round the year'
 					>
 						<span className='ana-play-glyph' aria-hidden='true' />
-						{playing ? 'Running' : 'Play the year'}
+						{isPlaying && !isReducedMotion ? 'Pause' : 'Play the year'}
 					</button>
 
-					{walk !== null && !playing && (
+					{walk !== null && !isPlaying && (
 						<button
 							type='button'
 							className='ana-play'
@@ -502,254 +514,306 @@ export default function Analemma({ place, lat, lon, offsetHours, nowMs, onClose 
 						</button>
 					)}
 
-					<div className='ana-seg' role='group' aria-label='Sideways scale'>
-						{[1, 2, 3].map(v => (
-							<button
-								key={v}
-								type='button'
-								aria-pressed={v === ex}
-								onClick={() => setEx(v)}
-								data-tip={
-									v === 1
-										? 'The real proportions'
-										: `Widen it ${v} times, so the two loops come apart`
-								}
-							>
-								{v === 1 ? 'True' : `×${v}`}
-							</button>
-						))}
+					<div className='ana-seg' role='group' aria-label='Analemma view'>
+						<button type='button' aria-pressed={isSkyView} onClick={() => setIsSkyView(true)}>
+							3D sky
+						</button>
+						<button type='button' aria-pressed={!isSkyView} onClick={() => setIsSkyView(false)}>
+							Chart
+						</button>
 					</div>
+					{!isSkyView && (
+						<div className='ana-seg' role='group' aria-label='Sideways scale'>
+							{[1, 2, 3].map(v => (
+								<button
+									key={v}
+									type='button'
+									aria-pressed={v === ex}
+									onClick={() => setEx(v)}
+									data-tip={
+										v === 1
+											? 'The real proportions'
+											: `Widen it ${v} times, so the two loops come apart`
+									}
+								>
+									{v === 1 ? 'True' : `×${v}`}
+								</button>
+							))}
+						</div>
+					)}
 				</header>
 
-				<svg
-					viewBox={`0 0 ${W} ${H}`}
-					className='ana-svg'
-					role='img'
-					aria-label={`The analemma seen from ${place}`}
-				>
-					<defs>
-						<linearGradient id='ana-season' x1='0' y1='0' x2='0' y2='1'>
-							<stop offset='0' stopColor='#f4c56a' />
-							<stop offset='0.5' stopColor='#b5abfc' />
-							<stop offset='1' stopColor='#6f63ad' />
-						</linearGradient>
-						<linearGradient id='ana-dawn' x1='0' y1='0' x2='0' y2='1'>
-							<stop offset='0' stopColor='#f4c56a' />
-							<stop offset='1' stopColor='#f0925e' />
-						</linearGradient>
-					</defs>
+				{isSkyView ? (
+					<AnalemmaSky figure={fig} day={at} isPlaying={isPlaying} isReducedMotion={isReducedMotion} />
+				) : (
+					<svg
+						viewBox={`0 0 ${W} ${H}`}
+						className='ana-svg'
+						role='img'
+						aria-label={`The analemma seen from ${place}`}
+					>
+						<defs>
+							<linearGradient id='ana-season' x1='0' y1='0' x2='0' y2='1'>
+								<stop offset='0' stopColor='#f4c56a' />
+								<stop offset='0.5' stopColor='#b5abfc' />
+								<stop offset='1' stopColor='#6f63ad' />
+							</linearGradient>
+							<linearGradient id='ana-dawn' x1='0' y1='0' x2='0' y2='1'>
+								<stop offset='0' stopColor='#f4c56a' />
+								<stop offset='1' stopColor='#f0925e' />
+							</linearGradient>
+						</defs>
 
-					{/* Below the line the sun is not up. */}
-					{plate.horizonY > PAD.t && plate.horizonY < H - PAD.b && (
-						<>
-							<rect
-								x='0'
-								y={plate.horizonY}
-								width={W}
-								height={H - plate.horizonY}
-								fill='rgba(6,8,14,0.5)'
-							/>
-							<line
-								x1='0'
-								y1={plate.horizonY}
-								x2={W}
-								y2={plate.horizonY}
-								stroke='rgba(181,171,252,0.4)'
-								strokeWidth='1'
-								strokeDasharray='5 5'
-							/>
-							<text
-								x={W - PAD.r - 4}
-								y={plate.horizonY - 8}
-								textAnchor='end'
-								className='ana-ax ana-ax-lit'
-							>
-								HORIZON
-							</text>
-						</>
-					)}
-
-					<g className='ana-grid'>
-						{plate.rows.map(r => (
-							<g key={r.v}>
-								<line x1={PAD.l} y1={r.y} x2={W - PAD.r} y2={r.y} stroke='rgba(233,233,237,0.07)' />
-								<text x={PAD.l - 9} y={r.y + 3} textAnchor='end' className='ana-ax'>
-									{r.v}°
-								</text>
-							</g>
-						))}
-						{plate.cols.map(c => (
-							<g key={c.v}>
-								<line x1={c.x} y1={PAD.t} x2={c.x} y2={H - PAD.b} stroke='rgba(233,233,237,0.07)' />
-								<text
-									x={c.x}
-									y={H - PAD.b + 14}
-									textAnchor='middle'
-									className={'ana-ax' + (c.v === 0 ? ' ana-ax-lit' : '')}
-								>
-									{c.v === 0
-										? `${compassPoint(fig.azRef)} ${fig.azRef.toFixed(0)}°`
-										: `${c.v > 0 ? '+' : '−'}${Math.abs(c.v)}°`}
-								</text>
-							</g>
-						))}
-					</g>
-
-					{/*
-						The prayers, as the flat lines they are on an altitude axis.
-						Asr spans a band because its angle follows the season.
-					*/}
-					<g className='ana-prayers'>
-						{!fig.morning && plate.asr[0] > PAD.t && plate.asr[1] < H - PAD.b && (
+						{/* Below the line the sun is not up. */}
+						{plate.horizonY > PAD.t && plate.horizonY < H - PAD.b && (
 							<>
 								<rect
-									x={PAD.l}
-									y={plate.asr[0]}
-									width={W - PAD.l - PAD.r}
-									height={Math.max(1, plate.asr[1] - plate.asr[0])}
-									fill='rgba(210,206,253,0.07)'
+									x='0'
+									y={plate.horizonY}
+									width={W}
+									height={H - plate.horizonY}
+									fill='rgba(6,8,14,0.5)'
+								/>
+								<line
+									x1='0'
+									y1={plate.horizonY}
+									x2={W}
+									y2={plate.horizonY}
+									stroke='rgba(181,171,252,0.4)'
+									strokeWidth='1'
+									strokeDasharray='5 5'
 								/>
 								<text
-									x={PAD.l + 6}
-									y={(plate.asr[0] + plate.asr[1]) / 2 + 3}
-									className='ana-pray-txt'
-									fill='#d2cefd'
+									x={W - PAD.r - 4}
+									y={plate.horizonY - 8}
+									textAnchor='end'
+									className='ana-ax ana-ax-lit'
 								>
-									ASR {fig.asrRange[0].toFixed(0)}–{fig.asrRange[1].toFixed(0)}°
+									HORIZON
 								</text>
 							</>
 						)}
-						{lines.map(L => {
-							if (L.alt === null) {
-								return null;
-							}
-							const y = plate.Y(L.alt);
-							if (y < PAD.t || y > H - PAD.b) {
-								return null;
-							}
-							return (
-								<g key={L.key}>
-									<line
-										x1={PAD.l}
-										y1={y}
-										x2={W - PAD.r}
-										y2={y}
-										stroke={L.color}
-										strokeWidth='1'
-										strokeDasharray='2 4'
-										opacity='0.5'
+
+						<g className='ana-grid'>
+							{plate.rows.map(r => (
+								<g key={r.v}>
+									<line x1={PAD.l} y1={r.y} x2={W - PAD.r} y2={r.y} stroke='rgba(233,233,237,0.07)' />
+									<text x={PAD.l - 9} y={r.y + 3} textAnchor='end' className='ana-ax'>
+										{r.v}°
+									</text>
+								</g>
+							))}
+							{plate.cols.map(c => (
+								<g key={c.v}>
+									<line x1={c.x} y1={PAD.t} x2={c.x} y2={H - PAD.b} stroke='rgba(233,233,237,0.07)' />
+									<text
+										x={c.x}
+										y={H - PAD.b + 14}
+										textAnchor='middle'
+										className={'ana-ax' + (c.v === 0 ? ' ana-ax-lit' : '')}
+									>
+										{c.v === 0
+											? `${compassPoint(fig.azRef)} ${fig.azRef.toFixed(0)}°`
+											: `${c.v > 0 ? '+' : '−'}${Math.abs(c.v)}°`}
+									</text>
+								</g>
+							))}
+						</g>
+
+						{/*
+						The prayers, as the flat lines they are on an altitude axis.
+						Asr spans a band because its angle follows the season.
+					*/}
+						<g className='ana-prayers'>
+							{!fig.morning && plate.asr[0] > PAD.t && plate.asr[1] < H - PAD.b && (
+								<>
+									<rect
+										x={PAD.l}
+										y={plate.asr[0]}
+										width={W - PAD.l - PAD.r}
+										height={Math.max(1, plate.asr[1] - plate.asr[0])}
+										fill='rgba(210,206,253,0.07)'
 									/>
-									<text x={PAD.l + 6} y={y - 5} className='ana-pray-txt' fill={L.color}>
-										{/*
+									<text
+										x={PAD.l + 6}
+										y={(plate.asr[0] + plate.asr[1]) / 2 + 3}
+										className='ana-pray-txt'
+										fill='#d2cefd'
+									>
+										ASR {fig.asrRange[0].toFixed(0)}–{fig.asrRange[1].toFixed(0)}°
+									</text>
+								</>
+							)}
+							{lines.map(L => {
+								if (L.alt === null) {
+									return null;
+								}
+								const y = plate.Y(L.alt);
+								if (y < PAD.t || y > H - PAD.b) {
+									return null;
+								}
+								return (
+									<g key={L.key}>
+										<line
+											x1={PAD.l}
+											y1={y}
+											x2={W - PAD.r}
+											y2={y}
+											stroke={L.color}
+											strokeWidth='1'
+											strokeDasharray='2 4'
+											opacity='0.5'
+										/>
+										<text x={PAD.l + 6} y={y - 5} className='ana-pray-txt' fill={L.color}>
+											{/*
 											The two twilight edges are set at −0.833°, which is the
 											sun's upper limb allowing for refraction — a precision
 											nobody reads a chart for. They are the horizon, so they
 											say so.
 										*/}
-										{L.label.toUpperCase()} {L.alt === SUN_EDGE_DEG ? '0°' : `${L.alt}°`}
-									</text>
+											{L.label.toUpperCase()} {L.alt === SUN_EDGE_DEG ? '0°' : `${L.alt}°`}
+										</text>
+									</g>
+								);
+							})}
+						</g>
+
+						<path
+							d={plate.below}
+							fill='none'
+							stroke='rgba(150,138,224,0.32)'
+							strokeWidth='2'
+							strokeDasharray='3 4'
+							strokeLinecap='round'
+						/>
+						<path
+							className='ana-line'
+							d={plate.above}
+							fill='none'
+							stroke='url(#ana-season)'
+							strokeWidth='2.25'
+							strokeLinecap='round'
+							pathLength={1}
+						/>
+
+						<g className='ana-months'>
+							{plate.months.map(m => (
+								<g key={m.m}>
+									<circle
+										cx={m.x}
+										cy={m.y}
+										r='2.8'
+										fill='#0b1017'
+										stroke='rgba(233,233,237,0.6)'
+										strokeWidth='1.2'
+									/>
+									{m.label && (
+										<text
+											x={m.x + (m.x < W / 2 ? -9 : 9)}
+											y={m.y + 3}
+											textAnchor={m.x < W / 2 ? 'end' : 'start'}
+											className='ana-mon'
+											fill='rgba(233,233,237,0.5)'
+										>
+											{MONTH.format(Date.UTC(2026, m.m, 1)).toUpperCase()}
+										</text>
+									)}
 								</g>
-							);
-						})}
-					</g>
+							))}
+						</g>
 
-					<path
-						d={plate.below}
-						fill='none'
-						stroke='rgba(150,138,224,0.32)'
-						strokeWidth='2'
-						strokeDasharray='3 4'
-						strokeLinecap='round'
-					/>
-					<path
-						className='ana-line'
-						d={plate.above}
-						fill='none'
-						stroke='url(#ana-season)'
-						strokeWidth='2.25'
-						strokeLinecap='round'
-						pathLength={1}
-					/>
-
-					<g className='ana-months'>
-						{plate.months.map(m => (
-							<g key={m.m}>
-								<circle
-									cx={m.x}
-									cy={m.y}
-									r='2.8'
-									fill='#0b1017'
-									stroke='rgba(233,233,237,0.6)'
-									strokeWidth='1.2'
-								/>
-								{m.label && (
-									<text
-										x={m.x + (m.x < W / 2 ? -9 : 9)}
-										y={m.y + 3}
-										textAnchor={m.x < W / 2 ? 'end' : 'start'}
-										className='ana-mon'
-										fill='rgba(233,233,237,0.5)'
-									>
-										{MONTH.format(Date.UTC(2026, m.m, 1)).toUpperCase()}
-									</text>
-								)}
-							</g>
-						))}
-					</g>
-
-					{/*
+						{/*
 						The payoff: the dates this clock time IS a prayer time. Each one
 						swells as the sun reaches it, so walking the year is also a way of
 						watching the prayers arrive.
 					*/}
-					<g className='ana-cross'>
-						{fig.crossings.map((c, i) => {
-							const near = nearness(c.at);
-							return (
-								<g key={c.key + i}>
-									<circle
-										cx={plate.X(c.dx)}
-										cy={plate.Y(c.alt)}
-										r={8 + near * 9}
-										fill='none'
-										stroke={c.color}
-										strokeWidth='1.25'
-										opacity={0.85 - near * 0.6}
-									/>
-									<circle cx={plate.X(c.dx)} cy={plate.Y(c.alt)} r={3 + near * 1.8} fill={c.color} />
-								</g>
-							);
-						})}
-						{/* The date, so the mark and the list are visibly one fact. */}
-						{plate.crossLabels.map(
-							(l, i) =>
-								l.show && (
-									<text
-										key={i}
-										x={l.x}
-										y={l.y + 3}
-										textAnchor={l.anchor}
-										className='ana-mon'
-										fill={l.c.color}
-									>
-										{DATE.format(l.c.ms)}
-									</text>
-								)
-						)}
-					</g>
+						<g className='ana-cross'>
+							{fig.crossings.map((c, i) => {
+								const near = nearness(c.at);
+								return (
+									<g key={c.key + i}>
+										<circle
+											cx={plate.X(c.dx)}
+											cy={plate.Y(c.alt)}
+											r={8 + near * 9}
+											fill='none'
+											stroke={c.color}
+											strokeWidth='1.25'
+											opacity={0.85 - near * 0.6}
+										/>
+										<circle
+											cx={plate.X(c.dx)}
+											cy={plate.Y(c.alt)}
+											r={3 + near * 1.8}
+											fill={c.color}
+										/>
+									</g>
+								);
+							})}
+							{/* The date, so the mark and the list are visibly one fact. */}
+							{plate.crossLabels.map(
+								(l, i) =>
+									l.show && (
+										<text
+											key={i}
+											x={l.x}
+											y={l.y + 3}
+											textAnchor={l.anchor}
+											className='ana-mon'
+											fill={l.c.color}
+										>
+											{DATE.format(l.c.ms)}
+										</text>
+									)
+							)}
+						</g>
 
-					<g className='ana-sun'>
-						<circle cx={plate.X(sunAt.dx)} cy={plate.Y(sunAt.alt)} r='16' fill='rgba(244,197,106,0.12)' />
-						<circle cx={plate.X(sunAt.dx)} cy={plate.Y(sunAt.alt)} r='8.5' fill='rgba(244,197,106,0.22)' />
-						<circle cx={plate.X(sunAt.dx)} cy={plate.Y(sunAt.alt)} r='5' fill='url(#ana-dawn)' />
-					</g>
+						<g className='ana-sun'>
+							<circle
+								cx={plate.X(sunAt.dx)}
+								cy={plate.Y(sunAt.alt)}
+								r='16'
+								fill='rgba(244,197,106,0.12)'
+							/>
+							<circle
+								cx={plate.X(sunAt.dx)}
+								cy={plate.Y(sunAt.alt)}
+								r='8.5'
+								fill='rgba(244,197,106,0.22)'
+							/>
+							<circle cx={plate.X(sunAt.dx)} cy={plate.Y(sunAt.alt)} r='5' fill='url(#ana-dawn)' />
+						</g>
 
-					<text x='14' y='16' className='ana-ax'>
-						{plate.exFit < 1.05
-							? 'REAL PROPORTIONS'
-							: `WIDENED ${plate.exFit.toFixed(1).replace(/\.0$/, '')}× SO IT CAN BE READ`}
-					</text>
-				</svg>
+						<text x='14' y='16' className='ana-ax'>
+							{plate.exFit < 1.05
+								? 'REAL PROPORTIONS'
+								: `WIDENED ${plate.exFit.toFixed(1).replace(/\.0$/, '')}× SO IT CAN BE READ`}
+						</text>
+					</svg>
+				)}
+				<label className='ana-scrubber'>
+					<span>
+						Explore the year <b>{DATE.format(t.dateMs)}</b>
+					</span>
+					<input
+						type='range'
+						min={0}
+						max={n - 1}
+						step={1}
+						value={Math.min(n - 1, Math.round(at))}
+						aria-label='Day of the year'
+						aria-valuetext={DATE.format(t.dateMs)}
+						onChange={event => {
+							setPlaying(false);
+							setWalk(Number(event.target.value));
+						}}
+					/>
+					<span>
+						<small>January</small>
+						<small>December</small>
+					</span>
+					{isReducedMotion && <small>Reduced motion is on. Use the slider to explore each date.</small>}
+				</label>
 			</div>
 
 			<aside className='ana-rail'>
@@ -803,7 +867,7 @@ export default function Analemma({ place, lat, lon, offsetHours, nowMs, onClose 
 						</li>
 						<li>
 							<span className='ana-key-dot' style={{ background: '#ffd98a' }} />
-							the sun today
+							the sun on the selected date
 						</li>
 					</ul>
 				</section>
@@ -836,8 +900,8 @@ export default function Analemma({ place, lat, lon, offsetHours, nowMs, onClose 
 					*/}
 					<p className='ana-sec-note'>
 						A prayer does not begin at a fixed clock time — it begins when the sun reaches a certain height.
-						Fajr starts when the sun is 18° below the horizon. That is the dotted <b>FAJR</b> line: the
-						height that begins it.
+						Fajr starts when the sun is 18° below the horizon. In Chart view, that is the dotted <b>FAJR</b>{' '}
+						line: the height that begins it.
 					</p>
 					<p className='ana-sec-note'>
 						So wherever the loop <b>touches</b> a line, the sun was at exactly that height at exactly{' '}

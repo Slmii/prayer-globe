@@ -1,4 +1,4 @@
-import { useEffect, useImperativeHandle, useRef, forwardRef } from 'react';
+import { useEffect, useImperativeHandle, useRef, forwardRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
 import * as maplibregl from 'maplibre-gl';
@@ -46,21 +46,14 @@ const MOSQUE_CITIES = new Set(MOSQUES.map(m => m.city));
 /** The mosque standing on a given city's dot, for the card a press puts up. */
 const MOSQUE_AT_CITY = new Map(MOSQUES.filter(m => m.anchored === 'city').map(m => [m.city, m]));
 
+import { CONTINENT_CENTERS, cityContinent, featureContinent } from '../lib/continents';
+import { continentOutlines } from '../lib/continent-layout';
+import { createContinentExplosion } from '../lib/continent-explosion';
+import type { Continent } from '../lib/continents';
+
 const EMPTY: FeatureCollection = { type: 'FeatureCollection', features: [] };
 
-const HEX = (c: string) => [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)];
-const PHASE_RGB = PHASES.map(p => HEX(p.c));
-
-/** Blend two phase colours, so a dot eases into its next prayer. */
-function mixPhase(a: number, b: number, t: number): string {
-	if (t <= 0 || a === b) {
-		return PHASES[a].c;
-	}
-	const x = PHASE_RGB[a];
-	const y = PHASE_RGB[b];
-	const m = (i: number) => Math.round(x[i] + (y[i] - x[i]) * t);
-	return `rgb(${m(0)},${m(1)},${m(2)})`;
-}
+import { mixPhase } from '../lib/prayer-colors';
 
 /**
  * Latitude/longitude grid, every 15°.
@@ -268,6 +261,11 @@ function orbCanvas(el: HTMLElement): HTMLCanvasElement | null {
 }
 
 const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
+	const [selectedContinent, setSelectedContinent] = useState<Continent | null>(null);
+	const selectedContinentRef = useRef(selectedContinent);
+	selectedContinentRef.current = selectedContinent;
+	const explosionRef = useRef<ReturnType<typeof createContinentExplosion> | null>(null);
+	const hoverContinentRef = useRef<Continent | null>(null);
 	const hostRef = useRef<HTMLDivElement>(null);
 	const overlayRef = useRef<HTMLDivElement>(null);
 	const mapRef = useRef<MLMap | null>(null);
@@ -291,6 +289,16 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 	const iconRootsRef = useRef<Root[]>([]);
 	/** The live "you are here" element, so the pulse can be toggled on it. */
 	const hereRef = useRef<HTMLDivElement | null>(null);
+	/**
+	 * The marker itself and the piece of earth it is standing on.
+	 *
+	 * A MapLibre marker is placed from its lng/lat every frame by the map, which
+	 * knows nothing about a continent having been pulled out from under it — so
+	 * the mark stayed over open water while its own landmass drifted away. Both
+	 * are held here so the frame loop can push it back on top.
+	 */
+	const hereMarkerRef = useRef<maplibregl.Marker | null>(null);
+	const hereContinentRef = useRef<Continent | null>(null);
 	const qiblaEmptyRef = useRef(true);
 	const bandEmptyRef = useRef(true);
 	/** Camera longitude minus the sub-solar longitude, held for the sweep. */
@@ -345,11 +353,62 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 		ref,
 		() => ({
 			flyTo(lng, lat, zoom, duration = 2600) {
-				mapRef.current?.flyTo({ center: [lng, lat], zoom, duration, curve: 1.5, essential: true });
+				mapRef.current?.flyTo({
+					center: [lng, lat],
+					zoom: selectedContinentRef.current ? Math.min(zoom, 1.6) : zoom,
+					duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : duration,
+					curve: 1.5
+				});
 			}
 		}),
 		[]
 	);
+
+	function setLayerFilter(map: MLMap, id: string, filter: maplibregl.FilterSpecification) {
+		if (explosionRef.current) explosionRef.current.setFilter(id, filter);
+		else map.setFilter(id, filter);
+	}
+	function setLayerPaint(
+		map: MLMap,
+		id: string,
+		property: Parameters<MLMap['setPaintProperty']>[1],
+		value: Parameters<MLMap['setPaintProperty']>[2]
+	) {
+		if (explosionRef.current) explosionRef.current.setPaint(id, property, value);
+		else map.setPaintProperty(id, property, value);
+	}
+	function movedPoint(lon: number, lat: number, continent: Continent) {
+		const map = mapRef.current!;
+		return explosionRef.current?.project([lon, lat], continent) ?? map.project([lon, lat]);
+	}
+	/**
+	 * Put the earth back together.
+	 *
+	 * Three things ask for this now — the button, a second press on the piece
+	 * that is already out, and a press on open water — so it stopped being
+	 * something the button could keep to itself.
+	 */
+	function clearContinent() {
+		setSelectedContinent(null);
+		const map = mapRef.current;
+		if (map?.getLayer('continent-selected')) {
+			setLayerFilter(map, 'continent-selected', ['==', ['get', 'continent'], '']);
+		}
+	}
+
+	function selectContinent(continent: Continent) {
+		setSelectedContinent(continent);
+		const map = mapRef.current;
+		if (!map) return;
+		if (map.getLayer('continent-selected'))
+			setLayerFilter(map, 'continent-selected', ['==', ['get', 'continent'], continent]);
+		map.flyTo({
+			center: CONTINENT_CENTERS[continent],
+			zoom: Math.min(map.getZoom(), 1.6),
+			bearing: 0,
+			duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1300
+		});
+	}
 
 	/**
 	 * Position the planet name tags the orrery layer hands us each frame.
@@ -624,7 +683,7 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 		});
 
 		// The polar cap, in the phase's own colour, where the hatch cannot reach.
-		map.setPaintProperty('band-cap-fill', 'fill-color', PHASES[phase].c);
+		setLayerPaint(map, 'band-cap-fill', 'fill-color', PHASES[phase].c);
 		cap?.setData({
 			type: 'FeatureCollection',
 			features: phaseCap(phase, dec).map(coords => ({
@@ -762,6 +821,7 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 	 * boundaries, so this is throttled — 143 features per frame would not be.
 	 */
 	function pushCities() {
+		if (explosionRef.current?.isSeparated) return;
 		const map = mapRef.current;
 		if (!map || !readyRef.current) return;
 		const { getNowMs, activeCity } = propsRef.current;
@@ -794,16 +854,23 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 						// phase, so a whole prayer can be highlighted at once.
 						properties: {
 							n: c.n,
+							continent: cityContinent(c),
 							c: mixPhase(blend.phase, blend.next, blend.t),
 							p: blend.phase,
-							m: mosquesReadyRef.current && MOSQUE_CITIES.has(c.n) ? 1 : 0
+							m:
+								!selectedContinentRef.current &&
+								!explosionRef.current?.isSeparated &&
+								mosquesReadyRef.current &&
+								MOSQUE_CITIES.has(c.n)
+									? 1
+									: 0
 						},
 						geometry: { type: 'Point', coordinates: [c.lo, c.la] }
 					};
 				})
 		});
 		if (map.getLayer('city-active')) {
-			map.setFilter('city-active', ['==', ['get', 'n'], activeCity?.n ?? '']);
+			setLayerFilter(map, 'city-active', ['==', ['get', 'n'], activeCity?.n ?? '']);
 		}
 	}
 
@@ -1338,6 +1405,36 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 				}
 			});
 
+			map.addSource('continent-edges', { type: 'geojson', data: EMPTY });
+			map.addLayer({
+				id: 'continent-selected',
+				type: 'line',
+				source: 'continent-edges',
+				filter: ['==', ['get', 'continent'], ''],
+				paint: { 'line-color': '#b5abfc', 'line-width': 1.5, 'line-opacity': 0.75 }
+			});
+			map.addLayer({
+				id: 'continent-hover',
+				type: 'line',
+				source: 'continent-edges',
+				filter: ['==', ['get', 'continent'], ''],
+				paint: { 'line-color': '#f4c56a', 'line-width': 2.5, 'line-opacity': 1 }
+			});
+
+			explosionRef.current = createContinentExplosion(map, {
+				onError: () => propsRef.current.onNote('Continent rendering failed; restored the globe.'),
+				state: () => ({
+					world: propsRef.current.worldGeo,
+					cities: allCitiesRef.current,
+					phases: propsRef.current.phases,
+					activeCity: propsRef.current.activeCity?.n ?? null,
+					hoveredCity: hoveredRef.current,
+					hoveredContinent: hoverContinentRef.current,
+					highlightPhase: propsRef.current.highlightPhase,
+					now: propsRef.current.getNowMs()
+				})
+			});
+
 			// Sun and moon live in their own overlay so they can orbit outside the
 			// globe; city labels stay as map markers since they are always on it.
 			const overlay = overlayRef.current;
@@ -1411,7 +1508,10 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 				// is named on the map.
 				const city = labelTarget();
 				if (city) {
-					const p = map.project([city.lo, city.la]);
+					const member = allCitiesRef.current.find(c => c.n === city.n);
+					const p = member
+						? movedPoint(city.lo, city.la, cityContinent(member))
+						: map.project([city.lo, city.la]);
 					tip.textContent = city.n;
 					tip.style.transform = `translate(-50%, -100%) translate(${p.x.toFixed(1)}px, ${(p.y - 14).toFixed(
 						1
@@ -1446,11 +1546,14 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 			// not necessarily the one under the cursor — pick the closest.
 			let best: string | null = null;
 			let bestDist = Infinity;
-			for (const f of map.queryRenderedFeatures(box, { layers: [layer] })) {
+			for (const f of map.queryRenderedFeatures(box, {
+				layers: explosionRef.current?.layers(layer) ?? [layer]
+			})) {
 				const name = f.properties?.n;
 				if (typeof name !== 'string' || f.geometry.type !== 'Point') continue;
 				const [lon, lat] = f.geometry.coordinates as [number, number];
-				const p = map.project([lon, lat]);
+				const continent = f.properties?.continent as Continent | undefined;
+				const p = continent ? movedPoint(lon, lat, continent) : map.project([lon, lat]);
 				const d = Math.hypot(p.x - pt.x, p.y - pt.y);
 				if (d < bestDist) {
 					bestDist = d;
@@ -1459,10 +1562,12 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 			}
 			return best;
 		};
-		const cityAt = (pt: { x: number; y: number }) => nearestIn('cities', pt);
+		const cityAt = (pt: { x: number; y: number }) =>
+			explosionRef.current?.isSeparated ? explosionRef.current.pick(pt)?.city ?? null : nearestIn('cities', pt);
 		/** A monument standing on no city. Only consulted where no city dot is
 		 *  under the pointer, so a place with a timetable always wins the hit. */
-		const siteAt = (pt: { x: number; y: number }) => nearestIn('sites', pt);
+		const siteAt = (pt: { x: number; y: number }) =>
+			explosionRef.current?.isSeparated ? null : nearestIn('sites', pt);
 
 		/**
 		 * The card that offers to open a mosque in the 3D viewer.
@@ -1614,33 +1719,48 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 			propsRef.current.onHover(onGlobe ? { lat: e.lngLat.lat, lng: e.lngLat.lng } : null);
 
 			// Hovering only previews a city; the panel still waits for a click.
-			const name = onGlobe ? cityAt(e.point) : null;
+			const name = cityAt(e.point);
 			const site = onGlobe && !name ? siteAt(e.point) : null;
+			const continent = explosionRef.current?.isSeparated
+				? explosionRef.current.pick(e.point)?.continent ?? null
+				: map.getLayer('land')
+					? (map.queryRenderedFeatures(e.point, {
+							layers: explosionRef.current?.layers('land') ?? ['land']
+						})[0]?.properties?.continent as Continent | undefined) ?? null
+					: null;
+			if (continent !== hoverContinentRef.current) {
+				hoverContinentRef.current = continent;
+				if (map.getLayer('continent-hover'))
+					setLayerFilter(map, 'continent-hover', ['==', ['get', 'continent'], continent ?? '']);
+			}
 			if (name !== hoveredRef.current) {
 				hoveredRef.current = name;
-				if (map.getLayer('city-hover')) map.setFilter('city-hover', ['==', ['get', 'n'], name ?? '']);
+				if (map.getLayer('city-hover')) setLayerFilter(map, 'city-hover', ['==', ['get', 'n'], name ?? '']);
 				propsRef.current.onCityHover(name);
 			}
 			if (site !== hoveredSiteRef.current) {
 				hoveredSiteRef.current = site;
-				if (map.getLayer('site-hover')) map.setFilter('site-hover', ['==', ['get', 'n'], site ?? '']);
+				if (map.getLayer('site-hover')) setLayerFilter(map, 'site-hover', ['==', ['get', 'n'], site ?? '']);
 				propsRef.current.onSiteHover(site);
 			}
 			// Set once for both: a monument is worth pointing at too, and doing this
 			// inside either branch left the cursor stuck when the pointer crossed
 			// straight from one kind of mark to the other.
-			map.getCanvas().style.cursor = name || site ? 'pointer' : '';
+			map.getCanvas().style.cursor = name || site || continent ? 'pointer' : '';
 		});
 		map.on('mouseout', () => {
+			hoverContinentRef.current = null;
+			if (map.getLayer('continent-hover'))
+				setLayerFilter(map, 'continent-hover', ['==', ['get', 'continent'], '']);
 			propsRef.current.onHover(null);
 			if (hoveredRef.current !== null) {
 				hoveredRef.current = null;
-				if (map.getLayer('city-hover')) map.setFilter('city-hover', ['==', ['get', 'n'], '']);
+				if (map.getLayer('city-hover')) setLayerFilter(map, 'city-hover', ['==', ['get', 'n'], '']);
 				propsRef.current.onCityHover(null);
 			}
 			if (hoveredSiteRef.current !== null) {
 				hoveredSiteRef.current = null;
-				if (map.getLayer('site-hover')) map.setFilter('site-hover', ['==', ['get', 'n'], '']);
+				if (map.getLayer('site-hover')) setLayerFilter(map, 'site-hover', ['==', ['get', 'n'], '']);
 				propsRef.current.onSiteHover(null);
 			}
 			map.getCanvas().style.cursor = '';
@@ -1665,8 +1785,34 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 				showPopover(MOSQUES.find(m => m.name === site) ?? null);
 				return;
 			}
-			// Anywhere else on the earth dismisses it.
+			// Land opens the exploded view; city and monument selection take precedence.
 			showPopover(null);
+			const land = map.getLayer('land')
+				? map.queryRenderedFeatures(e.point, { layers: explosionRef.current?.layers('land') ?? ['land'] })[0]
+				: undefined;
+			const continent = explosionRef.current?.isSeparated
+				? explosionRef.current.pick(e.point)?.continent
+				: (land?.properties?.continent as Continent | undefined);
+			/*
+			 * The same press that pulls a continent out puts it back. A different
+			 * piece simply swaps to it.
+			 *
+			 * Deliberately nothing on open water. Clearing there read well until
+			 * you tried to turn the earth: a drag that starts on ocean still ends
+			 * as a click, so every attempt to grab and spin reassembled the globe
+			 * underneath you. The gesture people use most has to win over the
+			 * convenience, and the piece itself is still its own toggle.
+			 */
+			if (!continent) {
+				return;
+			}
+			if (continent === selectedContinentRef.current) {
+				clearContinent();
+				return;
+			}
+			if (propsRef.current.worldGeo) {
+				selectContinent(continent);
+			}
 		});
 		const emitView = () => {
 			const c = map.getCenter();
@@ -1720,11 +1866,49 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 		let raf = 0;
 		let lastLayers = 0;
 		let lastPulse = 0;
+		/** Whether the "you are here" marker is currently carrying an offset. */
+		let hereOffset = false;
+		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const frame = (t: number) => {
 			raf = requestAnimationFrame(frame);
 			if (!mapRef.current) return;
+			explosionRef.current?.update(t, selectedContinentRef.current, reducedMotion.matches);
 
-			if (propsRef.current.spin && map.getZoom() < 3.2 && !map.isMoving()) {
+			/*
+			 * Carry the "you are here" mark with its own continent.
+			 *
+			 * The marker is anchored to a lng/lat the map still projects to where
+			 * the land used to be, so the piece slides out and leaves the mark
+			 * behind on empty ocean. The gap between the two projections is
+			 * exactly the offset that puts it back, and the offset is only
+			 * touched while it is non-zero — plus once on the way back — so a
+			 * resting globe does no marker work at all.
+			 */
+			const hereMarker = hereMarkerRef.current;
+			const hereAt = propsRef.current.mark;
+			const hereContinent = hereContinentRef.current;
+			if (hereMarker && hereAt && hereContinent && explosionRef.current?.isSeparated) {
+				const moved = movedPoint(hereAt.lon, hereAt.lat, hereContinent);
+				const home = map.project([hereAt.lon, hereAt.lat]);
+				hereMarker.setOffset([moved.x - home.x, moved.y - home.y]);
+				hereOffset = true;
+			} else if (hereMarker && hereOffset) {
+				hereMarker.setOffset([0, 0]);
+				hereOffset = false;
+			}
+			if (selectedContinentRef.current || explosionRef.current?.isSeparated) {
+				if (map.getLayer('mosques-3d') && map.getLayoutProperty('mosques-3d', 'visibility') !== 'none')
+					map.setLayoutProperty('mosques-3d', 'visibility', 'none');
+			} else if (map.getLayer('mosques-3d') && map.getLayoutProperty('mosques-3d', 'visibility') === 'none')
+				map.setLayoutProperty('mosques-3d', 'visibility', 'visible');
+
+			if (
+				!selectedContinentRef.current &&
+				!explosionRef.current?.isSeparated &&
+				propsRef.current.spin &&
+				map.getZoom() < 3.2 &&
+				!map.isMoving()
+			) {
 				const c = map.getCenter();
 				map.jumpTo({ center: [c.lng + 0.05, c.lat] });
 			}
@@ -1821,14 +2005,14 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 				const phase = propsRef.current.highlightPhase;
 				if (phase !== highlightRef.current) {
 					highlightRef.current = phase;
-					map.setFilter('city-highlight', ['==', ['get', 'p'], phase ?? -1]);
+					setLayerFilter(map, 'city-highlight', ['==', ['get', 'p'], phase ?? -1]);
 				}
-				if (phase !== null && t - lastPulse > 33) {
+				if (phase !== null && !explosionRef.current?.isSeparated && t - lastPulse > 33) {
 					lastPulse = t;
 					const beat = 0.5 + 0.5 * Math.sin(t / 190);
-					map.setPaintProperty('city-highlight', 'circle-radius', 9 + beat * 9);
-					map.setPaintProperty('city-highlight', 'circle-opacity', 0.1 + beat * 0.16);
-					map.setPaintProperty('city-highlight', 'circle-stroke-opacity', 0.35 + beat * 0.55);
+					setLayerPaint(map, 'city-highlight', 'circle-radius', 9 + beat * 9);
+					setLayerPaint(map, 'city-highlight', 'circle-opacity', 0.1 + beat * 0.16);
+					setLayerPaint(map, 'city-highlight', 'circle-stroke-opacity', 0.35 + beat * 0.55);
 				}
 			}
 
@@ -1919,6 +2103,8 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 			pulsesRef.current = null;
 			tipRef.current = null;
 			planetLabelsRef.current.clear();
+			explosionRef.current?.dispose();
+			explosionRef.current = null;
 			mapRef.current = null;
 			cosmosRef.current?.dispose();
 			cosmosRef.current = null;
@@ -1931,8 +2117,17 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 		const map = mapRef.current;
 		if (!map || !props.worldGeo) return;
 		const apply = () => {
+			const edges = map.getSource('continent-edges') as maplibregl.GeoJSONSource | undefined;
+			edges?.setData(continentOutlines(props.worldGeo!));
 			const src = map.getSource('world') as maplibregl.GeoJSONSource | undefined;
-			if (src) src.setData(props.worldGeo!);
+			if (src)
+				src.setData({
+					...props.worldGeo!,
+					features: props.worldGeo!.features.map((feature, index) => ({
+						...feature,
+						properties: { ...feature.properties, continent: featureContinent(index) }
+					}))
+				});
 		};
 		if (readyRef.current) apply();
 		else map.once('style.load', apply);
@@ -1961,9 +2156,36 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 		const marker = new maplibregl.Marker({ element: el, opacityWhenCovered: '0' })
 			.setLngLat([at.lon, at.lat])
 			.addTo(map);
+		hereMarkerRef.current = marker;
+
+		/*
+		 * Which piece this mark rides, decided once rather than every frame.
+		 *
+		 * Resolved through the nearest city so it goes through `cityContinent`,
+		 * the same rule that assigned every dot around it. Agreeing with the
+		 * dots matters more here than any opinion about where a border runs: a
+		 * reader in Istanbul rides to Asia because that is where their own city
+		 * dot goes, and a mark that parted company with the dots beside it would
+		 * look like the bug this is fixing.
+		 */
+		let nearest: City | null = null;
+		let best = Infinity;
+		for (const city of allCitiesRef.current) {
+			const dLat = city.la - at.lat;
+			const dLon = ((city.lo - at.lon + 540) % 360) - 180;
+			const d = dLat * dLat + dLon * dLon * Math.cos(at.lat * (Math.PI / 180)) ** 2;
+			if (d < best) {
+				best = d;
+				nearest = city;
+			}
+		}
+		hereContinentRef.current = nearest ? cityContinent(nearest) : null;
+
 		return () => {
 			marker.remove();
 			hereRef.current = null;
+			hereMarkerRef.current = null;
+			hereContinentRef.current = null;
 		};
 	}, [props.mark]);
 
@@ -1979,6 +2201,25 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, ref) {
 			<div ref={overlayRef} className='bodies-layer' />
 			{/* Above the console strip, which the map's own subtree can never be. */}
 			<div ref={popLayerRef} className='mv-pop-layer' />
+			{/*
+				Just the way back, with no panel around it.
+
+				The bar this replaces named the continent in its own bordered box,
+				which sat under the console strip and read as something broken
+				rather than something offered. The name was never news — you are
+				looking at the piece you just clicked, pulled out of the earth and
+				centred — so all that is left is the one thing you cannot get back
+				without: nothing else clears the selection.
+			*/}
+			{selectedContinent && (
+				<button
+					type='button'
+					className='continent-reset'
+					onClick={clearContinent}
+				>
+					Reassemble Earth
+				</button>
+			)}
 		</>
 	);
 });
