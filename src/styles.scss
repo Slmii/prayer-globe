@@ -1475,7 +1475,7 @@ body {
 
 .search-list {
 	position: absolute;
-	top: calc(100% + 6px);
+	top: calc(100% + #{sp.$sp-4});
 	left: 0;
 	z-index: 3;
 	min-width: 230px;
@@ -6681,4 +6681,675 @@ body {
 	place-content: center;
 	gap: sp.$sp-12;
 	background: var(--bg, #080d18);
+}
+
+/* Ramadan's long-range exploration. */
+.ramadan-seasons {
+	max-width: 1040px;
+	--ramadan-comparison: #f4c56a;
+	margin: 0 auto;
+	padding: sp.$sp-24;
+	color: var(--ink);
+	border-top: 1px solid var(--line);
+}
+.ramadan-seasons-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: sp.$sp-24;
+}
+.ramadan-seasons-eyebrow {
+	text-transform: uppercase;
+}
+.ramadan-seasons h2 {
+	line-height: t.$lh-12;
+	margin: sp.$sp-12 0;
+}
+.ramadan-seasons-head p {
+	max-width: 680px;
+}
+.ramadan-seasons-period {
+	white-space: nowrap;
+}
+.ramadan-seasons-toolbar {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: sp.$sp-24;
+	margin-top: sp.$sp-24;
+}
+.ramadan-seasons-toolbar strong,
+.ramadan-seasons-toolbar label {
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-12;
+}
+/* The compare control sits opposite the city it compares against. */
+.ramadan-seasons-toolbar .cbx {
+	margin-left: auto;
+}
+.ramadan-year-slider:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 3px;
+}
+.ramadan-series-key {
+	display: inline-block;
+	width: 18px;
+	height: 2px;
+	background: var(--accent);
+	vertical-align: middle;
+	flex: none;
+}
+.ramadan-seasons-chart {
+	margin-top: sp.$sp-24;
+}
+.ramadan-seasons-chart svg {
+	display: block;
+	width: 100%;
+	overflow: visible;
+}
+.ramadan-seasons-chart text {
+	fill: var(--ink-muted);
+	@include ty.value-sm;
+}
+.ramadan-grid {
+	stroke: var(--line);
+	stroke-width: 1;
+}
+.ramadan-curve {
+	fill: none;
+	stroke: var(--accent);
+	stroke-width: 2.2;
+	pointer-events: none;
+}
+.ramadan-comparison {
+	stroke: var(--ramadan-comparison);
+	stroke-dasharray: 5 4;
+}
+.ramadan-series-key.ramadan-comparison {
+	background: repeating-linear-gradient(90deg, var(--ramadan-comparison) 0 5px, transparent 5px 8px);
+}
+.ramadan-dot {
+	fill: var(--accent);
+}
+.ramadan-range {
+	stroke: var(--accent);
+	stroke-opacity: 0.3;
+	stroke-width: 4;
+}
+.ramadan-mean {
+	stroke: var(--accent);
+	stroke-width: 1;
+	stroke-opacity: 0.55;
+	stroke-dasharray: 2 5;
+}
+.ramadan-mean.ramadan-comparison {
+	stroke: var(--ramadan-comparison);
+}
+.ramadan-gap {
+	fill: none;
+	stroke: var(--ink-muted);
+}
+.ramadan-chart-point {
+	cursor: pointer;
+}
+.ramadan-cursor {
+	stroke: var(--ink-muted);
+	stroke-dasharray: 3 5;
+	pointer-events: none;
+}
+.ramadan-seasons-legend {
+	display: flex;
+	flex-wrap: wrap;
+	gap: sp.$sp-16;
+}
+.ramadan-seasons-legend span {
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-8;
+}
+.ramadan-year-label {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: sp.$sp-8;
+	margin-top: sp.$sp-24;
+}
+.ramadan-year-slider {
+	appearance: none;
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 36px;
+	accent-color: var(--accent);
+	cursor: ew-resize;
+	margin: sp.$sp-8 0;
+}
+.ramadan-seasons-readouts {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: sp.$sp-24;
+	margin: sp.$sp-24 0;
+}
+.ramadan-seasons-readouts > div {
+	border-top: 1px solid var(--line);
+	padding-top: sp.$sp-16;
+}
+.ramadan-seasons-readouts h3 {
+	margin: 0 0 sp.$sp-12;
+}
+.ramadan-seasons-readouts strong {
+	display: block;
+	font-variant-numeric: tabular-nums;
+}
+.ramadan-seasons-readouts p {
+	margin: sp.$sp-8 0 0;
+}
+.ramadan-seasons-empty {
+	min-height: 160px;
+	display: grid;
+	place-content: center;
+}
+.ramadan-preview {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 5;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: sp.$sp-16;
+	padding: sp.$sp-16;
+	background: var(--panel-b);
+	border-top: 1px solid var(--line);
+	@include ty.caption-lg;
+}
+@media (max-width: 640px) {
+	.ramadan-seasons {
+		padding: sp.$sp-24 sp.$sp-16;
+	}
+	.ramadan-seasons-head {
+		flex-direction: column;
+		gap: sp.$sp-12;
+	}
+	.ramadan-seasons-toolbar {
+		gap: sp.$sp-16;
+	}
+	.ramadan-seasons-toolbar .cbx {
+		margin-left: 0;
+		width: 100%;
+	}
+	.ramadan-preview {
+		flex-wrap: wrap;
+		padding: sp.$sp-12;
+	}
+}
+
+.ramadan-seasons-open {
+	white-space: normal;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: sp.$sp-12;
+	text-align: left;
+}
+
+.ramadan-modal {
+	display: block;
+	height: auto;
+	max-width: 1040px;
+	max-height: 90dvh;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(150, 138, 224, 0.34) transparent;
+	background: linear-gradient(180deg, #101220, #080a12);
+}
+.ramadan-modal .ramadan-seasons {
+	width: 100%;
+	margin: 0;
+	border-top: 0;
+}
+.ramadan-modal .ramadan-seasons-head {
+	padding-right: sp.$sp-32;
+}
+
+.ramadan-year-slider::-webkit-slider-runnable-track {
+	height: 3px;
+	border-radius: 2px;
+	background: rgba(150, 138, 224, 0.3);
+}
+.ramadan-year-slider::-moz-range-track {
+	height: 3px;
+	border-radius: 2px;
+	background: rgba(150, 138, 224, 0.3);
+}
+.ramadan-year-slider::-webkit-slider-thumb {
+	appearance: none;
+	width: 13px;
+	height: 13px;
+	transform: translateY(-5px);
+	border: 2px solid var(--panel-b);
+	border-radius: 50%;
+	background: var(--accent);
+	box-shadow: 0 0 0 1px rgba(181, 171, 252, 0.45);
+}
+.ramadan-year-slider::-moz-range-thumb {
+	width: 9px;
+	height: 9px;
+	border: 2px solid var(--panel-b);
+	border-radius: 50%;
+	background: var(--accent);
+	box-shadow: 0 0 0 1px rgba(181, 171, 252, 0.45);
+}
+@media (max-width: 640px) {
+	.ramadan-seasons-chart {
+		overflow-x: auto;
+		scrollbar-width: thin;
+	}
+	.ramadan-seasons-chart svg {
+		min-width: 640px;
+	}
+	.ramadan-seasons-toolbar .cbx {
+		width: 100%;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.ramadan-seasons button,
+	.ramadan-preview button,
+	.ramadan-seasons-open {
+		transition: none;
+	}
+}
+
+/* ---------- select ---------- */
+/*
+ * A select that carries a swatch and a number beside the word.
+ *
+ * Ported from the design's Select.dc.html, which wrote its colours out in full.
+ * They turned out to be the palette this sheet already defines — its accent is
+ * exactly `--accent-mid`, its tick exactly the gold used for anything chosen —
+ * so the values here are the same ones, named.
+ */
+.sel {
+	position: relative;
+}
+
+.sel-label {
+	display: block;
+	padding: 0 0 sp.$sp-8 sp.$sp-hairline;
+	color: var(--ink-faint);
+}
+
+.sel-btn {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	gap: sp.$sp-8;
+	width: 100%;
+	/* The design set 10/12/10/14, nudged left for the swatch. Snapped to the one
+	   step the scale offers, which also buys the control a 44px touch target. */
+	padding: sp.$sp-12;
+	border: 0;
+	border-radius: 10px;
+	background: rgba(233, 233, 237, 0.06);
+	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.1);
+	color: var(--ink-bright);
+	@include ty.value-sm;
+	text-align: left;
+	cursor: pointer;
+	transition:
+		background 160ms ease,
+		box-shadow 160ms ease;
+}
+
+.sel-btn:hover {
+	background: rgba(233, 233, 237, 0.09);
+}
+
+/* Open is a state worth seeing from across the panel, so it takes the accent
+   ring rather than just a shade — the same ring the focus outline uses. */
+.sel-btn-open {
+	background: rgba(233, 233, 237, 0.09);
+	box-shadow:
+		inset 0 0 0 1px rgba(150, 138, 224, 0.7),
+		0 0 0 3px rgba(150, 138, 224, 0.18);
+}
+
+.sel-btn:focus-visible {
+	outline: 1px solid rgba(216, 176, 74, 0.8);
+	outline-offset: -2px;
+}
+
+.sel-face {
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-8;
+	/* Without this the label refuses to shrink and the ellipsis never appears. */
+	min-width: 0;
+}
+
+.sel-dot {
+	flex: none;
+	width: 8px;
+	height: 8px;
+	border-radius: 2px;
+}
+
+.sel-value {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.sel-value-empty {
+	color: var(--ink-faint);
+}
+
+.sel-tail {
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-8;
+}
+
+.sel-meta {
+	@include ty.caption-tiny;
+	color: var(--ink-faint);
+}
+
+.sel-chev {
+	flex: none;
+	color: rgba(233, 233, 237, 0.6);
+	transition: transform 180ms ease;
+}
+
+.sel-btn-open .sel-chev {
+	transform: rotate(180deg);
+}
+
+.sel-menu {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: calc(100% + 6px);
+	z-index: 20;
+	display: flex;
+	flex-direction: column;
+	gap: sp.$sp-hairline;
+	max-height: 280px;
+	padding: sp.$sp-4;
+	overflow: auto;
+	border-radius: 12px;
+	background: #161826;
+	border: 1px solid var(--line);
+	box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+	animation: sel-drop 160ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.sel-opt {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: sp.$sp-8;
+	width: 100%;
+	padding: sp.$sp-8;
+	border: 0;
+	border-radius: 8px;
+	background: transparent;
+	color: rgba(233, 233, 237, 0.78);
+	@include ty.chip-sm;
+	text-align: left;
+	cursor: pointer;
+	transition: background 120ms ease;
+}
+
+/* The combobox has no swatches, so its rows drop the column rather than keep an
+   empty one — with nothing ever in it, the reserved space reads as a bad indent
+   instead of as alignment. */
+.sel-opt-nodot {
+	grid-template-columns: 1fr auto;
+}
+
+/* Chosen and pointed-at are different facts, and both can be true at once, so
+   they are two weights of the same accent rather than two colours. */
+.sel-opt-on {
+	background: rgba(150, 138, 224, 0.12);
+	color: #efeeff;
+}
+
+.sel-opt-hi {
+	background: rgba(150, 138, 224, 0.24);
+	color: #efeeff;
+}
+
+.sel-opt-label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.sel-check {
+	flex: none;
+	color: #f4c56a;
+}
+
+@keyframes sel-drop {
+	from {
+		opacity: 0;
+		transform: translateY(-4px) scale(0.985);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sel-btn,
+	.sel-chev,
+	.sel-opt {
+		transition: none;
+	}
+
+	.sel-menu {
+		animation: none;
+	}
+}
+
+/* ---------- combobox ---------- */
+/*
+ * The select's menu with a search field on top.
+ *
+ * Everything below the field is deliberately the select's own classes rather
+ * than a copy — `.sel-menu`, `.sel-opt`, `.sel-meta`, `.sel-check`. Two
+ * dropdowns that are meant to look identical should not have two sets of
+ * numbers to keep in agreement.
+ */
+.cbx {
+	position: relative;
+}
+
+.cbx-field {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: sp.$sp-8;
+	height: 38px;
+	padding: 0 sp.$sp-8 0 sp.$sp-12;
+	border-radius: 10px;
+	background: rgba(233, 233, 237, 0.06);
+	box-shadow: inset 0 0 0 1px rgba(233, 233, 237, 0.1);
+	transition:
+		background 160ms ease,
+		box-shadow 160ms ease;
+}
+
+/* The field carries the focus ring for the input inside it, so the whole
+   control lights rather than a rectangle drawn within a rectangle. */
+.cbx-field-open,
+.cbx-field:focus-within {
+	background: rgba(233, 233, 237, 0.09);
+	box-shadow:
+		inset 0 0 0 1px rgba(150, 138, 224, 0.7),
+		0 0 0 3px rgba(150, 138, 224, 0.18);
+}
+
+.cbx-icon {
+	flex: none;
+	color: var(--ink-faint);
+}
+
+.cbx-input {
+	min-width: 0;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	background: transparent;
+	color: var(--ink-bright);
+	@include ty.value-sm;
+}
+
+.cbx-input::placeholder {
+	color: rgba(233, 233, 237, 0.4);
+}
+
+.cbx-tools {
+	display: flex;
+	align-items: center;
+	gap: sp.$sp-4;
+}
+
+.cbx-clear,
+.cbx-toggle {
+	display: grid;
+	place-items: center;
+	width: 20px;
+	height: 20px;
+	padding: 0;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--ink-faint);
+	cursor: pointer;
+	transition:
+		background 160ms ease,
+		color 160ms ease;
+}
+
+.cbx-clear:hover {
+	background: rgba(233, 233, 237, 0.1);
+	color: var(--ink-bright);
+}
+
+.cbx-field-open .sel-chev {
+	transform: rotate(180deg);
+}
+
+/* A heading is a place in the list, not a stop on the way down it — nothing
+   here is focusable, and the arrow keys step straight past. */
+.cbx-group-name {
+	padding: sp.$sp-8 sp.$sp-8 sp.$sp-4;
+	@include ty.caption-tiny;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: rgba(233, 233, 237, 0.4);
+}
+
+/* The run of characters the query matched. Gold, the same as the tick: both
+   are the app saying "this is the part you asked for". */
+.cbx-hit {
+	color: #f4c56a;
+}
+
+.cbx-empty {
+	padding: sp.$sp-12 sp.$sp-8;
+	@include ty.body-sm;
+	color: var(--ink-faint);
+	text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cbx-field,
+	.cbx-clear,
+	.cbx-toggle {
+		transition: none;
+	}
+}
+
+/* ---------- virtualised menu rows ---------- */
+/*
+ * Only the rows on screen exist.
+ *
+ * The compare field chooses from 891 cities. Drawing them all to show twelve
+ * built several thousand nodes nobody looked at, so the menu keeps one spacer
+ * at the list's true height — the scrollbar stays honest — and positions the
+ * visible slice inside it. Positions are arithmetic, which is why these two
+ * heights are pinned here rather than left to the content: `ROW_H` and
+ * `HEAD_H` in Combobox.tsx are these numbers, and the two must agree or the
+ * rows drift out from under the scroll.
+ */
+.sel-menu-virtual {
+	display: block;
+	gap: 0;
+	max-height: 300px;
+}
+
+.cbx-rows {
+	position: relative;
+}
+
+.cbx-rows > * {
+	position: absolute;
+	left: 0;
+	right: 0;
+}
+
+.cbx-rows .sel-opt {
+	height: 32px;
+}
+
+.cbx-rows .cbx-group-name {
+	height: 26px;
+}
+
+/* ---------- ramadan loading skeleton ---------- */
+/*
+ * The chart's frame while the worker runs, so the panel does not resize.
+ *
+ * A line of text where a 300-unit chart is about to be left the modal a third
+ * of its height and then made it jump. The grid does not depend on the data, so
+ * it is drawn at once and the curve simply arrives into it.
+ */
+.ramadan-seasons-loading svg {
+	opacity: 0.55;
+}
+
+.ramadan-curve-pending {
+	stroke-dasharray: 4 6;
+	animation: ramadan-pending 1.6s ease-in-out infinite;
+}
+
+@keyframes ramadan-pending {
+	50% {
+		opacity: 0.35;
+	}
+}
+
+/* Announced, not shown: the skeleton is the visual answer already. */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ramadan-curve-pending {
+		animation: none;
+	}
 }

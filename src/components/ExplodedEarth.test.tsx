@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { ExplodedEarth } from './ExplodedEarth.component';
+import { ExplodedEarth } from './ExplodedEarth';
 import { CONTINENTS } from '../lib/continents';
 
 describe('embedded exploded globe', () => {

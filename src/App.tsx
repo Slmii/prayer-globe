@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from 'react';
 import Globe from './components/Globe';
+import Modal from './components/Modal';
 import type { GlobeHandle, PathMode, QiblaMode } from './components/Globe';
 import SidePanel from './components/SidePanel';
 import TimeBar from './components/TimeBar';
@@ -70,6 +71,9 @@ const loadAnalemma = () => import('./components/Analemma').then(module => ({ def
 const QiblaViewer = lazy(loadQibla);
 /** A year of solar positions and an SVG — worth its own chunk. */
 const Analemma = lazy(loadAnalemma);
+const RamadanSeasons = lazy(() =>
+	import('./components/RamadanSeasons').then(module => ({ default: module.RamadanSeasons }))
+);
 /** The shortcut sheet: a list of text, and nobody opens it on the first frame. */
 const Shortcuts = lazy(() => import('./components/Shortcuts'));
 /** Only ever seen on a first visit, so it is not worth the first paint. */
@@ -280,8 +284,16 @@ export default function App() {
 	const [note, setNote] = useState('loading outlines…');
 	const globe = useRef<GlobeHandle>(null);
 
+	const [isRamadanOpen, setIsRamadanOpen] = useState(false);
+	const [ramadanPreview, setRamadanPreview] = useState<number | null>(null);
+	const ramadanPreviewRef = useRef(ramadanPreview);
+	ramadanPreviewRef.current = ramadanPreview;
 	const clock = useClock(PLAY_RATE, 200, LINK.scrub ?? 0);
-	const { scrub, playing, getNowMs, setScrub: setScrubStable } = clock;
+	const { scrub, playing, getNowMs: getLiveNowMs, setScrub: setScrubStable } = clock;
+	const getNowMs = useCallback(() => ramadanPreviewRef.current ?? getLiveNowMs(), [getLiveNowMs]);
+	useEffect(() => {
+		if (playing !== 0) setRamadanPreview(null);
+	}, [playing]);
 	// Sampled for the panel; the globe samples the clock itself, every frame.
 	const nowMs = getNowMs();
 
@@ -1007,85 +1019,98 @@ export default function App() {
 	}, [activeCity?.n, mode, chain, rounded, playing]);
 	const scrubLabel = scrubLabelOf(rounded);
 
-	return (
-		<div className='app'>
-			<SidePanel
-				readout={readout}
-				times={times}
-				querying={querying}
-				onGoTo={goTo}
-				onPickPhase={onPickPhase}
-				timeShifted={playing !== 0 || scrubbing}
-				mode={mode}
-				onMode={setMode}
-				phases={phases}
-				nowMs={nowMs}
-				chain={chain}
-				onChain={selectChain}
-				sweeping={sweeping}
-				onSweep={() => {
-					if (playing) {
-						clock.stop();
-						setSweepOn(false);
-						run.current = null;
-						return;
-					}
-					const limit = Math.round(clock.scrub) + SWEEP_MINUTES;
-					const base = SWEEP_MINUTES / BASE_SECONDS;
-					run.current = { base, limit };
-					setSweepOn(true);
-					clock.play(1, { rate: base * speedMul, limit });
-				}}
-				onGoToCity={c => selectCity(c, true)}
-				pinned={pinned}
-				onTogglePin={togglePin}
-				onUnpin={unpin}
-				onLocate={locate}
-				locating={locating}
-				hilalEveningMs={hilalEveningMs}
-				criterion={criterion}
-				hilalCity={activeCity}
-				hilalBusy={hilal.busy}
-				hilalSummary={hilal.summary}
-				conjunctionMs={hilal.field?.conjunctionMs ?? null}
-				onStep={(d: number) => setHilalDays(v => v + d)}
-				onNextCrescent={nextCrescent}
-				onTonight={() => setHilalDays(0)}
-				shifted={hilalDays !== 0}
-				tonightMs={tonightMs}
-			/>
+	const returnFromRamadan = useCallback(() => {
+		setRamadanPreview(null);
+		setScrubStable(0);
+	}, [setScrubStable]);
 
-			<main className='stage'>
-				<Globe
-					ref={globe}
-					worldGeo={world.data}
-					getNowMs={getNowMs}
-					activeCity={activeCity}
-					guestCity={located}
-					spin={spin && !hover}
-					pathMode={pathMode}
-					showOrrery={showOrrery}
-					highlightPhase={highlightPhase}
+	const openRamadanExplorer = useCallback(() => setIsRamadanOpen(true), []);
+	const closeRamadanExplorer = useCallback(() => {
+		setIsRamadanOpen(false);
+		if (ramadanPreviewRef.current !== null) returnFromRamadan();
+	}, [returnFromRamadan]);
+
+	return (
+		<>
+			<div className='app'>
+				<SidePanel
+					onOpenRamadanSeasons={openRamadanExplorer}
+					readout={readout}
+					times={times}
+					querying={querying}
+					onGoTo={goTo}
+					onPickPhase={onPickPhase}
+					timeShifted={playing !== 0 || scrubbing || ramadanPreview !== null}
+					mode={mode}
+					onMode={setMode}
 					phases={phases}
-					qiblaMode={qiblaMode}
-					bandPhase={mode === 'chain' ? chain : null}
-					hilal={mode === 'hilal' ? hilal.field?.bands ?? null : null}
-					mark={mark}
-					markPulsing={markPulsing}
+					nowMs={nowMs}
+					chain={chain}
+					onChain={selectChain}
 					sweeping={sweeping}
-					onHover={setHover}
-					onView={onView}
-					onCitySelect={onCitySelect}
-					onCityHover={setHoveredCity}
-					onSiteHover={setHoveredSite}
-					onSiteSelect={onSiteSelect}
-					onOpenViewer={setViewer}
-					onNote={onNote}
-					onShare={share}
-					onShortcuts={() => setShortcutsOpen(true)}
+					onSweep={() => {
+						if (playing) {
+							clock.stop();
+							setSweepOn(false);
+							run.current = null;
+							return;
+						}
+						const limit = Math.round(clock.scrub) + SWEEP_MINUTES;
+						const base = SWEEP_MINUTES / BASE_SECONDS;
+						run.current = { base, limit };
+						setSweepOn(true);
+						clock.play(1, { rate: base * speedMul, limit });
+					}}
+					onGoToCity={c => selectCity(c, true)}
+					pinned={pinned}
+					onTogglePin={togglePin}
+					onUnpin={unpin}
+					onLocate={locate}
+					locating={locating}
+					hilalEveningMs={hilalEveningMs}
+					criterion={criterion}
+					hilalCity={activeCity}
+					hilalBusy={hilal.busy}
+					hilalSummary={hilal.summary}
+					conjunctionMs={hilal.field?.conjunctionMs ?? null}
+					onStep={(d: number) => setHilalDays(v => v + d)}
+					onNextCrescent={nextCrescent}
+					onTonight={() => setHilalDays(0)}
+					shifted={hilalDays !== 0}
+					tonightMs={tonightMs}
 				/>
 
-				{/*
+				<main id='globe-stage' className='stage'>
+					<Globe
+						ref={globe}
+						worldGeo={world.data}
+						getNowMs={getNowMs}
+						activeCity={activeCity}
+						guestCity={located}
+						spin={spin && !hover}
+						pathMode={pathMode}
+						showOrrery={showOrrery}
+						highlightPhase={highlightPhase}
+						phases={phases}
+						qiblaMode={qiblaMode}
+						bandPhase={mode === 'chain' ? chain : null}
+						hilal={mode === 'hilal' ? hilal.field?.bands ?? null : null}
+						mark={mark}
+						markPulsing={markPulsing}
+						sweeping={sweeping}
+						onHover={setHover}
+						onView={onView}
+						onCitySelect={onCitySelect}
+						onCityHover={setHoveredCity}
+						onSiteHover={setHoveredSite}
+						onSiteSelect={onSiteSelect}
+						onOpenViewer={setViewer}
+						onNote={onNote}
+						onShare={share}
+						onShortcuts={() => setShortcutsOpen(true)}
+					/>
+
+					{/*
 					The console strip.
 
 					One bar, divided by hairlines, rather than a row of separate pills:
@@ -1094,150 +1119,155 @@ export default function App() {
 					what it held. The line under the bar says what the whole thing is set
 					to, so the state can be read without decoding five highlights.
 				*/}
-				<div className='controls'>
-					<div className='console'>
-						<button
-							className={'con-btn' + (spin ? ' con-btn-on' : '')}
-							aria-pressed={spin}
-							data-hotkey='spin'
-							data-tip='Auto-rotate the earth · S'
-							onClick={() => setSpin(v => !v)}
-						>
-							<span className={'con-switch' + (spin ? ' con-switch-on' : '')}>
-								<span className='con-switch-knob' />
+					<div
+						className='controls'
+						onPointerDownCapture={() => {
+							if (ramadanPreview !== null) setRamadanPreview(null);
+						}}
+					>
+						<div className='console'>
+							<button
+								className={'con-btn' + (spin ? ' con-btn-on' : '')}
+								aria-pressed={spin}
+								data-hotkey='spin'
+								data-tip='Auto-rotate the earth · S'
+								onClick={() => setSpin(v => !v)}
+							>
+								<span className={'con-switch' + (spin ? ' con-switch-on' : '')}>
+									<span className='con-switch-knob' />
+								</span>
+								Spin
+							</button>
+
+							<span className='con-div' />
+
+							<button
+								className={'con-btn' + (playing ? ' con-btn-on' : '')}
+								aria-pressed={playing !== 0}
+								data-hotkey='play'
+								data-tip='Run the clock forward · Space'
+								onClick={playToggle}
+							>
+								<span className={'con-play' + (playing ? ' con-play-on' : '')} />
+								{playing ? 'Running' : 'Play'}
+							</button>
+
+							{/* How far a run goes, every choice on show. */}
+							<span className='con-keys'>
+								{PLAY_OPTIONS.map((o, i) => (
+									<button
+										key={o.days}
+										className={'con-key' + (o.days === playDays ? ' con-key-on' : '')}
+										data-hotkey={'span' + (i + 1)}
+										aria-pressed={o.days === playDays}
+										data-tip={
+											(o.days === 1 ? 'Run one day forward' : `Run ${o.days} days forward`) +
+											` · ${i + 1}`
+										}
+										onClick={() => pickSpan(i)}
+									>
+										{o.days}d
+									</button>
+								))}
 							</span>
-							Spin
-						</button>
 
-						<span className='con-div' />
+							<span className='con-div' />
 
-						<button
-							className={'con-btn' + (playing ? ' con-btn-on' : '')}
-							aria-pressed={playing !== 0}
-							data-hotkey='play'
-							data-tip='Run the clock forward · Space'
-							onClick={playToggle}
-						>
-							<span className={'con-play' + (playing ? ' con-play-on' : '')} />
-							{playing ? 'Running' : 'Play'}
-						</button>
-
-						{/* How far a run goes, every choice on show. */}
-						<span className='con-keys'>
-							{PLAY_OPTIONS.map((o, i) => (
-								<button
-									key={o.days}
-									className={'con-key' + (o.days === playDays ? ' con-key-on' : '')}
-									data-hotkey={'span' + (i + 1)}
-									aria-pressed={o.days === playDays}
-									data-tip={
-										(o.days === 1 ? 'Run one day forward' : `Run ${o.days} days forward`) +
-										` · ${i + 1}`
-									}
-									onClick={() => pickSpan(i)}
-								>
-									{o.days}d
-								</button>
-							))}
-						</span>
-
-						<span className='con-div' />
-
-						<button
-							className={'con-btn' + (qiblaMode !== 'off' ? ' con-btn-qibla' : '')}
-							aria-pressed={qiblaMode !== 'off'}
-							data-tip={
-								qiblaMode === 'off'
-									? 'Great circles to the Kaaba'
-									: qiblaMode === 'one'
-										? 'Now show every city facing us'
-										: 'Turn the qibla lines off'
-							}
-							onClick={() => setQiblaMode(v => (v === 'off' ? 'one' : v === 'one' ? 'many' : 'off'))}
-						>
-							<span className='con-qibla'>
-								<span className='con-qibla-needle' />
-							</span>
-							{/* The design labels the three states Qibla / City / All. This bar also
+							<button
+								className={'con-btn' + (qiblaMode !== 'off' ? ' con-btn-qibla' : '')}
+								aria-pressed={qiblaMode !== 'off'}
+								data-tip={
+									qiblaMode === 'off'
+										? 'Great circles to the Kaaba'
+										: qiblaMode === 'one'
+											? 'Now show every city facing us'
+											: 'Turn the qibla lines off'
+								}
+								onClick={() => setQiblaMode(v => (v === 'off' ? 'one' : v === 'one' ? 'many' : 'off'))}
+							>
+								<span className='con-qibla'>
+									<span className='con-qibla-needle' />
+								</span>
+								{/* The design labels the three states Qibla / City / All. This bar also
 							    carries a City button that flies to the selected city, and two
 							    segments reading CITY that do unrelated things is worse than a
 							    longer label — so the mode keeps its own name in front. */}
-							{qiblaMode === 'off' ? 'Qibla' : qiblaMode === 'one' ? 'Qibla · city' : 'Qibla · all'}
-						</button>
+								{qiblaMode === 'off' ? 'Qibla' : qiblaMode === 'one' ? 'Qibla · city' : 'Qibla · all'}
+							</button>
 
-						<span className='con-div' />
+							<span className='con-div' />
 
-						<button
-							className={'con-btn' + (pathMode !== 'off' ? ' con-btn-path' : '')}
-							aria-pressed={pathMode !== 'off'}
-							data-tip={
-								pathMode === 'off'
-									? "The sun's track across the day"
-									: pathMode === 'sun'
-										? "Add the moon's track"
-										: 'Turn the tracks off'
-							}
-							onClick={() => setPathMode(v => (v === 'off' ? 'sun' : v === 'sun' ? 'both' : 'off'))}
-						>
-							<svg className='con-arc' width='13' height='11' viewBox='0 0 13 11' aria-hidden='true'>
-								<path
-									d='M1 9 C 4 1, 9 1, 12 9'
-									fill='none'
-									stroke='currentColor'
-									strokeWidth='1.5'
-									strokeLinecap='round'
-									strokeDasharray='2.5 2'
-								/>
-							</svg>
-							{pathMode === 'off' ? 'Path' : pathMode === 'sun' ? 'Sun' : 'Sun+Moon'}
-						</button>
+							<button
+								className={'con-btn' + (pathMode !== 'off' ? ' con-btn-path' : '')}
+								aria-pressed={pathMode !== 'off'}
+								data-tip={
+									pathMode === 'off'
+										? "The sun's track across the day"
+										: pathMode === 'sun'
+											? "Add the moon's track"
+											: 'Turn the tracks off'
+								}
+								onClick={() => setPathMode(v => (v === 'off' ? 'sun' : v === 'sun' ? 'both' : 'off'))}
+							>
+								<svg className='con-arc' width='13' height='11' viewBox='0 0 13 11' aria-hidden='true'>
+									<path
+										d='M1 9 C 4 1, 9 1, 12 9'
+										fill='none'
+										stroke='currentColor'
+										strokeWidth='1.5'
+										strokeLinecap='round'
+										strokeDasharray='2.5 2'
+									/>
+								</svg>
+								{pathMode === 'off' ? 'Path' : pathMode === 'sun' ? 'Sun' : 'Sun+Moon'}
+							</button>
 
-						<span className='con-div' />
+							<span className='con-div' />
 
-						{/* City, Makkah and Now are gone from here: the first two are reachable
+							{/* City, Makkah and Now are gone from here: the first two are reachable
 						    by clicking the globe, and the time bar already carries its own Now. */}
-						<button
-							className={'con-btn' + (locating ? ' con-btn-on' : '')}
-							data-tip='Fly to where you are'
-							disabled={locating}
-							onClick={locate}
-						>
-							<AppIcon name='locate' size='small' />
-							{locating ? 'Locating' : 'My location'}
-						</button>
+							<button
+								className={'con-btn' + (locating ? ' con-btn-on' : '')}
+								data-tip='Fly to where you are'
+								disabled={locating}
+								onClick={locate}
+							>
+								<AppIcon name='locate' size='small' />
+								{locating ? 'Locating' : 'My location'}
+							</button>
 
-						<span className='con-div' />
+							<span className='con-div' />
 
-						<button
-							className='con-btn con-btn-plain'
-							data-tip='Pull back to the whole earth'
-							onClick={() => {
-								setSpin(false);
-								globe.current?.flyTo(view.lng, 20, 1.4, 2200);
-							}}
-						>
-							Whole earth
-						</button>
-					</div>
+							<button
+								className='con-btn con-btn-plain'
+								data-tip='Pull back to the whole earth'
+								onClick={() => {
+									setSpin(false);
+									globe.current?.flyTo(view.lng, 20, 1.4, 2200);
+								}}
+							>
+								Whole earth
+							</button>
+						</div>
 
-					<div className='con-status'>{consoleStatus}</div>
+						<div className='con-status'>{consoleStatus}</div>
 
-					<div className='pointer'>
-						<div className='pointer-pos'>{readout.ptrPos}</div>
-						<div className='pointer-note'>
-							{/* The zoom lives with the zoom buttons now, not out here. */}
-							{/* Said plainly rather than left to be discovered by clicking: a
+						<div className='pointer'>
+							<div className='pointer-pos'>{readout.ptrPos}</div>
+							<div className='pointer-note'>
+								{/* The zoom lives with the zoom buttons now, not out here. */}
+								{/* Said plainly rather than left to be discovered by clicking: a
 						    monument is the one mark on this globe with no times behind
 						    it, and the line has room to say so. */}
-							{hoveredCity
-								? `${hoveredCity} · click to select`
-								: hoveredSite
-									? `${hoveredSite} · no published timetable · click to look`
-									: mapNote}
+								{hoveredCity
+									? `${hoveredCity} · click to select`
+									: hoveredSite
+										? `${hoveredSite} · no published timetable · click to look`
+										: mapNote}
+							</div>
 						</div>
-					</div>
 
-					{/*
+						{/*
 						The two deep views, on the globe rather than in the panel.
 
 						They were words inside the panel's coordinates line — "qibla 126°"
@@ -1249,61 +1279,61 @@ export default function App() {
 						Inside the console's own column, so they stack under it without
 						anyone having to guess how tall it is today.
 					*/}
-					{activeCity && (
-						<div className='gtools'>
-							<div className='gtools-head'>
-								<span className='gtools-dot' />
-								<Label size='sm' className='gtools-city'>
-									{activeCity.n}
-								</Label>
-								<Value size='xs' className='gtools-time'>
-									{readout.clock}
-								</Value>
+						{activeCity && (
+							<div className='gtools'>
+								<div className='gtools-head'>
+									<span className='gtools-dot' />
+									<Label size='sm' className='gtools-city'>
+										{activeCity.n}
+									</Label>
+									<Value size='xs' className='gtools-time'>
+										{readout.clock}
+									</Value>
+								</div>
+
+								<button
+									type='button'
+									className='tool tool-qibla'
+									onClick={() => setQiblaOpen(true)}
+									/* Fetch it on the way to the click, not after it. */
+									onPointerEnter={loadQibla}
+									onPointerDown={loadQibla}
+									onFocus={loadQibla}
+									data-tip='Turn until the arrow points away from you'
+								>
+									<span className='tool-icon'>
+										<AppIcon name='compass' />
+									</span>
+									<span className='tool-text'>
+										<span className='tool-name'>Qibla finder</span>
+										<span className='tool-sub'>live compass · {readout.qibla}</span>
+									</span>
+									<AppIcon name='arrow-right' size='small' className='tool-go' />
+								</button>
+
+								<button
+									type='button'
+									className='tool tool-sun'
+									onClick={() => setAnalemmaOpen(true)}
+									onPointerEnter={loadAnalemma}
+									onPointerDown={loadAnalemma}
+									onFocus={loadAnalemma}
+									data-tip='Where the sun stands at this time, every day of the year'
+								>
+									<span className='tool-icon'>
+										<AppIcon name='infinity' />
+									</span>
+									<span className='tool-text'>
+										<span className='tool-name'>Analemma</span>
+										<span className='tool-sub'>prayers across the year</span>
+									</span>
+									<AppIcon name='arrow-right' size='small' className='tool-go' />
+								</button>
 							</div>
+						)}
+					</div>
 
-							<button
-								type='button'
-								className='tool tool-qibla'
-								onClick={() => setQiblaOpen(true)}
-								/* Fetch it on the way to the click, not after it. */
-								onPointerEnter={loadQibla}
-								onPointerDown={loadQibla}
-								onFocus={loadQibla}
-								data-tip='Turn until the arrow points away from you'
-							>
-								<span className='tool-icon'>
-									<AppIcon name='compass' />
-								</span>
-								<span className='tool-text'>
-									<span className='tool-name'>Qibla finder</span>
-									<span className='tool-sub'>live compass · {readout.qibla}</span>
-								</span>
-								<AppIcon name='arrow-right' size='small' className='tool-go' />
-							</button>
-
-							<button
-								type='button'
-								className='tool tool-sun'
-								onClick={() => setAnalemmaOpen(true)}
-								onPointerEnter={loadAnalemma}
-								onPointerDown={loadAnalemma}
-								onFocus={loadAnalemma}
-								data-tip='Where the sun stands at this time, every day of the year'
-							>
-								<span className='tool-icon'>
-									<AppIcon name='infinity' />
-								</span>
-								<span className='tool-text'>
-									<span className='tool-name'>Analemma</span>
-									<span className='tool-sub'>prayers across the year</span>
-								</span>
-								<AppIcon name='arrow-right' size='small' className='tool-go' />
-							</button>
-						</div>
-					)}
-				</div>
-
-				{/*
+					{/*
 					One place for every passing message. react-toastify owns the stack, the
 					timing and the dismissal; the card itself is ours, in `Toast.tsx` and
 					`styles.css`, so these read as part of the instrument rather than as a
@@ -1322,118 +1352,150 @@ export default function App() {
 					out, which is exactly what it looked like: a toast that never left. The
 					bar is the promise, and this is what keeps it.
 				*/}
-				{/* Every `data-tip` in the app is drawn by this one node, in a portal. */}
-				{/* On the map, not only in the panel — the map is what the reader is
+					{/* Every `data-tip` in the app is drawn by this one node, in a portal. */}
+					{/* On the map, not only in the panel — the map is what the reader is
 				    watching for a change, and a second of blank earth with the news
 				    two feet to the left reads as nothing happening. */}
-				{mode === 'hilal' && hilal.busy && (
-					<div className='hil-busy' role='status'>
-						<span className='mv-spinner' aria-hidden='true' />
-						{hilal.field ? 'Sharpening the crescent map…' : 'Working out the whole earth…'}
-					</div>
-				)}
+					{mode === 'hilal' && hilal.busy && (
+						<div className='hil-busy' role='status'>
+							<span className='mv-spinner' aria-hidden='true' />
+							{hilal.field ? 'Sharpening the crescent map…' : 'Working out the whole earth…'}
+						</div>
+					)}
 
-				<TipLayer />
+					<TipLayer />
 
-				{/* The globe keeps running behind it, so closing returns to exactly the
+					{/* The globe keeps running behind it, so closing returns to exactly the
 				    view you left rather than to a globe that has drifted on without you. */}
-				{askLocation && (
-					<Suspense fallback={null}>
-						<LocationAsk
-							onLocate={() => {
-								markLocationAsked();
-								setAskLocation(false);
-								locate();
-							}}
-							onDismiss={() => {
-								markLocationAsked();
-								setAskLocation(false);
-							}}
-						/>
-					</Suspense>
-				)}
+					{askLocation && (
+						<Suspense fallback={null}>
+							<LocationAsk
+								onLocate={() => {
+									markLocationAsked();
+									setAskLocation(false);
+									locate();
+								}}
+								onDismiss={() => {
+									markLocationAsked();
+									setAskLocation(false);
+								}}
+							/>
+						</Suspense>
+					)}
 
-				{shortcutsOpen && (
-					<Suspense fallback={null}>
-						<Shortcuts onClose={() => setShortcutsOpen(false)} />
-					</Suspense>
-				)}
+					{shortcutsOpen && (
+						<Suspense fallback={null}>
+							<Shortcuts onClose={() => setShortcutsOpen(false)} />
+						</Suspense>
+					)}
 
-				{qiblaOpen && activeCity && (
-					<Suspense fallback={<div className='modal-back' />}>
-						<QiblaViewer
-							lat={activeCity.la}
-							lon={activeCity.lo}
-							place={activeCity.n}
-							onClose={() => setQiblaOpen(false)}
-						/>
-					</Suspense>
-				)}
+					{qiblaOpen && activeCity && (
+						<Suspense fallback={<div className='modal-back' />}>
+							<QiblaViewer
+								lat={activeCity.la}
+								lon={activeCity.lo}
+								place={activeCity.n}
+								onClose={() => setQiblaOpen(false)}
+							/>
+						</Suspense>
+					)}
 
-				{analemmaOpen && activeCity && (
-					<Suspense fallback={<div className='modal-back' />}>
-						<Analemma
-							place={activeCity.n}
-							lat={activeCity.la}
-							lon={activeCity.lo}
-							// The offset the panel's own clock is using, so the plate is
-							// drawn for the hour the reader is actually looking at.
-							offsetHours={readout.offsetHours}
-							nowMs={nowMs}
-							onClose={() => setAnalemmaOpen(false)}
-						/>
-					</Suspense>
-				)}
+					{analemmaOpen && activeCity && (
+						<Suspense fallback={<div className='modal-back' />}>
+							<Analemma
+								place={activeCity.n}
+								lat={activeCity.la}
+								lon={activeCity.lo}
+								// The offset the panel's own clock is using, so the plate is
+								// drawn for the hour the reader is actually looking at.
+								offsetHours={readout.offsetHours}
+								nowMs={nowMs}
+								onClose={() => setAnalemmaOpen(false)}
+							/>
+						</Suspense>
+					)}
 
-				{viewer && (
-					/* The fallback is the modal's own shape — backdrop, panel, and a
+					{viewer && (
+						/* The fallback is the modal's own shape — backdrop, panel, and a
 					   rail column of the same width — so the chunk arriving fills the
 					   frame in rather than replacing one thing on screen with a
 					   different one. A full-screen holding message flashed. */
-					<Suspense
-						fallback={
-							<div className='mv-back'>
-								<div className='mv'>
-									<div className='mv-rail mv-rail-ghost' />
-									<div className='mv-stage'>
-										<div className='mv-building' role='status'>
-											<span className='mv-spinner' aria-hidden='true' />
-											<span>Opening the viewer</span>
+						<Suspense
+							fallback={
+								<div className='mv-back'>
+									<div className='mv'>
+										<div className='mv-rail mv-rail-ghost' />
+										<div className='mv-stage'>
+											<div className='mv-building' role='status'>
+												<span className='mv-spinner' aria-hidden='true' />
+												<span>Opening the viewer</span>
+											</div>
 										</div>
 									</div>
 								</div>
+							}
+						>
+							<MosqueViewer model={viewer} onClose={() => setViewer(null)} />
+						</Suspense>
+					)}
+
+					<ToastContainer
+						position='bottom-right'
+						autoClose={TOAST_MS}
+						hideProgressBar
+						closeButton={false}
+						newestOnTop
+						pauseOnFocusLoss={false}
+						pauseOnHover={false}
+						theme='dark'
+						className='pg-toasts'
+					/>
+
+					<Legend />
+
+					{ramadanPreview !== null ? (
+						<div className='ramadan-preview' role='status'>
+							<span>
+								Season preview ·{' '}
+								{new Date(ramadanPreview).toLocaleDateString('en', {
+									day: 'numeric',
+									month: 'short',
+									year: 'numeric',
+									timeZone: 'UTC'
+								})}{' '}
+								· solar estimates
+							</span>
+							<button type='button' className='btn' onClick={returnFromRamadan}>
+								Return to current time
+							</button>
+						</div>
+					) : (
+						<TimeBar
+							readout={readout}
+							scrub={rounded}
+							setScrub={m => clock.setScrub(m)}
+							onScrubbingChange={setScrubbing}
+							scrubLabel={scrubLabel}
+							sweepSeconds={sweepSeconds}
+							onSweepSpeed={setSpeed}
+							getNowMs={getNowMs}
+						/>
+					)}
+				</main>
+			</div>
+			{isRamadanOpen && (
+				<Modal label='Ramadan through the seasons' className='ramadan-modal' onClose={closeRamadanExplorer}>
+					<Suspense
+						fallback={
+							<div className='ramadan-seasons' role='status'>
+								Loading Ramadan seasons…
 							</div>
 						}
 					>
-						<MosqueViewer model={viewer} onClose={() => setViewer(null)} />
+						<RamadanSeasons city={activeCity} locatedCity={located} />
 					</Suspense>
-				)}
-
-				<ToastContainer
-					position='bottom-right'
-					autoClose={TOAST_MS}
-					hideProgressBar
-					closeButton={false}
-					newestOnTop
-					pauseOnFocusLoss={false}
-					pauseOnHover={false}
-					theme='dark'
-					className='pg-toasts'
-				/>
-
-				<Legend />
-
-				<TimeBar
-					readout={readout}
-					scrub={rounded}
-					setScrub={m => clock.setScrub(m)}
-					onScrubbingChange={setScrubbing}
-					scrubLabel={scrubLabel}
-					sweepSeconds={sweepSeconds}
-					onSweepSpeed={setSpeed}
-					getNowMs={getNowMs}
-				/>
-			</main>
-		</div>
+				</Modal>
+			)}
+		</>
 	);
 }

@@ -71,6 +71,7 @@ interface SidePanelProps {
 	tonightMs: number;
 	/** Cities per crescent zone, and the best-placed one. */
 	hilalSummary: CitySummary;
+	onOpenRamadanSeasons?(): void;
 	/** Show the direction to the Kaaba from the selected city, in 3D. */
 }
 
@@ -729,6 +730,17 @@ export default function SidePanel(props: SidePanelProps) {
 				<RelayPanel phases={props.phases} nowMs={props.nowMs} onGoTo={props.onGoToCity} />
 			)}
 
+			{props.mode === 'ramadan' && (
+				<button
+					type='button'
+					className='btn btn-primary ramadan-seasons-open'
+					onClick={props.onOpenRamadanSeasons}
+					aria-haspopup='dialog'
+					disabled={!props.onOpenRamadanSeasons}
+				>
+					Explore Ramadan across 33 years <AppIcon name='arrow-right' size='small' />
+				</button>
+			)}
 			{props.mode === 'ramadan' && a.city && (
 				<RamadanPanel days={props.times.days} nowMs={props.nowMs} cityName={a.city ?? ''} pending={pending} />
 			)}

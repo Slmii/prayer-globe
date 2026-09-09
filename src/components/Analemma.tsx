@@ -33,7 +33,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 import Modal from './Modal';
-import { AnalemmaSky } from './AnalemmaSky.component';
+import { AnalemmaSky } from './AnalemmaSky';
 import { analemma, eotWords, hhmm, compassPoint, PRAYER_LINES } from '../lib/analemma';
 import { SUN_EDGE_DEG, PHASES, phaseAt } from '../lib/astro';
 import type { Analemma as Fig, AnalemmaPoint } from '../lib/analemma';

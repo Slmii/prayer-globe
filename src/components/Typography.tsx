@@ -25,7 +25,7 @@
 // can be an `h1` where that is what it means without changing how it looks —
 // the tag is about the document, the component is about the type.
 
-import type { CSSProperties, ElementType, ReactNode } from 'react';
+import type { AriaRole, CSSProperties, ElementType, ReactNode } from 'react';
 
 /**
  * Seven steps, because the app genuinely uses that many.
@@ -93,6 +93,8 @@ interface Props {
 	 * or `fontWeight`, which are inline and always win. Reach for `className`
 	 * for layout and colour-by-class; reach for the props for one-off values.
 	 */
+	id?: string;
+	role?: AriaRole;
 	className?: string;
 	style?: CSSProperties;
 	title?: string;
